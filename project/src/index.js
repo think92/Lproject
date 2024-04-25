@@ -5,12 +5,14 @@ import "./mainbody.css";
 // import App from './App';
 import MainBar from "./MainBar";
 import MainBody from "./MainBody";
+import Editor from "./Editor";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-  <MainBar />
-  <MainBody />
+    <MainBar />
+    <MainBody />
+    <Editor />
   </React.StrictMode>
 );
 
