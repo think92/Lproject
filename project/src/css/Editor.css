@@ -8,8 +8,8 @@ body {
   width: 1920px;
 }
 
-section {
-  margin: 40px;
+.sec {
+  margin: 10px;
   display: flex;
 }
 

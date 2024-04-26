@@ -1,0 +1,69 @@
+@font-face {
+  font-family: "Pretendard-Regular";
+  src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+    format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+.body {
+  background-color: #292c31;
+  margin: 0;
+  font-family: "Pretendard-Regular";
+}
+
+/* 이미지영상 업로드 화면 */
+#upload {
+  display: flex;
+  align-items: center;
+}
+.uploadbackground1 {
+  width: 1860px;
+  height: 830px;
+  background-color: #b0e045;
+  margin: auto;
+  border-radius: 20px;
+  z-index: 1;
+}
+.uploadbackground2 {
+  display: flex;
+  width: 1590px;
+  height: 700px;
+  background-color: white;
+  margin: auto;
+  margin-top: 65px;
+  border-radius: 15px;
+  z-index: 2;
+}
+.uploadbackground2 .uploadtext {
+  width: 50%;
+  text-align: center;
+  margin: auto;
+  z-index: 3;
+}
+.uploadtext h1 {
+  font-size: 63px;
+  margin: 30px;
+}
+.uploadtext p {
+  font-size: 30px;
+  font-weight: 600;
+  margin: 5px;
+}
+.uploadtext a {
+  font-size: 30px;
+  color: black;
+  font-weight: 600;
+  background-color: #9edf0c;
+  padding: 15px 30px;
+  border-radius: 15px;
+}
+.uploadbackground2 .uploadimg {
+  width: 50%;
+  margin: auto;
+}
+.uploadimg img {
+  width: 700px;
+  height: 450px;
+  z-index: 3;
+}
