@@ -78,3 +78,7 @@ button {
   flex-shrink: 1;
   flex-grow: 1;
 }
+
+.editor-specific #mainbar {
+  background-color: #000;
+}

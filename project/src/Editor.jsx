@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./css/Editor.css";
-import "./css/mainbar.css";
 import MainBar from "./MainBar";
 import {
   faCar,
@@ -16,8 +15,8 @@ const Editor = () => {
     document.body.style.backgroundColor = "black";
   }, []);
   return (
-    <div>
-      <MainBar></MainBar>
+    <div className="editor-specific">
+      <MainBar />
       <section className="sec">
         <div className="buttons">
           <p className="auto">Auto Mosaic</p>
