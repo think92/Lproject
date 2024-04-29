@@ -9,21 +9,30 @@ import {
   faSmoking,
   faSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import { useLocation } from "react-router-dom";
 
 const Editor = () => {
-  const fileInputRef = useRef(null);
+  // const location = useLocation();
+  // const [imageView, setImageView] = useState(location.state?.imageView || null);
   const [imageView, setImageView] = useState(null);
+<<<<<<< Updated upstream
   const [images, setImages] = useState([]);
+=======
+  const fileInputRef = useRef(null);
+>>>>>>> Stashed changes
 
   useEffect(() => {
     document.body.style.backgroundColor = "black";
   }, []);
 
   const handleButtonClick = () => {
-    fileInputRef.current.click();
+    if(fileInputRef.current){
+      fileInputRef.current.click();
+    }
   };
 
   const handleImageChange = (e) => {
+<<<<<<< Updated upstream
     e.preventDefault();
 
     const files = Array.from(e.target.files);
@@ -51,6 +60,17 @@ const Editor = () => {
 
   const selectImage = (image) => {
     setImageView(image);
+=======
+    // 
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImageView(reader.result);
+      }
+      reader.readAsDataURL(file);
+    }
+>>>>>>> Stashed changes
   };
 
   return (
@@ -128,6 +148,7 @@ const Editor = () => {
           </div>
         </div>
         <div className="edit">
+<<<<<<< Updated upstream
           {imageView ? (
             <img src={imageView} alt="Selected" />
           ) : (
@@ -144,6 +165,9 @@ const Editor = () => {
               <img src={image} alt={`이미지 ${index + 1}`}></img>
             </div>
           ))}
+=======
+          {imageView ? <img src={imageView} alt="이미지" /> : <p>이미지</p>}
+>>>>>>> Stashed changes
         </div>
       </section>
     </div>
