@@ -12,8 +12,7 @@ import {
 import { useLocation } from "react-router-dom";
 
 const Editor = () => {
-  // const location = useLocation();
-  // const [imageView, setImageView] = useState(location.state?.imageView || null);
+  const location = useLocation();
   const [imageView, setImageView] = useState(null);
   const fileInputRef = useRef(null);
 
