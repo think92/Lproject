@@ -44,8 +44,10 @@ const MainBody = () => {
                 <p>사진 및 동영상을 손쉽게 모자이크 처리 할 수 있습니다.</p>
                 <br />
                 <br />
-                <Link to={"/Editor"}>이미지,영상업로드</Link>
-                <input type="file" name="images" onChange={onSelectFile} accept=".png, .jpg, image/*" id="images"></input>
+                
+                <input type="file" name="images" onChange={onSelecFile} accept=".png, .jpg, image/*" id="images">
+                  <Link to={"/Editor"}>이미지,영상업로드</Link>
+                </input>
               </div>
               <div className="uploadimg">
                 <img src="img/main_img01.png" />
