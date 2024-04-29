@@ -110,14 +110,7 @@ const Editor = () => {
           </div>
         </div>
         <div className="edit">
-<<<<<<< HEAD
           {imageView ? <img src={imageView} alt="이미지" /> : <p>오류</p>}
-=======
-          <p>이미지</p>
-          <p>이미지</p>
-          <p>이미지</p>
-          <p>이미지</p>
->>>>>>> 107a01d335754596a8453cd68e419824be5e230c
         </div>
       </section>
     </div>
