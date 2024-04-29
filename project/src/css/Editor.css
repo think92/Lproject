@@ -79,6 +79,9 @@ button {
   flex-shrink: 1;
   flex-grow: 1;
   padding: 15px;
+  display: flex;
+  justify-content: center;
+  
 }
 
 .editor-specific #mainbar {

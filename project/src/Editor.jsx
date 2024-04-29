@@ -9,33 +9,21 @@ import {
   faSmoking,
   faSquare,
 } from "@fortawesome/free-solid-svg-icons";
-import { useLocation } from "react-router-dom";
 
 const Editor = () => {
-  const location = useLocation();
-  const [imageView, setImageView] = useState(null);
-<<<<<<< HEAD
-<<<<<<< HEAD
-  const [images, setImages] = useState([]);
-=======
->>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
-=======
->>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
   const fileInputRef = useRef(null);
+  const [imageView, setImageView] = useState(null);
+  const [images, setImages] = useState([]);
 
   useEffect(() => {
     document.body.style.backgroundColor = "black";
   }, []);
 
   const handleButtonClick = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
+    fileInputRef.current.click();
   };
 
   const handleImageChange = (e) => {
-<<<<<<< HEAD
-<<<<<<< HEAD
     e.preventDefault();
 
     const files = Array.from(e.target.files);
@@ -63,19 +51,6 @@ const Editor = () => {
 
   const selectImage = (image) => {
     setImageView(image);
-=======
-=======
->>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
-    // 
->>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImageView(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
   };
 
   return (
@@ -153,8 +128,6 @@ const Editor = () => {
           </div>
         </div>
         <div className="edit">
-<<<<<<< HEAD
-<<<<<<< HEAD
           {imageView ? (
             <img src={imageView} alt="Selected" />
           ) : (
@@ -171,12 +144,6 @@ const Editor = () => {
               <img src={image} alt={`이미지 ${index + 1}`}></img>
             </div>
           ))}
-          =======
-=======
->>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
-=======
->>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
-          {imageView ? <img src={imageView} alt="이미지" /> : <p>이미지</p>}
         </div>
       </section>
     </div>
