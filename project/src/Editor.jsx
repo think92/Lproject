@@ -13,6 +13,8 @@ import {
 const Editor = () => {
   const fileInputRef = useRef(null);
   const [imageView, setImageView] = useState(null);
+  const [images, setImages] = useState([]);
+
   useEffect(() => {
     document.body.style.backgroundColor = "black";
   }, []);
@@ -24,15 +26,31 @@ const Editor = () => {
   const handleImageChange = (e) => {
     e.preventDefault();
 
-    let reader = new FileReader();
-    let file = e.target.files[0];
+    const files = Array.from(e.target.files);
+    const promises = files.map((file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    });
 
-    reader.onloadend = () => {
-      setImageView(reader.result);
-    };
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+    Promise.all(promises).then(
+      (newImages) => {
+        setImages((prevImages) => [...prevImages, ...newImages]);
+        if (newImages.length > 0) {
+          setImageView(newImages[0]);
+        }
+      },
+      (error) => {
+        console.error("Error loading images : ", error);
+      }
+    );
+  };
+
+  const selectImage = (image) => {
+    setImageView(image);
   };
 
   return (
@@ -110,7 +128,22 @@ const Editor = () => {
           </div>
         </div>
         <div className="edit">
-          {imageView ? <img src={imageView} alt="이미지" /> : <p>오류</p>}
+          {imageView ? (
+            <img src={imageView} alt="Selected" />
+          ) : (
+            <p>이미지를 선택하세요</p>
+          )}
+        </div>
+        <div className="imgSaves">
+          {images.map((image, index) => (
+            <div
+              key={index}
+              className="imgsave"
+              onClick={() => selectImage(image)}
+            >
+              <img src={image} alt={`이미지 ${index + 1}`}></img>
+            </div>
+          ))}
         </div>
       </section>
     </div>
