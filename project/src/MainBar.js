@@ -14,7 +14,7 @@ const MainBar = () => {
       <section>
         <div id="mainbar">
           <div className="logo">
-            <Link to={"/MainBody"}>
+            <Link to={"/"}>
               <img src="./img/블러블라 로고(white).png" />
             </Link>
           </div>
