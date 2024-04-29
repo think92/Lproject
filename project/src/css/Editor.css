@@ -47,7 +47,7 @@ button {
 .type {
   background-color: white;
   border: none;
-  size: 20px;
+  font-size: 20px;
 }
 
 .submits {
@@ -110,6 +110,20 @@ button {
   margin: 15px;
   border: solid 3px;
   cursor: pointer;
+  position: relative;
+  display: inline-block;
+}
+
+.imgsave:hover .delete-icon {
+  display: block;
+}
+
+.delete-icon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: none;
+  padding: 5px;
 }
 
 ::-webkit-scrollbar {
