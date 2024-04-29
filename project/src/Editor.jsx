@@ -15,7 +15,10 @@ const Editor = () => {
   const location = useLocation();
   const [imageView, setImageView] = useState(null);
 <<<<<<< HEAD
+<<<<<<< HEAD
   const [images, setImages] = useState([]);
+=======
+>>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
 =======
 >>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
   const fileInputRef = useRef(null);
@@ -31,6 +34,7 @@ const Editor = () => {
   };
 
   const handleImageChange = (e) => {
+<<<<<<< HEAD
 <<<<<<< HEAD
     e.preventDefault();
 
@@ -60,6 +64,8 @@ const Editor = () => {
   const selectImage = (image) => {
     setImageView(image);
 =======
+=======
+>>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
     // 
 >>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
     const file = e.target.files[0];
@@ -148,6 +154,7 @@ const Editor = () => {
         </div>
         <div className="edit">
 <<<<<<< HEAD
+<<<<<<< HEAD
           {imageView ? (
             <img src={imageView} alt="Selected" />
           ) : (
@@ -165,6 +172,8 @@ const Editor = () => {
             </div>
           ))}
           =======
+=======
+>>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
 =======
 >>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
           {imageView ? <img src={imageView} alt="이미지" /> : <p>이미지</p>}

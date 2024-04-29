@@ -8,9 +8,12 @@ project/src/imgs/main_img01.png
 project/src/Editor.jsx
 *.jsx
 *.jsx
+<<<<<<< HEAD
 *.jsx
 *.css
 project/src/Editor.jsx
 project/src/css/mainbody.css
 project/src/css/mainbody.css
 project/src/Editor.jsx
+=======
+>>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
