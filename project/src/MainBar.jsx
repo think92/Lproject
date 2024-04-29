@@ -1,6 +1,7 @@
 import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const MainBar = () => {
   <link
@@ -13,15 +14,15 @@ const MainBar = () => {
       <section>
         <div id="mainbar">
           <div className="logo">
-            <a href="">
+            <Link to={"/"}>
               <img src="./img/블러블라 로고(white).png" />
-            </a>
+            </Link>
           </div>
           <div className="menu">
-            <a href="">모자이크 처리</a>
-            <a href="">프리미엄 가입</a>
-            <a href="">고객센터</a>
-            <a href="">로그인</a>
+            <Link to={"/Editor"}>모자이크 처리</Link>
+            <Link to={"/"}>프리미엄 가입</Link>
+            <Link to={"/"}>고객센터</Link>
+            <Link to={"/"}>로그인</Link>
             <a>
               <FontAwesomeIcon icon={faBell} className="bell" />
             </a>
