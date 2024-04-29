@@ -9,8 +9,9 @@ body {
 }
 
 .sec {
-  margin: 10px;
+  margin: 0 10px 10px 10px;
   display: flex;
+  height: 850px;
 }
 
 button {
@@ -28,6 +29,7 @@ button {
   font-size: 28px;
   font-weight: bold;
   text-align: center;
+  margin-top: 15px;
   margin: 0;
   padding: 12px 30px 12px 12px;
 }
@@ -50,14 +52,14 @@ button {
 }
 
 .submits {
-  margin-top: 30px;
+  margin-top: 120px;
   display: flex;
   flex-direction: column;
   background-color: black;
 }
 
 .submit {
-  margin-top: 10px;
+  margin-top: 16px;
   padding: 10px;
   font-size: 18px;
   background-color: black;
@@ -81,4 +83,13 @@ button {
 
 .editor-specific #mainbar {
   background-color: #000;
+}
+
+.editor-specific .logo img {
+  width: 160px;
+  margin-top: 5px;
+}
+
+.editor-specific a {
+  font-size: 20px;
 }
