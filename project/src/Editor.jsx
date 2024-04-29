@@ -84,6 +84,7 @@ const Editor = () => {
           <p>이미지</p>
           <p>이미지</p>
           <p>이미지</p>
+          <p>이미지</p>
         </div>
       </section>
     </div>
