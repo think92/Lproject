@@ -12,27 +12,26 @@ import {
 import { useLocation } from "react-router-dom";
 
 const Editor = () => {
-  // const location = useLocation();
-  // const [imageView, setImageView] = useState(location.state?.imageView || null);
+  const location = useLocation();
   const [imageView, setImageView] = useState(null);
-<<<<<<< Updated upstream
+<<<<<<< HEAD
   const [images, setImages] = useState([]);
 =======
+>>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
   const fileInputRef = useRef(null);
->>>>>>> Stashed changes
 
   useEffect(() => {
     document.body.style.backgroundColor = "black";
   }, []);
 
   const handleButtonClick = () => {
-    if(fileInputRef.current){
+    if (fileInputRef.current) {
       fileInputRef.current.click();
     }
   };
 
   const handleImageChange = (e) => {
-<<<<<<< Updated upstream
+<<<<<<< HEAD
     e.preventDefault();
 
     const files = Array.from(e.target.files);
@@ -62,15 +61,15 @@ const Editor = () => {
     setImageView(image);
 =======
     // 
+>>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         setImageView(reader.result);
-      }
+      };
       reader.readAsDataURL(file);
     }
->>>>>>> Stashed changes
   };
 
   return (
@@ -148,7 +147,7 @@ const Editor = () => {
           </div>
         </div>
         <div className="edit">
-<<<<<<< Updated upstream
+<<<<<<< HEAD
           {imageView ? (
             <img src={imageView} alt="Selected" />
           ) : (
@@ -165,9 +164,10 @@ const Editor = () => {
               <img src={image} alt={`이미지 ${index + 1}`}></img>
             </div>
           ))}
+          =======
 =======
+>>>>>>> 39d2ed0c321ec2917c7b4e8c17539f3794a21f53
           {imageView ? <img src={imageView} alt="이미지" /> : <p>이미지</p>}
->>>>>>> Stashed changes
         </div>
       </section>
     </div>
