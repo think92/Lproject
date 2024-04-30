@@ -49,8 +49,13 @@ const Editor = () => {
     );
   };
 
-  const selectImage = (image) => {
+  const selectImage = (event, image) => {
     setImageView(image);
+  };
+
+  const handleRemoveImage = (event, index) => {
+    event.stopPropagation(); // 클릭 이벤트가 상위로 전파되지 않도록 중지
+    setImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
   };
 
   return (
@@ -129,7 +134,7 @@ const Editor = () => {
         </div>
         <div className="edit">
           {imageView ? (
-            <img src={imageView} alt="Selected" />
+            <img className="imgEdit" src={imageView} alt="Selected" />
           ) : (
             <p>이미지를 선택하세요</p>
           )}
@@ -139,9 +144,15 @@ const Editor = () => {
             <div
               key={index}
               className="imgsave"
-              onClick={() => selectImage(image)}
+              onClick={(event) => selectImage(event, image)}
             >
               <img src={image} alt={`이미지 ${index + 1}`}></img>
+              <div
+                className="delete-icon"
+                onClick={(event) => handleRemoveImage(event, index)}
+              >
+                X
+              </div>
             </div>
           ))}
         </div>

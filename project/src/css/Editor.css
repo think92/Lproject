@@ -81,7 +81,22 @@ button {
   padding: 15px;
   display: flex;
   justify-content: center;
-  
+  align-items: center; /* 이미지를 세로로 중앙에 위치시킵니다. */
+  overflow: hidden; /* 컨테이너를 넘는 이미지가 보이지 않도록 처리합니다. */
+}
+
+.imgEdit {
+  display: block;
+  width: 100%; /* 컨테이너 너비에 맞춥니다. */
+  height: 100%; /* 컨테이너 높이에 맞춥니다. */
+  height: auto;
+  width: auto;
+}
+
+.imgEdit img {
+  max-width: 100%; /* 이미지의 최대 너비를 컨테이너의 100%로 제한합니다. */
+  max-height: 100%; /* 이미지의 최대 높이를 컨테이너의 100%로 제한합니다. */
+  object-fit: contain; /* 비율을 유지하면서 최대 영역을 채우도록 합니다. */
 }
 
 .editor-specific #mainbar {
@@ -116,6 +131,9 @@ button {
   position: relative;
   display: inline-block;
 }
+.imgsave {
+  position: relative;
+}
 
 .imgsave:hover .delete-icon {
   display: block;
@@ -123,10 +141,13 @@ button {
 
 .delete-icon {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 20px;
+  right: 20px;
   display: none;
   padding: 5px;
+  cursor: pointer;
+  background-color: rgba(255, 0, 0, 0.7);
+  color: white;
 }
 
 ::-webkit-scrollbar {
