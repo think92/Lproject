@@ -2,7 +2,6 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import MainBody from "./MainBody";
 import Editor from "./Editor";
-
 const App = () => {
   return (
     <Router>

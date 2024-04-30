@@ -26,15 +26,26 @@ const MainBody = () => {
     const imagesPromises = files.map((file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = () => reject(reader.error);
+        reader.onloadend = () => {
+          console.log("Image Data URL:", reader.result); // 데이터 URL 확인
+          resolve(reader.result);
+        };
+        reader.onerror = (error) => {
+          console.error("Error reading file:", error);
+          reject(error);
+        };
         reader.readAsDataURL(file);
       });
     });
 
     Promise.all(imagesPromises)
       .then((images) => {
-        navigate("/Editor", { state: { images } }); // 이 부분에서 상태를 전달
+        console.log("All images:", images); // 이미지 배열 로깅
+        if (images.length > 0) {
+          navigate("/Editor", { state: { images: images } });
+        } else {
+          console.log("No images to navigate with.");
+        }
       })
       .catch((error) => {
         console.error("Error loading images:", error);
@@ -61,9 +72,9 @@ const MainBody = () => {
                 <p>사진 및 동영상을 손쉽게 모자이크 처리 할 수 있습니다.</p>
                 <br />
                 <br />
-                <Link onClick={handleButtonClick} to={"/Editor"}>
+                <button className="uploadtext" onClick={handleButtonClick}>
                   이미지/영상업로드
-                </Link>
+                </button>
               </div>
 
               <div className="uploadimg">

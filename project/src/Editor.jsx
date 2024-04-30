@@ -19,11 +19,12 @@ const Editor = () => {
   console.log(location.state);
 
   useEffect(() => {
-    console.log(location.state?.images);
-    document.body.style.backgroundColor = "black";
+    console.log("Location state on editor load:", location.state);
     if (location.state?.images) {
       setImages(location.state.images);
-      setImageView(location.state.images[0]); // 첫 번째 이미지를 초기 대표 이미지로 설정
+      setImageView(location.state.images[0]);
+    } else {
+      console.error("No images passed in state.");
     }
   }, [location]);
 
@@ -38,8 +39,14 @@ const Editor = () => {
     const promises = files.map((file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onloadend = () => resolve(reader.result);
-        reader.onerror = reject;
+        reader.onloadend = () => {
+          console.log("Image Data URL:", reader.result);
+          resolve(reader.result);
+        };
+        reader.onerror = (error) => {
+          console.error("Error reading file:", error);
+          reject(error);
+        };
         reader.readAsDataURL(file);
       });
     });
