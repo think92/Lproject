@@ -15,6 +15,8 @@ const Editor = () => {
   const fileInputRef = useRef(null);
   const [imageView, setImageView] = useState(null);
   const [images, setImages] = useState([]);
+  const [intensityAuto, setIntensityAuto] = useState(50);
+  const [intensity, setIntensity] = useState(50);
   const location = useLocation();
   console.log(location.state);
 
@@ -113,8 +115,15 @@ const Editor = () => {
             </div>
             <div className="types">
               <p>농도</p>
-              <p>■■■■■■■■</p>
-              <p>50%</p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={intensityAuto}
+                onChange={(e) => setIntensityAuto(e.target.value)}
+                className="slider"
+              />
+              <p>{intensityAuto}%</p>
             </div>
             <div className="types">
               <p>모양</p>
@@ -138,8 +147,15 @@ const Editor = () => {
             </div>
             <div className="types">
               <p>농도</p>
-              <p>■■■■■■■■</p>
-              <p>50%</p>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={intensity}
+                onChange={(e) => setIntensity(e.target.value)}
+                className="slider"
+              />
+              <p>{intensity}%</p>
             </div>
             <div className="types">
               <p>모양</p>

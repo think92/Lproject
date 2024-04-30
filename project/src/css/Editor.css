@@ -36,12 +36,48 @@ button {
 .li {
   background-color: white;
   padding: 10px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.li p {
+  margin: 0;
 }
 
 .types {
   display: flex;
   justify-content: space-between;
-  margin-right: 10px;
+  align-items: center;
+  margin: 0px;
+}
+
+.slider {
+  -webkit-appearance: none; /* 기본 스타일 제거 */
+  width: 100px;
+  margin: 8px 0;
+  height: 6px; /* 트랙의 높이 */
+  background: #000; /* 트랙의 배경색을 검정색으로 설정 */
+  outline: none; /* 포커스 테두리 제거 */
+  border-radius: 20px;
+}
+/* 마우스 호버 시 트랙의 투명도 변경 */
+
+/* 슬라이더 핸들 스타일 */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* 기본 스타일 제거 */
+  appearance: none;
+  width: 20px; /* 핸들의 너비 */
+  height: 20px; /* 핸들의 높이 */
+  background: #4ce577; /* 핸들의 배경색을 초록색으로 설정 */
+  cursor: pointer; /* 커서를 포인터로 변경 */
+  border-radius: 50%; /* 핸들을 원형으로 만듦 */
+}
+
+.types p {
+  display: inline-block;
+  margin: 0;
 }
 
 .type {
