@@ -9,15 +9,23 @@ import {
   faSmoking,
   faSquare,
 } from "@fortawesome/free-solid-svg-icons";
+import { useLocation } from "react-router-dom";
 
 const Editor = () => {
   const fileInputRef = useRef(null);
   const [imageView, setImageView] = useState(null);
   const [images, setImages] = useState([]);
+  const location = useLocation();
+  console.log(location.state);
 
   useEffect(() => {
+    console.log(location.state?.images);
     document.body.style.backgroundColor = "black";
-  }, []);
+    if (location.state?.images) {
+      setImages(location.state.images);
+      setImageView(location.state.images[0]); // 첫 번째 이미지를 초기 대표 이미지로 설정
+    }
+  }, [location]);
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -50,12 +58,21 @@ const Editor = () => {
   };
 
   const selectImage = (event, image) => {
-    setImageView(image);
+    event.stopPropagation(); // 이벤트 전파 중지
+    setImageView(image); // 선택된 이미지를 대표 이미지로 설정
   };
 
   const handleRemoveImage = (event, index) => {
-    event.stopPropagation(); // 클릭 이벤트가 상위로 전파되지 않도록 중지
-    setImages((prevImages) => prevImages.filter((_, idx) => idx !== index));
+    event.stopPropagation(); // 이벤트 전파 중지
+    setImages((prevImages) => {
+      const filteredImages = prevImages.filter((_, idx) => idx !== index);
+      if (index === 0 && filteredImages.length > 0) {
+        setImageView(filteredImages[0]); // 첫 번째 이미지가 삭제되면 새 첫 번째 이미지를 대표 이미지로 설정
+      } else if (filteredImages.length === 0) {
+        setImageView(null); // 모든 이미지가 삭제되면 대표 이미지 제거
+      }
+      return filteredImages;
+    });
   };
 
   return (
@@ -66,6 +83,7 @@ const Editor = () => {
         style={{ display: "none" }}
         ref={fileInputRef}
         onChange={handleImageChange}
+        multiple
       />
       <section className="sec">
         <div className="buttons">

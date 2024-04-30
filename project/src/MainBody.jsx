@@ -12,31 +12,35 @@ import {
 
 const MainBody = () => {
   const fileInputRef = useRef(null);
-  const navigate = useNavigate();
-
-  const [imageView, setImageView] = useState(null);
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
 
+  const navigate = useNavigate();
+
   const handleImageChange = (e) => {
     e.preventDefault();
 
-    let reader = new FileReader();
-    let file = e.target.files[0];
+    const files = Array.from(e.target.files);
+    const imagesPromises = files.map((file) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+      });
+    });
 
-    reader.onloadend = () => {
-      setImageView(reader.result);
-    };
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        navigate("/Editor", { state: { imageView: reader.result } });
-      };
-      reader.readAsDataURL(file);
-    }
+    Promise.all(imagesPromises)
+      .then((images) => {
+        navigate("/Editor", { state: { images } }); // 이 부분에서 상태를 전달
+      })
+      .catch((error) => {
+        console.error("Error loading images:", error);
+      });
   };
+
   return (
     <div className="body">
       <MainBar />
@@ -45,6 +49,7 @@ const MainBody = () => {
         style={{ display: "none" }}
         ref={fileInputRef}
         onChange={handleImageChange}
+        multiple
       />
       <section>
         <div id="upload">
