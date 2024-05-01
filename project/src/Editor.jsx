@@ -146,7 +146,7 @@ const Editor = () => {
               <button className="type">■</button>
             </div>
             <div className="types">
-              <p>농도</p>
+              <p onClick={intensity}>농도</p>
               <input
                 type="range"
                 min="0"
