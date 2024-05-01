@@ -5,6 +5,12 @@
   font-weight: 400;
   font-style: normal;
 }
+@font-face {
+  font-family: 'MICEGothic Bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-01@1.0/MICEGothic Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
 body {
   box-sizing: border-box;
   background-color: black;
@@ -83,59 +89,72 @@ body {
   justify-content: center;
   color: black;
   width: 1850px;
-  height: 1100px;
+  height: 900px;
   margin: auto;
-  padding: 130px 0 0 0;
+  padding: 80px 0 0 0;
+}
+.intro1box {
+  height: 630px;
+  background-color: #fff;
+  border-radius: 35px;
+  border-width: 4px;
+  border-style:solid;
+  border-color: #282828;
+  padding: 35px 75px 0 75px;
+  box-shadow: 12px 12px 3px #282828;
+  
 }
 .intro2box img {
-  width: 850px;
-  height: 620px;
-  margin: 43px 0 0 40px;
-  border-radius: 70px;
+  width: 820px;
+  height: 645px;
+  margin: 0 0 0 80px;
+  border-radius: 35px;
 }
 .introtitle {
   font-size: 23px;
+  font-family: "MICEGothic Bold";
+  color: #282828;
 }
 .introbox {
   display: flex;
 }
 .iconbox {
-  width: 120px;
-  height: 120px;
-  background-color: #272829;
-  border-radius: 25px;
+  width: 90px;
+  height: 90px;
+  background-color: #00a32e;
+  border-radius: 15px;
   margin: 0 0 40px 0px;
   z-index: 1;
 }
 .loadicon1 {
-  font-size: 45px;
+  font-size: 33px;
   color: white;
-  margin: 20px 0 0 33px;
+  margin: 13px 0 0 25px;
 }
 .loadicon2 {
-  font-size: 45px;
+  font-size: 33px;
   color: white;
-  margin: 20px 0 0 38px;
+  margin: 15px 0 0 27px;
 }
 .loadicon3 {
-  font-size: 45px;
+  font-size: 36px;
   color: white;
-  margin: 22px 0 0 39px;
+  margin: 14px 0 0 27px;
 }
 
 .introtext h3 {
-  font-size: 37px;
+  font-size: 28px;
   font-weight: 900;
-  color: #5803eb;
+  color: #00a32e;
   margin: 0;
-  padding: 0 0 10px 30px;
+  padding: 0 0 5px 40px;
 }
 .introtext p {
-  font-size: 29px;
+  font-size: 24px;
   font-weight: 700;
   color: #272829;
   margin: 0;
-  padding: 0 0 0 30px;
+  padding: 0 0 0 40px;
 }
 
 /* 블러블라 소개-2 */
@@ -145,72 +164,82 @@ body {
 #intro3 {
   display: flex;
   justify-content: center;
-  height: 1100px;
+  height: 900px;
   color: black;
   margin: auto;
   justify-content: center;
 }
 .intro3box {
-  margin: 175px 0 0 0;
+  margin: 70px 0 0 0;
 }
 .intro3box img {
-  width: 850px;
-  height: 635px;
-  margin: 0 80px 0 0;
+  width: 800px;
+  height: 640px;
+  margin: 70px 80px 0 0;
   border-radius: 70px;
 }
 .intro4box {
+  height: 630px;
+  background-color: #fff;
+  border-radius: 35px;
+  border-width: 4px;
+  border-style:solid;
+  border-color: #282828;
+  box-shadow: 12px 12px 3px #282828;
+  padding: 41px 85px 0 85px;
   margin: 140px 0 0 0;
 }
 .introtitle2 {
   font-size: 23px;
-  color: black;
+  font-family: "MICEGothic Bold";
+  color: #282828;
 }
 .introbox2 {
   display: flex;
 }
 .iconbox2 {
-  width: 140px;
-  height: 140px;
-  background-color: #949494;
-  border-radius: 25px;
+  width: 90px;
+  height: 90px;
+  background-color: #39a5f7;
+  border-radius: 15px;
   margin: 0 0 40px 0px;
   z-index: 1;
 }
 .loadicon4 {
-  font-size: 53px;
+  font-size: 33px;
   color: white;
-  margin: 26px 0 0 38px;
+  margin: 13px 0 0 25px;
 }
 .loadicon5 {
-  font-size: 50px;
+  font-size: 33px;
   color: white;
-  margin: 29px 0 0 40px;
+  margin: 15px 0 0 27px;
 }
 .loadicon6 {
-  font-size: 55px;
+  font-size: 36px;
   color: white;
-  margin: 27px 0 0 44px;
+  margin: 14px 0 0 27px;
 }
 
 .introtext2 h3 {
-  font-size: 37px;
-  color: #f45f5f;
+  font-size: 28px;
+  font-weight: 900;
+  color: #0151d3;
   margin: 0;
-  padding: 10px 0 10px 30px;
+  padding: 0 0 5px 40px;
 }
 .introtext2 p {
-  font-size: 29px;
+  font-size: 24px;
   font-weight: 700;
   color: #272829;
   margin: 0;
-  padding: 0 0 0 30px;
+  padding: 0 0 0 40px;
 }
 /* 라인 */
 .line {
   margin: 0 50px 0 50px;
-  
   border-radius: 10px;
+  /* height: 5px; */
 }
 /* 블러블라 Footer */
 #intro4 {
@@ -220,25 +249,29 @@ body {
   height: 300px;
 }
 .blurblaicon img {
-  width: 180px;
-  margin: 0 20px 0 0;
+  width: 150px;
+  margin: 0 50px 0 20px;
 }
 .loadicon7 {
-  font-size: 30px;
+  font-size: 26px;
   margin: 0 28px 0 0;
+  color: #fff;
 }
 .snslink {
   display: flex;
 }
 .adresslink p{
-  font-size: 25px;
-  color: white;
+  font-size: 18px;
+  color: #fff;
   margin: 30px 50px 5px 0;
 }
-.footermenu {
-  padding: 0 0 0 240px;
-  margin: 58px 0 0 0;
+.footeradress {
+  padding: 0 50px 0 400px;
+  margin: 0 0 15px 0;
 }
-.footermenu a {
-  font-size: 20px;
+.footeradress p {
+  font-size: 18px;
+  color: #fff;
+  text-align: right;
+  margin: 8px;
 }

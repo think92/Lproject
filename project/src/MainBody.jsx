@@ -10,7 +10,6 @@ import {
   faShapes,
   faRobot,
   faUsersViewfinder,
-  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faTwitter,
@@ -21,7 +20,7 @@ import {
 } from "@fortawesome/free-brands-svg-icons";
 import styled from "styled-components";
 
-// 섹션 스타일 정의 / 배경색과 폰트 색상에 전환 효과
+// 섹션 스타일 정의
 const Section = styled.div`
   transition: background-color 0.9s;
 `;
@@ -78,6 +77,7 @@ const MainBody = () => {
   const [currentSection, setCurrentSection] = useState(0);
   const sectionHeight = window.innerHeight; // 섹션 높이
 
+
   // 스크롤 이벤트 핸들러
   const handleScroll = () => {
     const scrollY = window.scrollY; // 현재 스크롤 위치
@@ -86,7 +86,8 @@ const MainBody = () => {
 
     const scrollFraction = scrollY % sectionHeight; // 섹션 내 스크롤 비율
 
-    if (scrollFraction > sectionHeight * 0.5) {
+
+    if (scrollFraction > sectionHeight * 0.2) {
       // 섹션 마지막 20%일 때 다음 섹션으로 전환
       setCurrentSection(newSection + 1);
     }
@@ -100,7 +101,7 @@ const MainBody = () => {
       case 1:
         return "#d4fe75"; // 두 번재
       case 2:
-        return "#ffffff"; // 세 번째
+        return "#A3A4A5"; // 세 번째
       default:
         return "#1A1C1E"; // 기본
     }
@@ -220,7 +221,7 @@ const MainBody = () => {
         <div id="intro3">
           <div className="intro3box">
             <div id="intro3">
-              <img src="./img/main_img03.png" />
+              <img src="./img/main_img04.png" />
             </div>
           </div>
           <div className="intro4box">
@@ -317,13 +318,10 @@ const MainBody = () => {
               <p>© 2024 - Company, Inc. All rights reserved. Address Address</p>
             </div>
           </div>
-          <div className="footermenu">
-            <Link to={"/Editor"}>모자이크 처리</Link>
-            <Link to={"/"}>프리미엄 가입</Link>
-            <Link to={"/"}>고객센터</Link>
-            <a>
-              <FontAwesomeIcon icon={faBell} className="bell" />
-            </a>
+          <div className="footeradress">
+            <p>상호 : (주)블러블라 l 대표자명 : 임경남</p>
+            <p>사업자등록번호 : 000-00-00000  l 연락처 : 00-000-0000</p>
+            <p>주소 : 광주광역시 남구 송암로 60 광주CGI센터</p>
           </div>
         </div>
       </Section>
