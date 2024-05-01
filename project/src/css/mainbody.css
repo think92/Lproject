@@ -5,7 +5,10 @@
   font-weight: 400;
   font-style: normal;
 }
-
+body {
+  box-sizing: border-box;
+  background-color: black;
+}
 .body {
   background-color: #292c31;
   margin: 0;
@@ -18,16 +21,18 @@
   align-items: center;
 }
 .uploadbackground1 {
-  width: 1860px;
+  width: 1700px;
   height: 830px;
   background-color: #b0e045;
   margin: auto;
   border-radius: 20px;
   z-index: 1;
+  display: block;
+  margin-bottom: 100px;
 }
 .uploadbackground2 {
   display: flex;
-  width: 1590px;
+  width: 1550px;
   height: 700px;
   background-color: white;
   margin: auto;
@@ -65,5 +70,175 @@
 .uploadimg img {
   width: 700px;
   height: 450px;
+  border-radius: 30px;
   z-index: 3;
+}
+
+/* 블러블라 소개 -1 */
+.intro01 {
+  background-color: #d4fe75;
+}
+#intro1 {
+  display: flex;
+  justify-content: center;
+  color: black;
+  width: 1850px;
+  height: 1100px;
+  margin: auto;
+  padding: 130px 0 0 0;
+}
+.intro2box img {
+  width: 850px;
+  height: 620px;
+  margin: 43px 0 0 40px;
+  border-radius: 70px;
+}
+.introtitle {
+  font-size: 23px;
+}
+.introbox {
+  display: flex;
+}
+.iconbox {
+  width: 120px;
+  height: 120px;
+  background-color: #272829;
+  border-radius: 25px;
+  margin: 0 0 40px 0px;
+  z-index: 1;
+}
+.loadicon1 {
+  font-size: 45px;
+  color: white;
+  margin: 20px 0 0 33px;
+}
+.loadicon2 {
+  font-size: 45px;
+  color: white;
+  margin: 20px 0 0 38px;
+}
+.loadicon3 {
+  font-size: 45px;
+  color: white;
+  margin: 22px 0 0 39px;
+}
+
+.introtext h3 {
+  font-size: 37px;
+  font-weight: 900;
+  color: #5803eb;
+  margin: 0;
+  padding: 0 0 10px 30px;
+}
+.introtext p {
+  font-size: 29px;
+  font-weight: 700;
+  color: #272829;
+  margin: 0;
+  padding: 0 0 0 30px;
+}
+
+/* 블러블라 소개-2 */
+.intro02 {
+  background-color: #ffffff;
+}
+#intro3 {
+  display: flex;
+  justify-content: center;
+  height: 1100px;
+  color: black;
+  margin: auto;
+  justify-content: center;
+}
+.intro3box {
+  margin: 175px 0 0 0;
+}
+.intro3box img {
+  width: 850px;
+  height: 635px;
+  margin: 0 80px 0 0;
+  border-radius: 70px;
+}
+.intro4box {
+  margin: 140px 0 0 0;
+}
+.introtitle2 {
+  font-size: 23px;
+  color: black;
+}
+.introbox2 {
+  display: flex;
+}
+.iconbox2 {
+  width: 140px;
+  height: 140px;
+  background-color: #949494;
+  border-radius: 25px;
+  margin: 0 0 40px 0px;
+  z-index: 1;
+}
+.loadicon4 {
+  font-size: 53px;
+  color: white;
+  margin: 26px 0 0 38px;
+}
+.loadicon5 {
+  font-size: 50px;
+  color: white;
+  margin: 29px 0 0 40px;
+}
+.loadicon6 {
+  font-size: 55px;
+  color: white;
+  margin: 27px 0 0 44px;
+}
+
+.introtext2 h3 {
+  font-size: 37px;
+  color: #f45f5f;
+  margin: 0;
+  padding: 10px 0 10px 30px;
+}
+.introtext2 p {
+  font-size: 29px;
+  font-weight: 700;
+  color: #272829;
+  margin: 0;
+  padding: 0 0 0 30px;
+}
+/* 라인 */
+.line {
+  margin: 0 50px 0 50px;
+  
+  border-radius: 10px;
+}
+/* 블러블라 Footer */
+#intro4 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+}
+.blurblaicon img {
+  width: 180px;
+  margin: 0 20px 0 0;
+}
+.loadicon7 {
+  font-size: 30px;
+  margin: 0 28px 0 0;
+}
+.snslink {
+  display: flex;
+}
+.adresslink p{
+  font-size: 25px;
+  color: white;
+  margin: 30px 50px 5px 0;
+}
+.footermenu {
+  padding: 0 0 0 240px;
+  margin: 58px 0 0 0;
+}
+.footermenu a {
+  font-size: 20px;
 }
