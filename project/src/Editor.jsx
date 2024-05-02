@@ -28,6 +28,7 @@ const Editor = () => {
     } else {
       console.error("No images passed in state.");
     }
+    
   }, [location]);
 
   const handleButtonClick = () => {
