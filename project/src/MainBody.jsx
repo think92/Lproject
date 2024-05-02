@@ -117,7 +117,7 @@ const MainBody = () => {
         onChange={handleImageChange}
         multiple
       />
-      <Section style={{ backgroundColor: getBackgroundColor(currentSection) }}>
+      <section style={{ backgroundColor: getBackgroundColor(currentSection) }}>
         <div id="upload">
           <div className="uploadbackground1">
             <div className="uploadbackground2">
@@ -138,7 +138,7 @@ const MainBody = () => {
             </div>
           </div>
         </div>
-      </Section>
+      </section>
 
       {/* 1번째 소개 */}
       <Section

@@ -13,7 +13,7 @@
 }
 body {
   box-sizing: border-box;
-  background-color: black;
+  background-color: #000;
 }
 .body {
   background-color: #292c31;
@@ -32,7 +32,6 @@ body {
   background-color: #b0e045;
   margin: auto;
   border-radius: 20px;
-  z-index: 1;
   display: block;
   margin-bottom: 100px;
 }
@@ -44,13 +43,11 @@ body {
   margin: auto;
   margin-top: 65px;
   border-radius: 15px;
-  z-index: 2;
 }
 .uploadbackground2 .uploadtext {
   width: 50%;
   text-align: center;
   margin: auto;
-  z-index: 3;
 }
 .uploadtext h1 {
   font-size: 63px;
@@ -77,7 +74,6 @@ body {
   width: 700px;
   height: 450px;
   border-radius: 30px;
-  z-index: 3;
 }
 
 /* 블러블라 소개 -1 */
@@ -124,7 +120,6 @@ body {
   background-color: #00a32e;
   border-radius: 15px;
   margin: 0 0 40px 0px;
-  z-index: 1;
 }
 .loadicon1 {
   font-size: 33px;
@@ -203,7 +198,7 @@ body {
   background-color: #39a5f7;
   border-radius: 15px;
   margin: 0 0 40px 0px;
-  z-index: 1;
+  /* z-index: 1; */
 }
 .loadicon4 {
   font-size: 33px;

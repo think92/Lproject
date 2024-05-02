@@ -8,10 +8,11 @@
 
 section {
   margin: 0;
+  box-sizing: border-box;
 }
 
 body {
-  background-color: #292c31;
+  background-color: #000;
   margin: 0;
   font-family: "Pretendard-Regular";
 }
@@ -35,3 +36,5 @@ a.alarm::before {
   content: "\f0f3";
   font-family: "Font Awesome 5 Free";
 }
+
+

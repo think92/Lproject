@@ -15,14 +15,14 @@ const MainBar = () => {
         <div id="mainbar">
           <div className="logo">
             <Link to={"/"}>
-              <img src="./img/블러블라 로고(white).png" />
+              <img src="./img/blurbla_logo(white).png" />
             </Link>
           </div>
           <div className="menu">
             <Link to={"/Editor"}>모자이크 처리</Link>
             <Link to={"/"}>프리미엄 가입</Link>
             <Link to={"/"}>고객센터</Link>
-            <Link to={"/"}>로그인</Link>
+            <Link to={"/Login"}>로그인</Link>
             <a>
               <FontAwesomeIcon icon={faBell} className="bell" />
             </a>
