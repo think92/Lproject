@@ -36,16 +36,16 @@ body {
   height: 380px;
   margin: 500px 0 0 0;
 }
-.close {
+.loginclose {
   display: flex;
   flex-direction: row-reverse;
 }
-.close button {
+.loginclosebox {
   font-size: 30px;
   font-weight: 700;
-  background-color: white;
-  border: none;
-  margin: 15px 15px 0 0;
+  color: #000;
+  margin: 15px 0 0 0;
+  padding: 0 25px 0 10px;
 }
 .loginsimbol {
   display: flex;
@@ -94,6 +94,7 @@ body {
   border-radius: 15px;
   border-color: #2f2f2f;
   margin: 25px 0 0 21%;
+  padding: 0;
 }
 .find {
   display: flex;
@@ -111,7 +112,7 @@ body {
 }
 .terms p {
   font-size: 20px;
-  margin: 286px 40px 0 40px;
+  margin: 286px 40px 0 40px
 }
 .terms .point {
   font-weight: 600;

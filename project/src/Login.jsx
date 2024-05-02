@@ -11,8 +11,8 @@ const Login = () => {
       <section className="loginbody">
         <div className="loginbox1">
           <span className="loginbox3">
-            <div className="close">
-              <button>X</button>
+            <div className="loginclose">
+              <Link to={"/"} className="loginclosebox">X</Link>
             </div>
             <div>
               <img src="./img/blurbla_simbol.png" className="loginsimbol" />
@@ -23,14 +23,14 @@ const Login = () => {
                 type="email"
                 id="email"
                 name="email"
-                value={"이메일"}
+                placeholder="이메일"
                 className="email"
               />
               <input
                 type="email"
                 id="pw"
                 name="password"
-                value={"비밀번호"}
+                placeholder="비밀번호"
                 className="password"
               />
               <Link to={"/"} className="loginbtn">
@@ -45,7 +45,7 @@ const Login = () => {
                   아이디 찾기
                 </Link>
                 <p>l</p>
-                <Link to={"/"} className="find">
+                <Link to={"/Join"} className="find">
                   회원가입
                 </Link>
               </div>
