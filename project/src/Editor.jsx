@@ -1,6 +1,6 @@
+import "./css/Editor.css";
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "./css/Editor.css";
 import MainBar from "./MainBar";
 import {
   faCar,
@@ -28,7 +28,6 @@ const Editor = () => {
     } else {
       console.error("No images passed in state.");
     }
-    
   }, [location]);
 
   const handleButtonClick = () => {
