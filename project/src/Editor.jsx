@@ -6,9 +6,9 @@ import {
   faCar,
   faFaceSmile,
   faPhone,
-  faSmoking,
-  faSquare,
+  faSmoking, faVectorSquare
 } from "@fortawesome/free-solid-svg-icons";
+import {faSquare, faCircle} from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
 
 const Editor = () => {
@@ -266,25 +266,29 @@ const Editor = () => {
               />
               <p>{intensityAuto}%</p>
             </div>
-            <div className="types">
+            <div className="types1">
               <p>모양</p>
-              <button className="type">
+              <button className="typeshape">
                 <FontAwesomeIcon icon={faSquare} />
               </button>
-              <button className="type">■</button>
-              <button className="type">■</button>
-              <button className="type">■</button>
+              <button className="typeshape">
+                <FontAwesomeIcon icon={faCircle} />
+              </button>
             </div>
-            <div className="types">
+            <div className="types2">
               <p>모자이크 해제 대상</p>
-              <button className="type">■</button>
+              <button className="typeclear">
+                <FontAwesomeIcon icon={faVectorSquare} />
+              </button>
             </div>
           </div>
           <p className="auto">User Mosaic</p>
-          <div className="li">
-            <div className="types">
-              <p>모자이크 해제 대상</p>
-              <button className="type">■</button>
+          <div className="li2">
+            <div className="types2">
+              <p>모자이크 대상 선택</p>
+              <button className="typeclear">
+                <FontAwesomeIcon icon={faVectorSquare} />
+              </button>
             </div>
             <div className="types">
               <p>농도</p>
@@ -293,17 +297,19 @@ const Editor = () => {
                 min="0"
                 max="100"
                 value={intensity}
-                onChange={handleIntensityChange}
+                onChange={(e) => setIntensity(e.target.value)}
                 className="slider"
               />
               <p>{intensity}%</p>
             </div>
-            <div className="types">
+            <div className="types1">
               <p>모양</p>
-              <button className="type">■</button>
-              <button className="type">■</button>
-              <button className="type">■</button>
-              <button className="type">■</button>
+              <button className="typeshape">
+                <FontAwesomeIcon icon={faSquare} />
+              </button>
+              <button className="type">
+                <FontAwesomeIcon icon={faCircle} />
+              </button>
             </div>
           </div>
           <div className="submits">
