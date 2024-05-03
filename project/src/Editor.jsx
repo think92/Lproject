@@ -18,7 +18,7 @@ const Editor = () => {
   const [intensityAuto, setIntensityAuto] = useState(50);
   const [intensity, setIntensity] = useState(50);
   const location = useLocation();
-  console.log(location.state);
+  // console.log(location.state);
 
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
@@ -82,6 +82,147 @@ const Editor = () => {
       }
       return filteredImages;
     });
+  };
+
+  const canvasRef = useRef(null);
+  useEffect(() => {
+    if (imageView) {
+      const canvas = canvasRef.current;
+      const context = canvas.getContext("2d");
+      const image = new Image();
+      image.src = imageView;
+      image.onload = () => {
+        canvas.width = image.width;
+        canvas.height = image.height;
+        context.drawImage(image, 0, 0);
+      };
+    }
+  }, [imageView]);
+
+  const [selectedArea, setSelectedArea] = useState(null); // 선택된 영역
+
+  // 드래그 이벤트 핸들러
+  function handleMouseDown(e) {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const startX = e.clientX - rect.left;
+    const startY = e.clientY - rect.top;
+    setSelectedArea({ x: startX, y: startY, width: 0, height: 0 });
+  }
+
+  function handleMouseMove(e) {
+    if (!selectedArea) return;
+    const rect = canvasRef.current.getBoundingClientRect();
+    const endX = e.clientX - rect.left;
+    const endY = e.clientY - rect.top;
+    setSelectedArea({
+      ...selectedArea,
+      width: endX - selectedArea.x,
+      height: endY - selectedArea.y,
+    });
+  }
+
+  function handleMouseUp(e) {
+    if (!selectedArea) return;
+    applyMosaic(
+      selectedArea.x,
+      selectedArea.y,
+      selectedArea.width,
+      selectedArea.height,
+      intensity
+    );
+  }
+
+  function applyMosaic(x, y, width, height, intensity) {
+    console.log("Current imageRef");
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext("2d");
+
+    // 기존 이미지를 다시 로드하고 모자이크 적용
+    if (imageRef.current) {
+      ctx.drawImage(imageRef.current, 0, 0, canvas.width, canvas.height);
+      // 농도에 따라 픽셀 크기 조절
+      const pixelSize = Math.max(1, Math.ceil((intensity / 100) * 30));
+
+      for (let i = 0; i < width; i += pixelSize) {
+        for (let j = 0; j < height; j += pixelSize) {
+          averageColor(ctx, x + i, y + j, pixelSize);
+        }
+      }
+
+      // 변경된 캔버스를 이미지 뷰에 반영
+      const dataUrl = canvas.toDataURL("image/png");
+      setImageView(dataUrl);
+    } else {
+      console.error("imgRef.current is not set");
+    }
+  }
+
+  function averageColor(ctx, x, y, size) {
+    const imageData = ctx.getImageData(x, y, size, size);
+    let r = 0,
+      g = 0,
+      b = 0,
+      a = 0,
+      count = 0;
+
+    for (let i = 0; i < size; i++) {
+      for (let j = 0; j < size; j++) {
+        const index = (i * size + j) * 4;
+        r += imageData.data[index];
+        g += imageData.data[index + 1];
+        b += imageData.data[index + 2];
+        a += imageData.data[index + 3];
+        count++;
+      }
+    }
+
+    r /= count;
+    g /= count;
+    b /= count;
+    a /= count;
+
+    const averageColor = `rgba(${Math.round(r)}, ${Math.round(g)}, ${Math.round(
+      b
+    )}, ${(a / 255).toFixed(2)})`;
+    ctx.fillStyle = averageColor;
+    ctx.fillRect(x, y, size, size);
+  }
+
+  // 이미지 레퍼런스 저장
+  const imageRef = useRef(null);
+
+  useEffect(() => {
+    if (imageView) {
+      const image = new Image();
+      image.src = imageView;
+      image.onload = () => {
+        const canvas = canvasRef.current;
+        canvas.width = image.width;
+        canvas.height = image.height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(image, 0, 0);
+        imageRef.current = image; // 이미지 레퍼런스 저장
+      };
+    }
+  }, [imageView]);
+
+  const handleIntensityChange = (e) => {
+    const newIntensity = parseInt(e.target.value);
+    console.log("Slider Changed to", newIntensity);
+    setIntensity(newIntensity);
+    // 이미 선택된 영역이 있을 경우, 즉시 모자이크를 다시 적용
+    if (selectedArea && selectedArea.width > 0 && selectedArea.height > 0) {
+      applyMosaic(
+        selectedArea.x,
+        selectedArea.y,
+        selectedArea.width,
+        selectedArea.height,
+        newIntensity
+      );
+    }
+  };
+  const handleIntensityAutoChange = (e) => {
+    const newIntensity = parseInt(e.target.value);
   };
 
   return (
@@ -152,7 +293,7 @@ const Editor = () => {
                 min="0"
                 max="100"
                 value={intensity}
-                onChange={(e) => setIntensity(e.target.value)}
+                onChange={handleIntensityChange}
                 className="slider"
               />
               <p>{intensity}%</p>
@@ -175,7 +316,16 @@ const Editor = () => {
         </div>
         <div className="edit">
           {imageView ? (
-            <img className="imgEdit" src={imageView} alt="Selected" />
+            <>
+              <canvas
+                ref={canvasRef}
+                className="imgEdit"
+                onMouseDown={handleMouseDown}
+                onMouseMove={handleMouseMove}
+                onMouseUp={handleMouseUp}
+              />
+              {/* <img className="imgEdit" src={imageView} alt="Selected" /> */}
+            </>
           ) : (
             <p>이미지를 선택하세요</p>
           )}
