@@ -6,9 +6,10 @@ import {
   faCar,
   faFaceSmile,
   faPhone,
-  faSmoking, faVectorSquare
+  faSmoking,
+  faVectorSquare,
 } from "@fortawesome/free-solid-svg-icons";
-import {faSquare, faCircle} from "@fortawesome/free-regular-svg-icons";
+import { faSquare, faCircle } from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
 
 const Editor = () => {
@@ -85,19 +86,6 @@ const Editor = () => {
   };
 
   const canvasRef = useRef(null);
-  useEffect(() => {
-    if (imageView) {
-      const canvas = canvasRef.current;
-      const context = canvas.getContext("2d");
-      const image = new Image();
-      image.src = imageView;
-      image.onload = () => {
-        canvas.width = image.width;
-        canvas.height = image.height;
-        context.drawImage(image, 0, 0);
-      };
-    }
-  }, [imageView]);
 
   const [selectedArea, setSelectedArea] = useState(null); // 선택된 영역
 
@@ -133,7 +121,6 @@ const Editor = () => {
   }
 
   function applyMosaic(x, y, width, height, intensity) {
-    console.log("Current imageRef");
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
 
@@ -190,7 +177,6 @@ const Editor = () => {
 
   // 이미지 레퍼런스 저장
   const imageRef = useRef(null);
-
   useEffect(() => {
     if (imageView) {
       const image = new Image();
@@ -210,6 +196,7 @@ const Editor = () => {
     const newIntensity = parseInt(e.target.value);
     console.log("Slider Changed to", newIntensity);
     setIntensity(newIntensity);
+
     // 이미 선택된 영역이 있을 경우, 즉시 모자이크를 다시 적용
     if (selectedArea && selectedArea.width > 0 && selectedArea.height > 0) {
       applyMosaic(
@@ -217,14 +204,13 @@ const Editor = () => {
         selectedArea.y,
         selectedArea.width,
         selectedArea.height,
-        newIntensity
+        intensity
       );
     }
   };
   const handleIntensityAutoChange = (e) => {
     const newIntensity = parseInt(e.target.value);
   };
-
   return (
     <div className="editor-specific">
       <MainBar />
@@ -297,7 +283,7 @@ const Editor = () => {
                 min="0"
                 max="100"
                 value={intensity}
-                onChange={(e) => setIntensity(e.target.value)}
+                onChange={handleIntensityChange}
                 className="slider"
               />
               <p>{intensity}%</p>
