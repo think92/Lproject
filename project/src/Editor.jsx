@@ -85,7 +85,6 @@ const Editor = () => {
     });
   };
 
-
   ///////////////////////////////////////////////모자이크
   const canvasRef = useRef(null);
 
@@ -103,53 +102,66 @@ const Editor = () => {
     // 초기화를 배열로 수정
     // setSelectedAreas([{ x: startX, y: startY, width: 0, height: 0 }]);
   }
-  
 
   function handleMouseMove(e) {
     if (!dragging || !dragStart) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
-  
-    const ctx = canvasRef.current.getContext('2d');
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height); 
-    ctx.drawImage(imageRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-    ctx.setLineDash([5, 3]);  
+
+    const ctx = canvasRef.current.getContext("2d");
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    ctx.drawImage(
+      imageRef.current,
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height
+    );
+    ctx.setLineDash([5, 3]);
     ctx.beginPath();
     ctx.rect(dragStart.x, dragStart.y, endX - dragStart.x, endY - dragStart.y);
     ctx.stroke();
     // 이 부분은 업데이트 하지 않습니다
   }
-  
-  
+
   function handleMouseUp(e) {
-    if (!dragging || !dragStart) return;
+    if (!dragging || !dragStart) {
+      setDragging(false);
+      return;
+    }
     setDragging(false);
     const rect = canvasRef.current.getBoundingClientRect();
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
-  
-    const mosaicResult = applyMosaic(dragStart.x, dragStart.y, endX - dragStart.x, endY - dragStart.y, intensity);
-    if(mosaicResult){
-      const newArea = {
-        x: dragStart.x,
-        y: dragStart.y,
-        width: endX - dragStart.x,
-        height: endY - dragStart.y,
-        mosaicImage:mosaicResult,
-        pixelSize : intensity
-      };
-      setImageView(mosaicResult.mosaicImage)
 
-      setSelectedAreas(prevAreas =>{
-        return [...prevAreas, {
-          ...newArea,
-          mosaicImage : mosaicResult.mosaicImage
-        }];
-      });
-    };       
+    if (endX !== dragStart.x || endY !== dragStart.y) {
+      const mosaicResult = applyMosaic(
+        dragStart.x,
+        dragStart.y,
+        endX - dragStart.x,
+        endY - dragStart.y,
+        intensity
+      );
+      if (mosaicResult) {
+        const newArea = {
+          x: dragStart.x,
+          y: dragStart.y,
+          width: endX - dragStart.x,
+          height: endY - dragStart.y,
+          mosaicImage: mosaicResult,
+          pixelSize: intensity,
+        };
+
+        setSelectedAreas((prevAreas) => {
+          const updatedAreas = [...prevAreas, newArea];
+          console.log("Updated areas:", updatedAreas); // 업데이트된 배열 로그 출력
+          return updatedAreas;
+        });
+        setImageView(mosaicResult.mosaicImage);
+      }
+    }
   }
-  
 
   function applyMosaic(x, y, width, height, intensity) {
     const canvas = canvasRef.current;
@@ -169,9 +181,9 @@ const Editor = () => {
 
       // 변경된 캔버스를 이미지 뷰에 반영
       const dataUrl = canvas.toDataURL("image/png");
-      return{
-        mosaicImage : dataUrl,
-        pixelSize : pixelSize
+      return {
+        mosaicImage: dataUrl,
+        pixelSize: pixelSize,
       };
     } else {
       console.error("imgRef.current is not set");
@@ -209,34 +221,41 @@ const Editor = () => {
     ctx.fillStyle = averageColor;
     ctx.fillRect(x, y, size, size);
   }
+  const [activeArea, setActiveArea] = useState(null);
 
   // 이미지 레퍼런스 저장
   const imageRef = useRef(null);
   useEffect(() => {
-    if (!imageView) return;  // 이미지가 설정되지 않았다면 함수 종료
-    selectedAreas.forEach((el)=>console.log(el));
+    if (!imageView) return; // 이미지가 설정되지 않았다면 함수 종료
+
+    // selectedAreas.forEach((el) => console.log(el));
     const image = new Image();
     image.src = imageView;
     image.onload = () => {
+      imageRef.current = image; //이미지가 로드되면 참조를 설정
+
       const canvas = canvasRef.current;
-      
-      if (!canvas) return;  // 캔버스 참조가 없다면 함수 종료
-  
-      const ctx = canvas.getContext('2d');
-      canvas.width = image.width;  // 캔버스 너비를 이미지 너비로 설정
-      canvas.height = image.height;  // 캔버스 높이를 이미지 높이로 설정
-  
-      ctx.drawImage(image, 0, 0, image.width, image.height);  // 이미지를 캔버스에 그림
-      imageRef.current = image;  // 이미지 참조를 저장
-  
+
+      if (!canvas) return; // 캔버스 참조가 없다면 함수 종료
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = image.width; // 캔버스 너비를 이미지 너비로 설정
+      canvas.height = image.height; // 캔버스 높이를 이미지 높이로 설정
+
+      ctx.drawImage(image, 0, 0, image.width, image.height); // 이미지를 캔버스에 그림
+      // imageRef.current = image; // 이미지 참조를 저장
+
       // 모든 선택된 영역을 다시 그립니다.
-      selectedAreas.forEach(area => {
-        ctx.setLineDash([5, 3]);  // 점선 스타일 설정
-        ctx.strokeRect(area.x, area.y, area.width, area.height);
+      selectedAreas.forEach((area) => {
+        if (area === activeArea) {
+          highlightArea(ctx, area);
+        } else {
+          ctx.setLineDash([5, 3]); // 점선 스타일 설정
+          ctx.strokeRect(area.x, area.y, area.width, area.height);
+        }
       });
     };
-  }, [imageView, selectedAreas]);
-    
+  }, [imageView, selectedAreas, activeArea]);
 
   const handleIntensityChange = (e) => {
     const newIntensity = parseInt(e.target.value);
@@ -254,7 +273,61 @@ const Editor = () => {
       );
     }
   };
-  
+
+  ////////////////// 캔버스에 클릭 이벤트 추가
+
+  function handleCanvasClick(e) {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // 현재 클릭된 영역 찾기
+    const clickedArea = selectedAreas.find(
+      (area) =>
+        x >= area.x &&
+        x <= area.x + area.width &&
+        y >= area.y &&
+        y <= area.y + area.height
+    );
+
+    // 이미 활성화된 영역을 클릭한 경우, 모든 영역을 비활성화하고 캔버스를 초기화
+    if (clickedArea === activeArea) {
+      setActiveArea(null);
+    } else {
+      setActiveArea(clickedArea);
+    }
+
+    // 캔버스 다시 그리기
+    const ctx = canvasRef.current.getContext("2d");
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    ctx.drawImage(
+      imageRef.current,
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height
+    );
+
+    // 모든 영역 다시 그리기
+    selectedAreas.forEach((area) => {
+      if (area === activeArea) {
+        highlightArea(ctx, area); // 활성 영역 강조
+      } else {
+        ctx.setLineDash([5, 3]); // 점선 스타일
+        ctx.strokeStyle = "#000"; // 기본 선 색상
+        ctx.lineWidth = 1; // 기본 선 두께
+        ctx.strokeRect(area.x, area.y, area.width, area.height);
+      }
+    });
+  }
+
+  function highlightArea(ctx, area) {
+    ctx.setLineDash([]); // 점선 없애기
+    ctx.strokeStyle = "red"; // 선 색상 변경
+    ctx.lineWidth = 4; // 선 두께 증가
+    ctx.strokeRect(area.x, area.y, area.width, area.height);
+  }
+
   return (
     <div className="editor-specific">
       <MainBar />
@@ -303,7 +376,8 @@ const Editor = () => {
               </button>
               <button className="typeshape">
                 <FontAwesomeIcon icon={faCircle} />
-              </button>s
+              </button>
+              s
             </div>
             <div className="types2">
               <p>모자이크 해제 대상</p>
@@ -359,8 +433,8 @@ const Editor = () => {
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
+                onClick={handleCanvasClick}
               />
-              {/* <img className="imgEdit" src={imageView} alt="Selected" /> */}
             </>
           ) : (
             <p>이미지를 선택하세요</p>
@@ -389,6 +463,3 @@ const Editor = () => {
 };
 
 export default Editor;
-
-
-
