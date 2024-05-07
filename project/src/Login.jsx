@@ -1,10 +1,40 @@
-import React from "react";
+import React, { useRef } from "react";
 import MainBar from "./MainBar";
 import "./css/Login.css";
 import "./css/mainbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
+  const nav = useNavigate();
+  const email = useRef();
+  const pw = useRef();
+
+  function tryLogin() {
+    // 사용자가 적은 ID, PW 값을 가져와서
+    // SpringBoot 서버로 전송하겠습니다 ! --> 비동기 통신방식 (axios)
+    let inputEmail = email.current.value;
+    let inputPw = pw.current.value;
+
+    axios
+      .get(
+        `http://localhost:8083/restApi/Login?email=${inputEmail}&pw=${inputPw}`
+      )
+      .then((res) => {
+        // 로그인 성공 -> Main
+        // 로그인 실패 -> 로그인 실패 알림
+        console.log(res);
+        if (res.data == "Success") {
+          window.localStorage.setItem("nick", res.data);
+          nav("/");
+        } else {
+          alert("로그인 실패");
+        }
+      });
+
+    // 로그인 성공시 Nick 값 -> Main
+  }
+
   return (
     <div>
       <MainBar />
@@ -22,6 +52,7 @@ const Login = () => {
             </div>
             <div>
               <input
+                ref={email}
                 type="email"
                 id="email"
                 name="email"
@@ -29,15 +60,18 @@ const Login = () => {
                 className="email"
               />
               <input
-                type="email"
+                ref={pw}
+                type="password"
                 id="pw"
-                name="password"
+                name="pw"
                 placeholder="비밀번호"
                 className="password"
               />
-              <Link to={"/"} className="loginbtn">
+              {/* <Link to={"/"} className="loginbtn" onClick={tryLogin}> */}
+              <button to={"/"} className="loginbtn" onClick={tryLogin}>
                 로그인
-              </Link>
+              </button>
+
               <div className="find">
                 <Link to={"/"} className="find">
                   비밀번호 찾기
