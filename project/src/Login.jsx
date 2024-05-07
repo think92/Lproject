@@ -12,7 +12,9 @@ const Login = () => {
         <div className="loginbox1">
           <span className="loginbox3">
             <div className="loginclose">
-              <Link to={"/"} className="loginclosebox">X</Link>
+              <Link to={"/"} className="loginclosebox">
+                X
+              </Link>
             </div>
             <div>
               <img src="./img/blurbla_simbol.png" className="loginsimbol" />
