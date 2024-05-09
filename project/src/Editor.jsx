@@ -70,6 +70,7 @@ const Editor = () => {
   const selectImage = (event, image) => {
     event.stopPropagation(); // 이벤트 전파 중지
     setImageView(image); // 선택된 이미지를 대표 이미지로 설정
+    setSelectedAreas([]); // 이미지 변경 시 선택된 영역 초기화
   };
 
   const handleRemoveImage = (event, index) => {
@@ -158,6 +159,10 @@ const Editor = () => {
           console.log("Updated areas:", updatedAreas); // 업데이트된 배열 로그 출력
           return updatedAreas;
         });
+        const updatedImages = images.map((img) =>
+          img === imageView ? mosaicResult.mosaicImage : img
+        );
+        setImages(updatedImages);
         setImageView(mosaicResult.mosaicImage);
       }
     }
@@ -374,7 +379,6 @@ const Editor = () => {
               <button className="typeshape">
                 <FontAwesomeIcon icon={faCircle} />
               </button>
-              s
             </div>
             <div className="types2">
               <p>모자이크 해제 대상</p>
