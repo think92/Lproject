@@ -150,7 +150,7 @@ const Editor = () => {
           width: endX - dragStart.x,
           height: endY - dragStart.y,
           mosaicImage: mosaicResult,
-          pixelSize: intensity,
+          intensity: intensity,
         };
 
         setSelectedAreas((prevAreas) => {
@@ -248,11 +248,15 @@ const Editor = () => {
       // 모든 선택된 영역을 다시 그립니다.
       selectedAreas.forEach((area) => {
         if (area === activeArea) {
-          highlightArea(ctx, area);
+          ctx.setLineDash([]); // 점선 없애기
+          ctx.strokeStyle = "red"; // 선 색상 변경
+          ctx.lineWidth = 4; // 선 두께 증가
         } else {
           ctx.setLineDash([5, 3]); // 점선 스타일 설정
-          ctx.strokeRect(area.x, area.y, area.width, area.height);
+          ctx.strokeStyle = "#000"; // 기본 선 색상
+          ctx.lineWidth = 1; // 기본 선 두께
         }
+        ctx.strokeRect(area.x, area.y, area.width, area.height);
       });
     };
   }, [imageView, selectedAreas, activeArea]);
@@ -290,12 +294,8 @@ const Editor = () => {
         y <= area.y + area.height
     );
 
-    // 이미 활성화된 영역을 클릭한 경우, 모든 영역을 비활성화하고 캔버스를 초기화
-    if (clickedArea === activeArea) {
-      setActiveArea(null);
-    } else {
-      setActiveArea(clickedArea);
-    }
+    // 활성 영역 업데이트 (선택된 영역이 없으면 null)
+    setActiveArea(clickedArea);
 
     // 캔버스 다시 그리기
     const ctx = canvasRef.current.getContext("2d");
@@ -310,22 +310,19 @@ const Editor = () => {
 
     // 모든 영역 다시 그리기
     selectedAreas.forEach((area) => {
-      if (area === activeArea) {
-        highlightArea(ctx, area); // 활성 영역 강조
+      if (area === clickedArea) {
+        // 활성 영역 강조
+        ctx.setLineDash([]); // 점선 없애기
+        ctx.strokeStyle = "red"; // 선 색상 변경
+        ctx.lineWidth = 4; // 선 두께 증가
       } else {
-        ctx.setLineDash([5, 3]); // 점선 스타일
+        // 기본 스타일로 다시 그리기
+        ctx.setLineDash([5, 3]); // 점선 스타일 설정
         ctx.strokeStyle = "#000"; // 기본 선 색상
         ctx.lineWidth = 1; // 기본 선 두께
-        ctx.strokeRect(area.x, area.y, area.width, area.height);
       }
+      ctx.strokeRect(area.x, area.y, area.width, area.height);
     });
-  }
-
-  function highlightArea(ctx, area) {
-    ctx.setLineDash([]); // 점선 없애기
-    ctx.strokeStyle = "red"; // 선 색상 변경
-    ctx.lineWidth = 4; // 선 두께 증가
-    ctx.strokeRect(area.x, area.y, area.width, area.height);
   }
 
   return (
