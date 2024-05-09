@@ -11,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faSquare, faCircle } from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
+import axios from "axios";
 
 const Editor = () => {
   const fileInputRef = useRef(null);
@@ -20,6 +21,51 @@ const Editor = () => {
   const [intensity, setIntensity] = useState(50);
   const location = useLocation();
   // console.log(location.state);
+
+  //////// Start 이미지 전송 관련 //////////////////////////////////////////////////
+  const [imageFile, setImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
+  const [aiImageFile, setAiImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
+
+  const toSpringImage = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("file", imageFile); // 이미지 파일 추가
+    formData.append("concent", intensityAuto); // ai 모자이크 농도 값
+
+    console.log("concent : ", intensityAuto);
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8083/restApi/springToIamge",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
+        }
+      );
+      console.log("response : ", response);
+      // 리턴 받는 ai 모자이크 이미지를 가져오기
+      const base64Image = btoa(
+        new Uint8Array(response.data).reduce(
+          (data, byte) => data + String.fromCharCode(byte),
+          ""
+        )
+      );
+      // 이미지 경로를 설정
+      const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+      // 이미지를 상태로 설정합니다.
+      setAiImageFile(imageUrl);
+      console.log("aiImageFile : ", aiImageFile);
+    } catch (error) {
+      // 오류 처리 로직
+      console.error(error);
+    }
+  };
+
+  //////// End 이미지 전송 관련 //////////////////////////////////////////////////
 
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
@@ -38,12 +84,18 @@ const Editor = () => {
   const handleImageChange = (e) => {
     e.preventDefault();
 
+    //////// Start 이미지 전송 관련 /////////////////////////
+    const file = e.target.files;
+    console.log("Selected files:", file[0]);
+    setImageFile(file[0]);
+    //////// End 이미지 전송 관련 ///////////////////////////
+
     const files = Array.from(e.target.files);
     const promises = files.map((file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          console.log("Image Data URL:", reader.result);
+          // console.log("Image Data URL:", reader.result);
           resolve(reader.result);
         };
         reader.onerror = (error) => {
@@ -141,6 +193,7 @@ const Editor = () => {
       };
       setImageView(mosaicResult.mosaicImage)
 
+<<<<<<< Updated upstream
       setSelectedAreas(prevAreas =>{
         return [...prevAreas, {
           ...newArea,
@@ -148,6 +201,36 @@ const Editor = () => {
         }];
       });
     };       
+=======
+    const mosaicResult = applyMosaic(
+      dragStart.x,
+      dragStart.y,
+      endX - dragStart.x,
+      endY - dragStart.y,
+      intensity
+    );
+    if (mosaicResult) {
+      const newArea = {
+        x: dragStart.x,
+        y: dragStart.y,
+        width: endX - dragStart.x,
+        height: endY - dragStart.y,
+        mosaicImage: mosaicResult,
+        pixelSize: intensity,
+      };
+      setImageView(mosaicResult.mosaicImage);
+
+      setSelectedAreas((prevAreas) => {
+        return [
+          ...prevAreas,
+          {
+            ...newArea,
+            mosaicImage: mosaicResult.mosaicImage,
+          },
+        ];
+      });
+    }
+>>>>>>> Stashed changes
   }
   
 
@@ -213,12 +296,18 @@ const Editor = () => {
   // 이미지 레퍼런스 저장
   const imageRef = useRef(null);
   useEffect(() => {
+<<<<<<< Updated upstream
     if (!imageView) return;  // 이미지가 설정되지 않았다면 함수 종료
     selectedAreas.forEach((el)=>console.log(el));
+=======
+    if (!imageView) return; // 이미지가 설정되지 않았다면 함수 종료
+    selectedAreas.forEach((el) => console.log(el));
+>>>>>>> Stashed changes
     const image = new Image();
     image.src = imageView;
     image.onload = () => {
       const canvas = canvasRef.current;
+<<<<<<< Updated upstream
       
       if (!canvas) return;  // 캔버스 참조가 없다면 함수 종료
   
@@ -232,11 +321,29 @@ const Editor = () => {
       // 모든 선택된 영역을 다시 그립니다.
       selectedAreas.forEach(area => {
         ctx.setLineDash([5, 3]);  // 점선 스타일 설정
+=======
+
+      if (!canvas) return; // 캔버스 참조가 없다면 함수 종료
+
+      const ctx = canvas.getContext("2d");
+      canvas.width = image.width; // 캔버스 너비를 이미지 너비로 설정
+      canvas.height = image.height; // 캔버스 높이를 이미지 높이로 설정
+
+      ctx.drawImage(image, 0, 0, image.width, image.height); // 이미지를 캔버스에 그림
+      imageRef.current = image; // 이미지 참조를 저장
+
+      // 모든 선택된 영역을 다시 그립니다.
+      selectedAreas.forEach((area) => {
+        ctx.setLineDash([5, 3]); // 점선 스타일 설정
+>>>>>>> Stashed changes
         ctx.strokeRect(area.x, area.y, area.width, area.height);
       });
     };
   }, [imageView, selectedAreas]);
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
 
   const handleIntensityChange = (e) => {
     const newIntensity = parseInt(e.target.value);
@@ -254,7 +361,11 @@ const Editor = () => {
       );
     }
   };
+<<<<<<< Updated upstream
   
+=======
+
+>>>>>>> Stashed changes
   return (
     <div className="editor-specific">
       <MainBar />
@@ -346,7 +457,9 @@ const Editor = () => {
             <button onClick={handleButtonClick} className="submit active">
               사진/영상 업로드
             </button>
-            <button className="submit">저장</button>
+            <button className="submit" onClick={toSpringImage}>
+              저장
+            </button>
             <button className="submit">삭제</button>
           </div>
         </div>
@@ -360,6 +473,12 @@ const Editor = () => {
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
               />
+<<<<<<< Updated upstream
+=======
+              {/* //////// Start 이미지 전송 관련 //////////////// */}
+              {aiImageFile && <img src={aiImageFile} alt="No images" />}
+              {/* //////// End 이미지 전송 관련 //////////////// */}
+>>>>>>> Stashed changes
               {/* <img className="imgEdit" src={imageView} alt="Selected" /> */}
             </>
           ) : (
