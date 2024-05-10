@@ -4,6 +4,7 @@ import MainBody from "./MainBody";
 import Editor from "./Editor";
 import Login from "./Login";
 import Join from "./Join";
+import AdminMain from "./AdminMain";
 import { LoginUserContext } from "./context/LoginUserContent";
 
 const App = () => {
@@ -22,6 +23,7 @@ const App = () => {
             <Route path="/Editor" element={<Editor />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Join" element={<Join />} />
+            <Route path="/Admin" element={<AdminMain />} />
           </Routes>
         </LoginUserContext.Provider>
       </div>
