@@ -2,6 +2,7 @@ import "./css/Editor.css";
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainBar from "./MainBar";
+import axios from "axios";
 import {
   faCar,
   faFaceSmile,
@@ -11,7 +12,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faSquare, faCircle } from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
-import axios from "axios";
 
 const Editor = () => {
   const fileInputRef = useRef(null);
@@ -21,6 +21,36 @@ const Editor = () => {
   const [intensity, setIntensity] = useState(50);
   const location = useLocation();
   // console.log(location.state);
+
+  //////// Start 자동 모자이크 버튼 관련 함수 //////////////////////////////////////////////////
+  const [faceButtonTrue, setFaceButtonTrue] = useState(false);
+  const [cigarButtonTrue, setCigarButtonTrue] = useState(false);
+  const [carNumButtonTrue, setCarNumButtonTrue] = useState(false);
+
+  const setFaceTrue = () => {
+    setFaceButtonTrue((prevState) => !prevState);
+  };
+
+  const faceIconStyle = {
+    color: faceButtonTrue ? "green" : "inherit",
+  };
+
+  const setCigarTrue = () => {
+    setCigarButtonTrue((prevState) => !prevState);
+  };
+
+  const CigarIconStyle = {
+    color: cigarButtonTrue ? "green" : "inherit",
+  };
+
+  const setCarNumTrue = () => {
+    setCarNumButtonTrue((prevState) => !prevState);
+  };
+
+  const CarNumIconStyle = {
+    color: carNumButtonTrue ? "green" : "inherit",
+  };
+  //////// End 자동 모자이크 버튼 관련 함수 ////////////////////////////////////////////////////
 
   //////// Start 이미지 전송 관련 //////////////////////////////////////////////////
   const [imageFile, setImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
@@ -34,39 +64,88 @@ const Editor = () => {
     formData.append("concent", intensityAuto); // ai 모자이크 농도 값
 
     console.log("concent : ", intensityAuto);
-
-    try {
-      const response = await axios.post(
-        "http://localhost:8083/restApi/springToIamge",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-          responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
-        }
-      );
-      console.log("response : ", response);
-      // 리턴 받는 ai 모자이크 이미지를 가져오기
-      const base64Image = btoa(
-        new Uint8Array(response.data).reduce(
-          (data, byte) => data + String.fromCharCode(byte),
-          ""
-        )
-      );
-      // 이미지 경로를 설정
-      const imageUrl = `data:image/jpeg;base64,${base64Image}`;
-      // 이미지를 상태로 설정합니다.
-      setAiImageFile(imageUrl);
-      console.log("aiImageFile : ", aiImageFile);
-    } catch (error) {
-      // 오류 처리 로직
-      console.error(error);
+    if (faceButtonTrue) {
+      // faceButton or carNumButton들중 하나라도 True라면 axios 실행 -> 조건 뒤에 or로 계속 붙이면 됨.
+      try {
+        const response = await axios.post(
+          "http://localhost:8083/restApi/springToIamge",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
+          }
+        );
+        console.log("response : ", response);
+        // 리턴 받는 ai 모자이크 이미지를 가져오기
+        const base64Image = btoa(
+          new Uint8Array(response.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+        // 이미지 경로를 설정
+        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        // 이미지를 상태로 설정합니다.
+        setImageView(imageUrl);
+        // setAiImageFile(imageUrl);
+        console.log("aiImageFile : ", aiImageFile);
+      } catch (error) {
+        // 오류 처리 로직
+        console.error(error);
+      }
     }
   };
 
   //////// End 이미지 전송 관련 //////////////////////////////////////////////////
+  //////// Start User Mozaic 전송 관련 //////////////////////////////////////////
 
+  const [userImageFile, setuserImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
+  const [userImageInfo, setuserImageInfo] = useState(""); // 이미지 파일의 정보를 담는 변수
+
+  const userMozaic = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("file", imageFile); // 이미지 파일 추가
+    formData.append("concent", intensity); // 사용자가 정한 모자이크 농도 값
+
+    console.log("concent : ", intensity);
+    if (faceButtonTrue) {
+      // faceButton or carNumButton들중 하나라도 True라면 axios 실행 -> 조건 뒤에 or로 계속 붙이면 됨.
+      try {
+        const response = await axios.post(
+          "http://localhost:8083/restApi/springToIamge",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
+          }
+        );
+        console.log("response : ", response);
+        // 리턴 받는 ai 모자이크 이미지를 가져오기
+        const base64Image = btoa(
+          new Uint8Array(response.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+        // 이미지 경로를 설정
+        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        // 이미지를 상태로 설정합니다.
+        setImageView(imageUrl);
+        // setAiImageFile(imageUrl);
+        console.log("aiImageFile : ", aiImageFile);
+      } catch (error) {
+        // 오류 처리 로직
+        console.error(error);
+      }
+    }
+  };
+  //////// End User Mozaic 전송 관련 ////////////////////////////////////////////
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
     if (location.state?.images) {
@@ -95,7 +174,7 @@ const Editor = () => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          // console.log("Image Data URL:", reader.result);
+          console.log("Image Data URL:", reader.result);
           resolve(reader.result);
         };
         reader.onerror = (error) => {
@@ -122,6 +201,7 @@ const Editor = () => {
   const selectImage = (event, image) => {
     event.stopPropagation(); // 이벤트 전파 중지
     setImageView(image); // 선택된 이미지를 대표 이미지로 설정
+    setSelectedAreas([]); // 이미지 변경 시 선택된 영역 초기화
   };
 
   const handleRemoveImage = (event, index) => {
@@ -136,7 +216,6 @@ const Editor = () => {
       return filteredImages;
     });
   };
-
 
   ///////////////////////////////////////////////모자이크
   const canvasRef = useRef(null);
@@ -155,84 +234,70 @@ const Editor = () => {
     // 초기화를 배열로 수정
     // setSelectedAreas([{ x: startX, y: startY, width: 0, height: 0 }]);
   }
-  
 
   function handleMouseMove(e) {
     if (!dragging || !dragStart) return;
     const rect = canvasRef.current.getBoundingClientRect();
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
-  
-    const ctx = canvasRef.current.getContext('2d');
-    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height); 
-    ctx.drawImage(imageRef.current, 0, 0, canvasRef.current.width, canvasRef.current.height);
-    ctx.setLineDash([5, 3]);  
+
+    const ctx = canvasRef.current.getContext("2d");
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    ctx.drawImage(
+      imageRef.current,
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height
+    );
+    ctx.setLineDash([5, 3]);
     ctx.beginPath();
     ctx.rect(dragStart.x, dragStart.y, endX - dragStart.x, endY - dragStart.y);
     ctx.stroke();
     // 이 부분은 업데이트 하지 않습니다
   }
-  
-  
+
   function handleMouseUp(e) {
-    if (!dragging || !dragStart) return;
+    if (!dragging || !dragStart) {
+      setDragging(false);
+      return;
+    }
     setDragging(false);
     const rect = canvasRef.current.getBoundingClientRect();
     const endX = e.clientX - rect.left;
     const endY = e.clientY - rect.top;
-  
-    const mosaicResult = applyMosaic(dragStart.x, dragStart.y, endX - dragStart.x, endY - dragStart.y, intensity);
-    if(mosaicResult){
-      const newArea = {
-        x: dragStart.x,
-        y: dragStart.y,
-        width: endX - dragStart.x,
-        height: endY - dragStart.y,
-        mosaicImage:mosaicResult,
-        pixelSize : intensity
-      };
-      setImageView(mosaicResult.mosaicImage)
 
-<<<<<<< Updated upstream
-      setSelectedAreas(prevAreas =>{
-        return [...prevAreas, {
-          ...newArea,
-          mosaicImage : mosaicResult.mosaicImage
-        }];
-      });
-    };       
-=======
-    const mosaicResult = applyMosaic(
-      dragStart.x,
-      dragStart.y,
-      endX - dragStart.x,
-      endY - dragStart.y,
-      intensity
-    );
-    if (mosaicResult) {
-      const newArea = {
-        x: dragStart.x,
-        y: dragStart.y,
-        width: endX - dragStart.x,
-        height: endY - dragStart.y,
-        mosaicImage: mosaicResult,
-        pixelSize: intensity,
-      };
-      setImageView(mosaicResult.mosaicImage);
+    if (endX !== dragStart.x || endY !== dragStart.y) {
+      const mosaicResult = applyMosaic(
+        dragStart.x,
+        dragStart.y,
+        endX - dragStart.x,
+        endY - dragStart.y,
+        intensity
+      );
+      if (mosaicResult) {
+        const newArea = {
+          x: dragStart.x,
+          y: dragStart.y,
+          width: endX - dragStart.x,
+          height: endY - dragStart.y,
+          mosaicImage: mosaicResult,
+          intensity: intensity,
+        };
 
-      setSelectedAreas((prevAreas) => {
-        return [
-          ...prevAreas,
-          {
-            ...newArea,
-            mosaicImage: mosaicResult.mosaicImage,
-          },
-        ];
-      });
+        setSelectedAreas((prevAreas) => {
+          const updatedAreas = [...prevAreas, newArea];
+          console.log("Updated areas:", updatedAreas); // 업데이트된 배열 로그 출력
+          return updatedAreas;
+        });
+        const updatedImages = images.map((img) =>
+          img === imageView ? mosaicResult.mosaicImage : img
+        );
+        setImages(updatedImages);
+        setImageView(mosaicResult.mosaicImage);
+      }
     }
->>>>>>> Stashed changes
   }
-  
 
   function applyMosaic(x, y, width, height, intensity) {
     const canvas = canvasRef.current;
@@ -252,9 +317,9 @@ const Editor = () => {
 
       // 변경된 캔버스를 이미지 뷰에 반영
       const dataUrl = canvas.toDataURL("image/png");
-      return{
-        mosaicImage : dataUrl,
-        pixelSize : pixelSize
+      return {
+        mosaicImage: dataUrl,
+        pixelSize: pixelSize,
       };
     } else {
       console.error("imgRef.current is not set");
@@ -292,36 +357,20 @@ const Editor = () => {
     ctx.fillStyle = averageColor;
     ctx.fillRect(x, y, size, size);
   }
+  const [activeArea, setActiveArea] = useState(null);
 
   // 이미지 레퍼런스 저장
   const imageRef = useRef(null);
   useEffect(() => {
-<<<<<<< Updated upstream
-    if (!imageView) return;  // 이미지가 설정되지 않았다면 함수 종료
-    selectedAreas.forEach((el)=>console.log(el));
-=======
     if (!imageView) return; // 이미지가 설정되지 않았다면 함수 종료
-    selectedAreas.forEach((el) => console.log(el));
->>>>>>> Stashed changes
+
+    // selectedAreas.forEach((el) => console.log(el));
     const image = new Image();
     image.src = imageView;
     image.onload = () => {
+      imageRef.current = image; //이미지가 로드되면 참조를 설정
+
       const canvas = canvasRef.current;
-<<<<<<< Updated upstream
-      
-      if (!canvas) return;  // 캔버스 참조가 없다면 함수 종료
-  
-      const ctx = canvas.getContext('2d');
-      canvas.width = image.width;  // 캔버스 너비를 이미지 너비로 설정
-      canvas.height = image.height;  // 캔버스 높이를 이미지 높이로 설정
-  
-      ctx.drawImage(image, 0, 0, image.width, image.height);  // 이미지를 캔버스에 그림
-      imageRef.current = image;  // 이미지 참조를 저장
-  
-      // 모든 선택된 영역을 다시 그립니다.
-      selectedAreas.forEach(area => {
-        ctx.setLineDash([5, 3]);  // 점선 스타일 설정
-=======
 
       if (!canvas) return; // 캔버스 참조가 없다면 함수 종료
 
@@ -330,20 +379,23 @@ const Editor = () => {
       canvas.height = image.height; // 캔버스 높이를 이미지 높이로 설정
 
       ctx.drawImage(image, 0, 0, image.width, image.height); // 이미지를 캔버스에 그림
-      imageRef.current = image; // 이미지 참조를 저장
+      // imageRef.current = image; // 이미지 참조를 저장
 
       // 모든 선택된 영역을 다시 그립니다.
       selectedAreas.forEach((area) => {
-        ctx.setLineDash([5, 3]); // 점선 스타일 설정
->>>>>>> Stashed changes
+        if (area === activeArea) {
+          ctx.setLineDash([]); // 점선 없애기
+          ctx.strokeStyle = "red"; // 선 색상 변경
+          ctx.lineWidth = 4; // 선 두께 증가
+        } else {
+          ctx.setLineDash([5, 3]); // 점선 스타일 설정
+          ctx.strokeStyle = "#000"; // 기본 선 색상
+          ctx.lineWidth = 1; // 기본 선 두께
+        }
         ctx.strokeRect(area.x, area.y, area.width, area.height);
       });
     };
-  }, [imageView, selectedAreas]);
-<<<<<<< Updated upstream
-    
-=======
->>>>>>> Stashed changes
+  }, [imageView, selectedAreas, activeArea]);
 
   const handleIntensityChange = (e) => {
     const newIntensity = parseInt(e.target.value);
@@ -361,11 +413,54 @@ const Editor = () => {
       );
     }
   };
-<<<<<<< Updated upstream
-  
-=======
 
->>>>>>> Stashed changes
+  ////////////////// 캔버스에 클릭 이벤트 추가
+
+  function handleCanvasClick(e) {
+    const rect = canvasRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    // 현재 클릭된 영역 찾기
+    const clickedArea = selectedAreas.find(
+      (area) =>
+        x >= area.x &&
+        x <= area.x + area.width &&
+        y >= area.y &&
+        y <= area.y + area.height
+    );
+
+    // 활성 영역 업데이트 (선택된 영역이 없으면 null)
+    setActiveArea(clickedArea);
+
+    // 캔버스 다시 그리기
+    const ctx = canvasRef.current.getContext("2d");
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    ctx.drawImage(
+      imageRef.current,
+      0,
+      0,
+      canvasRef.current.width,
+      canvasRef.current.height
+    );
+
+    // 모든 영역 다시 그리기
+    selectedAreas.forEach((area) => {
+      if (area === clickedArea) {
+        // 활성 영역 강조
+        ctx.setLineDash([]); // 점선 없애기
+        ctx.strokeStyle = "red"; // 선 색상 변경
+        ctx.lineWidth = 4; // 선 두께 증가
+      } else {
+        // 기본 스타일로 다시 그리기
+        ctx.setLineDash([5, 3]); // 점선 스타일 설정
+        ctx.strokeStyle = "#000"; // 기본 선 색상
+        ctx.lineWidth = 1; // 기본 선 두께
+      }
+      ctx.strokeRect(area.x, area.y, area.width, area.height);
+    });
+  }
+
   return (
     <div className="editor-specific">
       <MainBar />
@@ -376,23 +471,24 @@ const Editor = () => {
         onChange={handleImageChange}
         multiple
       />
+
       <section className="sec">
         <div className="buttons">
           <p className="auto">Auto Mosaic</p>
           <div className="li">
             <div className="types">
               <p>타입</p>
-              <button className="type">
-                <FontAwesomeIcon icon={faFaceSmile} />
+              <button className="type" onClick={setFaceTrue}>
+                <FontAwesomeIcon style={faceIconStyle} icon={faFaceSmile} />
               </button>
-              <button className="type">
-                <FontAwesomeIcon icon={faCar} />
+              <button className="type" onClick={setCarNumTrue}>
+                <FontAwesomeIcon style={CarNumIconStyle} icon={faCar} />
               </button>
               <button className="type">
                 <FontAwesomeIcon icon={faPhone} />
               </button>
-              <button className="type">
-                <FontAwesomeIcon icon={faSmoking} />
+              <button className="type" onClick={setCigarTrue}>
+                <FontAwesomeIcon style={CigarIconStyle} icon={faSmoking} />
               </button>
             </div>
             <div className="types">
@@ -414,12 +510,17 @@ const Editor = () => {
               </button>
               <button className="typeshape">
                 <FontAwesomeIcon icon={faCircle} />
-              </button>s
+              </button>
             </div>
             <div className="types2">
               <p>모자이크 해제 대상</p>
               <button className="typeclear">
                 <FontAwesomeIcon icon={faVectorSquare} />
+              </button>
+            </div>
+            <div>
+              <button className="typeSubmit" onClick={toSpringImage}>
+                적용하기
               </button>
             </div>
           </div>
@@ -452,14 +553,17 @@ const Editor = () => {
                 <FontAwesomeIcon icon={faCircle} />
               </button>
             </div>
+            <div>
+              <button className="typeSubmit" onClick={userMozaic}>
+                적용하기
+              </button>
+            </div>
           </div>
           <div className="submits">
             <button onClick={handleButtonClick} className="submit active">
               사진/영상 업로드
             </button>
-            <button className="submit" onClick={toSpringImage}>
-              저장
-            </button>
+            <button className="submit">저장</button>
             <button className="submit">삭제</button>
           </div>
         </div>
@@ -472,13 +576,11 @@ const Editor = () => {
                 onMouseDown={handleMouseDown}
                 onMouseMove={handleMouseMove}
                 onMouseUp={handleMouseUp}
+                onClick={handleCanvasClick}
               />
-<<<<<<< Updated upstream
-=======
               {/* //////// Start 이미지 전송 관련 //////////////// */}
               {aiImageFile && <img src={aiImageFile} alt="No images" />}
               {/* //////// End 이미지 전송 관련 //////////////// */}
->>>>>>> Stashed changes
               {/* <img className="imgEdit" src={imageView} alt="Selected" /> */}
             </>
           ) : (
@@ -508,6 +610,3 @@ const Editor = () => {
 };
 
 export default Editor;
-
-
-
