@@ -1,10 +1,58 @@
-import React from "react";
+import React, { useContext, useRef } from "react";
 import MainBar from "./MainBar";
 import "./css/Login.css";
 import "./css/mainbar.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { LoginUserContext } from "./context/LoginUserContent";
 
 const Login = () => {
+  const nav = useNavigate();
+  const email = useRef();
+  const pw = useRef();
+
+  // 로그인한 회원 정보 저장하는 변수(아이디, 등급)
+  const { login_id, setLogin_id, login_role, setLogin_role } =
+    useContext(LoginUserContext);
+
+  function tryLogin() {
+    // 사용자가 적은 ID, PW 값을 가져와서
+    // SpringBoot 서버로 전송하겠습니다 ! --> 비동기 통신방식 (axios)
+    let inputEmail = email.current.value;
+    let inputPw = pw.current.value;
+
+    axios
+      .get(
+        `http://localhost:8083/restApi/Login?email=${inputEmail}&pw=${inputPw}`
+      )
+      .then((res) => {
+        console.log("로그인 정보보기  : ", res.data);
+        console.log("로그인 이메일    : ", res.data.email);
+        console.log("로그인 비번      : ", res.data.pw);
+        console.log("로그인 등급      : ", res.data.role);
+        console.log("로그인 가입일자  : ", res.data.joinedAt);
+
+        // 회원 정보 context에 담기
+        setLogin_id(res.data.email);
+        setLogin_role(res.data.role);
+
+        nav("/");
+
+        // 브라우저 자체에 데이터 저장
+        //window.localStorage.setItem("nick", res.data);
+
+        // 로그인 성공 실패 분기문
+        // if (res.data == "Success") {
+        //   window.localStorage.setItem("nick", res.data);
+        //   nav("/");
+        // } else {
+        //   alert("로그인 실패");
+        // }
+      });
+
+    // 로그인 성공시 Nick 값 -> Main
+  }
+
   return (
     <div>
       <MainBar />
@@ -12,7 +60,9 @@ const Login = () => {
         <div className="loginbox1">
           <span className="loginbox3">
             <div className="loginclose">
-              <Link to={"/"} className="loginclosebox">X</Link>
+              <Link to={"/"} className="loginclosebox">
+                X
+              </Link>
             </div>
             <div>
               <img src="./img/blurbla_simbol.png" className="loginsimbol" />
@@ -20,6 +70,7 @@ const Login = () => {
             </div>
             <div>
               <input
+                ref={email}
                 type="email"
                 id="email"
                 name="email"
@@ -27,15 +78,18 @@ const Login = () => {
                 className="email"
               />
               <input
-                type="email"
+                ref={pw}
+                type="password"
                 id="pw"
-                name="password"
+                name="pw"
                 placeholder="비밀번호"
                 className="password"
               />
-              <Link to={"/"} className="loginbtn">
+              {/* <Link to={"/"} className="loginbtn" onClick={tryLogin}> */}
+              <button to={"/"} className="loginbtn" onClick={tryLogin}>
                 로그인
-              </Link>
+              </button>
+
               <div className="find">
                 <Link to={"/"} className="find">
                   비밀번호 찾기

@@ -2,6 +2,7 @@ import "./css/Editor.css";
 import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import MainBar from "./MainBar";
+import axios from "axios";
 import {
   faCar,
   faFaceSmile,
@@ -21,6 +22,130 @@ const Editor = () => {
   const location = useLocation();
   // console.log(location.state);
 
+  //////// Start 자동 모자이크 버튼 관련 함수 //////////////////////////////////////////////////
+  const [faceButtonTrue, setFaceButtonTrue] = useState(false);
+  const [cigarButtonTrue, setCigarButtonTrue] = useState(false);
+  const [carNumButtonTrue, setCarNumButtonTrue] = useState(false);
+
+  const setFaceTrue = () => {
+    setFaceButtonTrue((prevState) => !prevState);
+  };
+
+  const faceIconStyle = {
+    color: faceButtonTrue ? "green" : "inherit",
+  };
+
+  const setCigarTrue = () => {
+    setCigarButtonTrue((prevState) => !prevState);
+  };
+
+  const CigarIconStyle = {
+    color: cigarButtonTrue ? "green" : "inherit",
+  };
+
+  const setCarNumTrue = () => {
+    setCarNumButtonTrue((prevState) => !prevState);
+  };
+
+  const CarNumIconStyle = {
+    color: carNumButtonTrue ? "green" : "inherit",
+  };
+  //////// End 자동 모자이크 버튼 관련 함수 ////////////////////////////////////////////////////
+
+  //////// Start 이미지 전송 관련 //////////////////////////////////////////////////
+  const [imageFile, setImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
+  const [aiImageFile, setAiImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
+
+  const toSpringImage = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("file", imageFile); // 이미지 파일 추가
+    formData.append("concent", intensityAuto); // ai 모자이크 농도 값
+
+    console.log("concent : ", intensityAuto);
+    if (faceButtonTrue) {
+      // faceButton or carNumButton들중 하나라도 True라면 axios 실행 -> 조건 뒤에 or로 계속 붙이면 됨.
+      try {
+        const response = await axios.post(
+          "http://localhost:8083/restApi/springToIamge",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
+          }
+        );
+        console.log("response : ", response);
+        // 리턴 받는 ai 모자이크 이미지를 가져오기
+        const base64Image = btoa(
+          new Uint8Array(response.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+        // 이미지 경로를 설정
+        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        // 이미지를 상태로 설정합니다.
+        setImageView(imageUrl);
+        // setAiImageFile(imageUrl);
+        console.log("aiImageFile : ", aiImageFile);
+      } catch (error) {
+        // 오류 처리 로직
+        console.error(error);
+      }
+    }
+  };
+
+  //////// End 이미지 전송 관련 //////////////////////////////////////////////////
+  //////// Start User Mozaic 전송 관련 //////////////////////////////////////////
+
+  const [userImageFile, setuserImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
+  const [userImageInfo, setuserImageInfo] = useState(""); // 이미지 파일의 정보를 담는 변수
+
+  const userMozaic = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("file", imageFile); // 이미지 파일 추가
+    formData.append("concent", intensity); // 사용자가 정한 모자이크 농도 값
+
+    console.log("concent : ", intensity);
+    if (faceButtonTrue) {
+      // faceButton or carNumButton들중 하나라도 True라면 axios 실행 -> 조건 뒤에 or로 계속 붙이면 됨.
+      try {
+        const response = await axios.post(
+          "http://localhost:8083/restApi/springToIamge",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+            responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
+          }
+        );
+        console.log("response : ", response);
+        // 리턴 받는 ai 모자이크 이미지를 가져오기
+        const base64Image = btoa(
+          new Uint8Array(response.data).reduce(
+            (data, byte) => data + String.fromCharCode(byte),
+            ""
+          )
+        );
+        // 이미지 경로를 설정
+        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+        // 이미지를 상태로 설정합니다.
+        setImageView(imageUrl);
+        // setAiImageFile(imageUrl);
+        console.log("aiImageFile : ", aiImageFile);
+      } catch (error) {
+        // 오류 처리 로직
+        console.error(error);
+      }
+    }
+  };
+  //////// End User Mozaic 전송 관련 ////////////////////////////////////////////
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
     if (location.state?.images) {
@@ -37,6 +162,12 @@ const Editor = () => {
 
   const handleImageChange = (e) => {
     e.preventDefault();
+
+    //////// Start 이미지 전송 관련 /////////////////////////
+    const file = e.target.files;
+    console.log("Selected files:", file[0]);
+    setImageFile(file[0]);
+    //////// End 이미지 전송 관련 ///////////////////////////
 
     const files = Array.from(e.target.files);
     const promises = files.map((file) => {
@@ -340,23 +471,24 @@ const Editor = () => {
         onChange={handleImageChange}
         multiple
       />
+
       <section className="sec">
         <div className="buttons">
           <p className="auto">Auto Mosaic</p>
           <div className="li">
             <div className="types">
               <p>타입</p>
-              <button className="type">
-                <FontAwesomeIcon icon={faFaceSmile} />
+              <button className="type" onClick={setFaceTrue}>
+                <FontAwesomeIcon style={faceIconStyle} icon={faFaceSmile} />
               </button>
-              <button className="type">
-                <FontAwesomeIcon icon={faCar} />
+              <button className="type" onClick={setCarNumTrue}>
+                <FontAwesomeIcon style={CarNumIconStyle} icon={faCar} />
               </button>
               <button className="type">
                 <FontAwesomeIcon icon={faPhone} />
               </button>
-              <button className="type">
-                <FontAwesomeIcon icon={faSmoking} />
+              <button className="type" onClick={setCigarTrue}>
+                <FontAwesomeIcon style={CigarIconStyle} icon={faSmoking} />
               </button>
             </div>
             <div className="types">
@@ -384,6 +516,11 @@ const Editor = () => {
               <p>모자이크 해제 대상</p>
               <button className="typeclear">
                 <FontAwesomeIcon icon={faVectorSquare} />
+              </button>
+            </div>
+            <div>
+              <button className="typeSubmit" onClick={toSpringImage}>
+                적용하기
               </button>
             </div>
           </div>
@@ -416,6 +553,11 @@ const Editor = () => {
                 <FontAwesomeIcon icon={faCircle} />
               </button>
             </div>
+            <div>
+              <button className="typeSubmit" onClick={userMozaic}>
+                적용하기
+              </button>
+            </div>
           </div>
           <div className="submits">
             <button onClick={handleButtonClick} className="submit active">
@@ -436,6 +578,10 @@ const Editor = () => {
                 onMouseUp={handleMouseUp}
                 onClick={handleCanvasClick}
               />
+              {/* //////// Start 이미지 전송 관련 //////////////// */}
+              {aiImageFile && <img src={aiImageFile} alt="No images" />}
+              {/* //////// End 이미지 전송 관련 //////////////// */}
+              {/* <img className="imgEdit" src={imageView} alt="Selected" /> */}
             </>
           ) : (
             <p>이미지를 선택하세요</p>
