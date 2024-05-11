@@ -23,19 +23,24 @@ const Login = () => {
 
     axios
       .get(
-        `http://localhost:8083/restApi/Login?email=${inputEmail}&pw=${inputPw}`
+        `http://localhost:8083/restApi/Login?mb_email=${inputEmail}&mb_pw=${inputPw}`
       )
       .then((res) => {
         console.log("로그인 정보보기  : ", res.data);
-        console.log("로그인 이메일    : ", res.data.email);
-        console.log("로그인 비번      : ", res.data.pw);
-        console.log("로그인 등급      : ", res.data.role);
+        //※ 스프링(jpa 해결하면) 추후 교체용
+        //console.log("로그인 이메일    : ", res.data.mb_email);
+        console.log("로그인 이메일    : ", res.data.mbEmail);
+        console.log("로그인 비번      : ", res.data.mb_pw);
+        console.log("로그인 등급      : ", res.data.mb_role);
         console.log("로그인 가입일자  : ", res.data.joinedAt);
 
-        if (res.data.email !== undefined) {
+        //※ 스프링(jpa 해결하면) 추후 교체용
+        //if (res.data.mb_email !== undefined) {
+        if (res.data.mbEmail !== undefined) {
           // 회원 정보 context에 담기
-          setLogin_id(res.data.email);
-          setLogin_role(res.data.role);
+          //setLogin_id(res.data.mb_email);
+          setLogin_id(res.data.mbEmail);
+          setLogin_role(res.data.mb_role);
 
           nav("/");
 
