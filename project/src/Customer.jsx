@@ -42,8 +42,9 @@ const Customer = () => {
   const totalGroups = Math.ceil(totalPages / 3); // 그룹당 3개 페이지
 
   const startIndex = (currentPage - 1) * pagesize;
-  const dispalyedInquiries = inquiri.slice(startIndex, startIndex + pagesize);
-
+  const dispalyedInquiries = inquiri
+    .sort((a, b) => b.test_idx - a.test_idx)
+    .slice(startIndex, startIndex + pagesize);
   const handlePreviousGroup = () => {
     if (currentGroup > 1) {
       setCurrenPage(currentGroup - 1); // 이전 그룹으로
@@ -53,8 +54,8 @@ const Customer = () => {
 
   const handleNextGroup = () => {
     if (currentGroup < totalGroups) {
-      setCurrenPage(currentPage + 1); // 다음 그룹으로
-      setCurrenGroup((currentGroup - 1) * 3 + 1); // 그룹의 첫 페이지로 이동
+      setCurrenPage(Math.ceil(currentPage / 3) * 4); // 0으로 세팅하고 3 곱하기 페이징
+      setCurrenGroup(Math.ceil(currentPage / 3 + 1)); // 그룹의 다음 첫 페이지
     }
   };
 
@@ -65,6 +66,7 @@ const Customer = () => {
   const getCurrentGroupPages = () => {
     const start = (currentGroup - 1) * 3 + 1; // 그룹의 첫 페이지 번호
     const end = Math.min(start + 2, totalPages); // 그룹의 마지막 페이지 번호
+    console.log("start, end        : ", start, end);
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
