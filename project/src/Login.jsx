@@ -69,8 +69,8 @@ const Login = () => {
               </Link>
             </div>
             <div>
-              <img src="./img/blurbla_simbol.png" className="loginsimbol" />
-              <img src="./img/blurbla_logo(kr).png" className="logokr" />
+              <img src="./img/blurbla_simbol.png" className="loginsimbol" alt="simbol"/>
+              <img src="./img/blurbla_logo(kr).png" className="logokr" alt="logokr"/>
             </div>
             <div>
               <input

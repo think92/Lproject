@@ -1,0 +1,163 @@
+@font-face {
+    font-family: "Pretendard-Regular";
+    src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+      format("woff");
+    font-weight: 400;
+    font-style: normal;
+  }
+  
+  body {
+    background-color: #292c31;
+  }
+  .mypageCustom {
+    display: flex;
+    z-index: 1;
+    width: 100%;
+    height: 953px;
+    background-color: #e4fab5;
+  }
+ /* 문의사항 바디 */
+.CustomBody {
+  position: absolute;
+  z-index: 2;
+  width: 1585px;
+  height: 910px;
+  background-color: #fff;
+  margin: 25px 0 0 315px;
+  border-radius: 10px;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #282828;
+}
+.CustomBodys {
+  position: absolute;
+  z-index: 3;
+  width: 1580px;
+  height: 828px;
+  background-color: #f5f5f5;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+.CustomList {
+  font-size: 25px;
+  font-weight: 700;
+  color: #292c31;
+  margin: 20px 0 0 25px;
+}
+.Customtoolhr {
+  margin: 15px 0 0 0;
+}
+.CustomLists{
+  display: flex;
+}
+.CustomChoiceBox{
+  width: 140px;
+  height: 44px;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: "Pretendard-Regular";
+  text-indent: 6px;
+  margin: 20px 0 20px 820px;
+  padding-right: 10px;
+}
+.CustomChoiceBoxs{
+  width: 120px;
+  height: 44px;
+  font-size: 18px;
+  font-weight: 600;
+  font-family: "Pretendard-Regular";
+  text-indent: 6px;
+  margin: 20px 0 20px 10px;
+  padding-right: 10px;
+}
+.CustomDelete{
+  width: 90px;
+  height: 35px;
+  background-color: #fff;
+  font-size: 18px;
+  font-family: "Pretendard-Regular";
+  text-align: center;
+  border-width: 1px;
+  border-style: solid;
+  border-color: #282828;
+  border-radius: 3px;
+  margin: 26px 0 0 25px;
+}
+.CalendarBox{
+  width: 50px;
+  height: 44px;
+  background-color: #fff;
+  border: none;
+  margin: 20px 0 0 0;
+}
+.Calendar{
+  font-size: 22px;
+}
+/* 검색 버튼 */
+.customSearch {
+  display: flex;
+  width: 300px;
+  height: 44px;
+  background-color: #fff;
+  border: 1px solid #1c1c1c;
+  border-color: #000;
+  border-radius: 3px;
+  margin: 20px 0 0 0;
+}
+.searchInput{
+  width: 260px;
+  height: 38px;
+  border: none;
+  border-radius: 5px;
+  font-size: 18px;
+  font-family: "Pretendard-Regular";
+  text-indent: 10px;
+}
+.searchIcon{
+  width: 22px;
+  height: 22px;
+  margin: 0 0 5px 0;
+}
+.searchBtn {
+  background-color: transparent;
+  border: none;
+  margin: 8px 0 0 0;
+}
+
+/* 문의 내역 */
+.customCheck, .customNum, .customDivison, .customWriter, .customDate, .customAnswer, .customAnswerDate {
+  background-color: #CCCCCC;
+  border-bottom: 1px solid #292c31;
+  border-left: 1px solid #575757;
+}
+.customTable {
+  background-color: #fff;
+  font-size: 20px;
+  border: 2.5px solid #1c1c1c;
+  border-color: #000;
+  border-collapse: collapse;
+  margin: 0 25px 0 25px;
+}
+.customCheck {
+  width: 90px;
+  height: 45px;
+}
+.customNum {
+  width: 80px;
+  height: 45px;
+}
+.customDivison {
+  width: 690px;
+}
+.customWriter {
+  width: 137px;
+}
+.customDate {
+  width: 285px;
+}
+.customAnswer {
+  width: 80px;
+}
+.customAnswerDate{
+  width: 285px;
+}
