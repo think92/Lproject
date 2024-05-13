@@ -14,6 +14,7 @@ import {
   regularData,
   premiumData,
 } from "./component/WeekChart";
+import { Link } from "react-router-dom";
 
 const AdminMain = () => {
   return (
@@ -24,7 +25,7 @@ const AdminMain = () => {
           <div className="inqure">
             <div className="inqureHead">
               <h1>문의사항</h1>
-              <p>+더 보기</p>
+              <Link to={"/AdminInquiry"}>+더 보기</Link>
             </div>
             <hr />
             <div className="detail">
@@ -101,7 +102,9 @@ const AdminMain = () => {
           <div className="membership">
             <div className="inqureHead">
               <h1>회원관리</h1>
-              <p>+더 보기</p>
+              <Link to={"/AdminInquiry"}>
+                <p>+더 보기</p>
+              </Link>
             </div>
             <hr />
             <div className="detail">

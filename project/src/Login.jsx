@@ -37,7 +37,7 @@ const Login = () => {
           setLogin_id(res.data.mb_email);
           setLogin_role(res.data.mb_role);
 
-          nav("/");
+          // nav("/");
 
           // 브라우저 자체에 데이터 저장
           //window.localStorage.setItem("nick", res.data);
@@ -51,6 +51,12 @@ const Login = () => {
           // }
         } else {
           alert("아이디 비밀번호가 잘 못 되었습니다.");
+        }
+
+        if (res.data.mb_role === "A0") {
+          nav("/admin");
+        } else {
+          nav("/");
         }
       });
 
@@ -69,8 +75,16 @@ const Login = () => {
               </Link>
             </div>
             <div>
-              <img src="./img/blurbla_simbol.png" className="loginsimbol" alt="simbol"/>
-              <img src="./img/blurbla_logo(kr).png" className="logokr" alt="logokr"/>
+              <img
+                src="./img/blurbla_simbol.png"
+                className="loginsimbol"
+                alt="simbol"
+              />
+              <img
+                src="./img/blurbla_logo(kr).png"
+                className="logokr"
+                alt="logokr"
+              />
             </div>
             <div>
               <input

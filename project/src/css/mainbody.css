@@ -6,8 +6,9 @@
   font-style: normal;
 }
 @font-face {
-  font-family: 'LeferiPoint-BlackA';
-  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
+  font-family: "LeferiPoint-BlackA";
+  src: url("https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff")
+    format("woff");
   font-weight: normal;
   font-style: normal;
 }
@@ -101,10 +102,10 @@ body {
 }
 .introtitle {
   /* display: flex; */
-  font-family: 'LeferiPoint-BlackA';
+  font-family: "LeferiPoint-BlackA";
   font-size: 47px;
 }
-.graphic1{
+.graphic1 {
   display: flex;
   position: absolute;
   z-index: 3;
@@ -112,7 +113,7 @@ body {
   height: 125px;
   margin: 0 0 0 170px;
 }
-.graphic2{
+.graphic2 {
   display: flex;
   position: absolute;
   z-index: 3;
@@ -120,7 +121,7 @@ body {
   height: 125px;
   margin: 40px 0 0 1080px;
 }
-.introtextbox{
+.introtextbox {
   display: flex;
 }
 .intro1box {
@@ -130,7 +131,7 @@ body {
   background-color: #fff;
   border-radius: 35px;
   border-width: 4px;
-  border-style:solid;
+  border-style: solid;
   border-color: #282828;
   margin: 30px 50px 40px 50px;
   box-shadow: 6px 6px 3px #282828;
@@ -193,15 +194,15 @@ body {
   border-style: solid;
   border-color: #282828;
   border-radius: 30px;
-  box-shadow: 8px 8px 2px #2F2F2F;
+  box-shadow: 8px 8px 2px #2f2f2f;
   margin: 0 0 0 70px;
 }
 .introtitles {
-  font-family: 'LeferiPoint-BlackA';
+  font-family: "LeferiPoint-BlackA";
   font-size: 43px;
   margin: 50px 0 0 10px;
 }
-.intro3box{
+.intro3box {
   display: flex;
 }
 .intro2 {
@@ -210,9 +211,9 @@ body {
 .numberbox {
   width: 70px;
   height: 70px;
-  background-color: #39A5F7;
+  background-color: #39a5f7;
   border-radius: 10px;
-  box-shadow: 4px 4px 2px #2F2F2F;
+  box-shadow: 4px 4px 2px #2f2f2f;
   margin: 37px 0 0 40px;
 }
 .numberbox .num1 {
@@ -229,11 +230,11 @@ body {
   border-style: solid;
   border-color: #282828;
   border-radius: 20px;
-  box-shadow: 3px 3px 2px #2F2F2F;
+  box-shadow: 3px 3px 2px #2f2f2f;
   margin: 38px 0 0 10px;
 }
 .numberbox1 h3 {
-  color: #0151D3;
+  color: #0151d3;
   font-size: 27px;
   margin: 32px 0 0 40px;
 }
@@ -241,7 +242,6 @@ body {
   font-size: 22px;
   margin: 5px 0 0 40px;
 }
-
 
 /* 라인 */
 .line {
@@ -268,7 +268,7 @@ body {
 .snslink {
   display: flex;
 }
-.adresslink p{
+.adresslink p {
   font-size: 18px;
   color: #fff;
   margin: 30px 50px 5px 0;
@@ -282,4 +282,15 @@ body {
   color: #fff;
   text-align: right;
   margin: 8px;
+}
+
+a {
+  text-decoration: none;
+  color: #000;
+  text-decoration: none;
+  font-weight: bold;
+}
+a.alarm::before {
+  content: "\f0f3";
+  font-family: "Font Awesome 5 Free";
 }

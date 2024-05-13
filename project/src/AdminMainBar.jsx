@@ -20,8 +20,12 @@ const AdminMain = () => {
         <img src="./img/blurbla_simbol.png" />
         <p>관리자(admin1)</p>
         <div className="adminMenu">
-          <p>● 대시보드</p>
-          <p>● 문의사항</p>
+          <Link to={"/Admin"}>
+            <p>● 대시보드</p>
+          </Link>{" "}
+          <Link to={"/AdminInquiry"}>
+            <p>● 문의사항</p>
+          </Link>
           <p>● 회원관리</p>
           <p>● 기능 업데이트</p>
           <p>● 알림 서비스</p>

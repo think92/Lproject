@@ -26,7 +26,7 @@ body {
 .logo img {
   width: 210px;
 }
-a {
+#mainbar a {
   text-decoration: none;
   font-size: 20px;
   color: white;
@@ -36,5 +36,3 @@ a.alarm::before {
   content: "\f0f3";
   font-family: "Font Awesome 5 Free";
 }
-
-

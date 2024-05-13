@@ -11,6 +11,7 @@ import AdminMain from "./AdminMain";
 import { LoginUserContext } from "./context/LoginUserContent";
 import MypageCustom from "./MypageCustom";
 import MypagePay from "./MypagePay";
+import AdminInquiry from "./AdminInquiry";
 
 const App = () => {
   // 로그인시 회원의 필요한 정보
@@ -34,8 +35,7 @@ const App = () => {
             <Route path="/Admin" element={<AdminMain />} />
             <Route path="/MypageCustom" element={<MypageCustom />} />
             <Route path="/MypagePay" element={<MypagePay />} />
-
-
+            <Route path="/AdminInquiry" element={<AdminInquiry />} />
           </Routes>
         </LoginUserContext.Provider>
       </div>
