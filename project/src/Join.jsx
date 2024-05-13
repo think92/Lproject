@@ -17,8 +17,8 @@ const Join = () => {
     if (inputPw.current.value === inputPwCheck.current.value) {
       axios
         .post("http://localhost:8083/restApi/join", {
-          email: inputEmail.current.value,
-          pw: inputPw.current.value,
+          mb_email: inputEmail.current.value,
+          mb_pw: inputPw.current.value,
         })
         .then((res) => console.log(res));
     } else {
