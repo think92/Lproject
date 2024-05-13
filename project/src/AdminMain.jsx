@@ -2,8 +2,18 @@ import React from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminMain.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCalendarDays,
+  faCalendarWeek,
+  faFaceGrinWide,
+} from "@fortawesome/free-solid-svg-icons";
 import MonthlySubscribersChart from "./component/MonthlySubscribersChart "; // 그래프 컴포넌트 임포트
+import {
+  RegularSignupChart,
+  PremiumSignupChart,
+  regularData,
+  premiumData,
+} from "./component/WeekChart";
 
 const AdminMain = () => {
   return (
@@ -162,8 +172,58 @@ const AdminMain = () => {
                 <MonthlySubscribersChart />
               </div>
             </div>
-            <div className="newSubscriberShort"> d</div>
-            <div className="newSubscriberVeryShort">d</div>
+            <div className="weekchars">
+              <div className="newSubscriberShort">
+                <div className="newSubscriberShortTitle">
+                  <FontAwesomeIcon icon={faCalendarWeek} />
+                  <h1>신규 가입(5~4주차)</h1>
+                </div>
+                <div className="chartTotal">
+                  <div className="weekChart">
+                    <RegularSignupChart data={regularData} />
+                  </div>
+                  <div>
+                    <div className="weekChartTotla">
+                      <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
+                      <span className="con">
+                        일주일 <span className="conDe"> 35명</span>
+                      </span>{" "}
+                    </div>
+                    <div className="weekChartTotla">
+                      <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
+                      <span className="con">
+                        한달 <span className="conDe"> 35명</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="newSubscriberVeryShort">
+                <div className="newSubscriberVeryShortTitle">
+                  <FontAwesomeIcon icon={faCalendarWeek} />
+                  <h1>프리미엄 가입(5~4주차)</h1>
+                </div>
+                <div className="chartTotal">
+                  <div className="weekChart">
+                    <PremiumSignupChart data={premiumData} />
+                  </div>
+                  <div>
+                    <div className="weekChartTotla red">
+                      <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
+                      <span className="con">
+                        일주일 <span className="conDe"> 35명</span>
+                      </span>{" "}
+                    </div>
+                    <div className="weekChartTotla red">
+                      <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
+                      <span className="con">
+                        한달 <span className="conDe"> 33명</span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
