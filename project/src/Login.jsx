@@ -8,8 +8,8 @@ import { LoginUserContext } from "./context/LoginUserContent";
 
 const Login = () => {
   const nav = useNavigate();
-  const email = useRef();
-  const pw = useRef();
+  const mb_email = useRef();
+  const mb_pw = useRef();
 
   // 로그인한 회원 정보 저장하는 변수(아이디, 등급)
   const { login_id, setLogin_id, login_role, setLogin_role } =
@@ -18,36 +18,40 @@ const Login = () => {
   function tryLogin() {
     // 사용자가 적은 ID, PW 값을 가져와서
     // SpringBoot 서버로 전송하겠습니다 ! --> 비동기 통신방식 (axios)
-    let inputEmail = email.current.value;
-    let inputPw = pw.current.value;
+    let inputEmail = mb_email.current.value;
+    let inputPw = mb_pw.current.value;
 
     axios
       .get(
-        `http://localhost:8083/restApi/Login?email=${inputEmail}&pw=${inputPw}`
+        `http://localhost:8083/restApi/Login?mb_email=${inputEmail}&mb_pw=${inputPw}`
       )
       .then((res) => {
         console.log("로그인 정보보기  : ", res.data);
-        console.log("로그인 이메일    : ", res.data.email);
-        console.log("로그인 비번      : ", res.data.pw);
-        console.log("로그인 등급      : ", res.data.role);
+        console.log("로그인 이메일    : ", res.data.mb_email);
+        console.log("로그인 비번      : ", res.data.mb_pw);
+        console.log("로그인 등급      : ", res.data.mb_role);
         console.log("로그인 가입일자  : ", res.data.joinedAt);
 
-        // 회원 정보 context에 담기
-        setLogin_id(res.data.email);
-        setLogin_role(res.data.role);
+        if (res.data.mb_email !== undefined) {
+          // 회원 정보 context에 담기
+          setLogin_id(res.data.mb_email);
+          setLogin_role(res.data.mb_role);
 
-        nav("/");
+          nav("/");
 
-        // 브라우저 자체에 데이터 저장
-        //window.localStorage.setItem("nick", res.data);
+          // 브라우저 자체에 데이터 저장
+          //window.localStorage.setItem("nick", res.data);
 
-        // 로그인 성공 실패 분기문
-        // if (res.data == "Success") {
-        //   window.localStorage.setItem("nick", res.data);
-        //   nav("/");
-        // } else {
-        //   alert("로그인 실패");
-        // }
+          // 로그인 성공 실패 분기문
+          // if (res.data == "Success") {
+          //   window.localStorage.setItem("nick", res.data);
+          //   nav("/");
+          // } else {
+          //   alert("로그인 실패");
+          // }
+        } else {
+          alert("아이디 비밀번호가 잘 못 되었습니다.");
+        }
       });
 
     // 로그인 성공시 Nick 값 -> Main
@@ -65,12 +69,12 @@ const Login = () => {
               </Link>
             </div>
             <div>
-              <img src="./img/blurbla_simbol.png" className="loginsimbol" />
-              <img src="./img/blurbla_logo(kr).png" className="logokr" />
+              <img src="./img/blurbla_simbol.png" className="loginsimbol" alt="simbol"/>
+              <img src="./img/blurbla_logo(kr).png" className="logokr" alt="logokr"/>
             </div>
             <div>
               <input
-                ref={email}
+                ref={mb_email}
                 type="email"
                 id="email"
                 name="email"
@@ -78,7 +82,7 @@ const Login = () => {
                 className="email"
               />
               <input
-                ref={pw}
+                ref={mb_pw}
                 type="password"
                 id="pw"
                 name="pw"

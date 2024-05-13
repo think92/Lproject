@@ -6,18 +6,17 @@
   font-style: normal;
 }
 @font-face {
-  font-family: "MICEGothic Bold";
-  src: url("https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2206-01@1.0/MICEGothic Bold.woff2")
-    format("woff2");
-  font-weight: 700;
+  font-family: 'LeferiPoint-BlackA';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2201-2@1.0/LeferiPoint-BlackA.woff') format('woff');
+  font-weight: normal;
   font-style: normal;
 }
 body {
   box-sizing: border-box;
-  background-color: #000;
+  /* background-color: black; */
 }
 .body {
-  background-color: #292c31;
+  /* background-color: #292c31; */
   margin: 0;
   font-family: "Pretendard-Regular";
 }
@@ -28,21 +27,22 @@ body {
   align-items: center;
 }
 .uploadbackground1 {
-  width: 1700px;
-  height: 830px;
+  width: 1500px;
+  height: 740px;
   background-color: #b0e045;
   margin: auto;
   border-radius: 20px;
   display: block;
-  margin-bottom: 100px;
+  margin-top: 40px;
+  margin-bottom: 50px;
 }
 .uploadbackground2 {
   display: flex;
-  width: 1550px;
-  height: 700px;
+  width: 1360px;
+  height: 620px;
   background-color: white;
   margin: auto;
-  margin-top: 65px;
+  margin-top: 60px;
   border-radius: 15px;
 }
 .uploadbackground2 .uploadtext {
@@ -50,91 +50,113 @@ body {
   text-align: center;
   margin: auto;
 }
+.simbolrotation {
+  display: flex;
+  margin: 40px 0 0 45px;
+}
+.uploadtext .introsimbol {
+  width: 115px;
+  height: 115px;
+}
 .uploadtext h1 {
-  font-size: 63px;
-  margin: 30px;
+  font-family: "LeferiPoint-BlackA";
+  font-size: 45px;
+  margin: 35px 0 18px 0;
 }
 .uploadtext p {
-  font-size: 30px;
+  font-size: 27px;
   font-weight: 600;
   margin: 5px;
 }
-.uploadtext button {
-  font-size: 30px;
+.uploadtext .uploadtextbtn {
+  font-size: 20px;
   color: black;
   font-weight: 600;
   background-color: #9edf0c;
-  padding: 15px 30px;
-  border-radius: 15px;
+  padding: 12px 22px;
+  margin: 0 0 150px 0;
+  border-radius: 10px;
 }
 .uploadbackground2 .uploadimg {
-  width: 50%;
+  width: 44%;
   margin: auto;
 }
 .uploadimg img {
-  width: 700px;
-  height: 450px;
-  border-radius: 30px;
+  width: 540px;
+  height: 350px;
+  border-radius: 22px;
 }
 
 /* 블러블라 소개 -1 */
 .intro01 {
+  display: flex;
   background-color: #d4fe75;
 }
 #intro1 {
-  display: flex;
-  justify-content: center;
+  text-align: center;
+  font-size: 22px;
   color: black;
-  width: 1850px;
-  height: 900px;
   margin: auto;
-  padding: 80px 0 0 0;
+  padding: 100px 0 200px 0;
+}
+.introtitle {
+  /* display: flex; */
+  font-family: 'LeferiPoint-BlackA';
+  font-size: 47px;
+}
+.graphic1{
+  display: flex;
+  position: absolute;
+  z-index: 3;
+  width: 125px;
+  height: 125px;
+  margin: 0 0 0 170px;
+}
+.graphic2{
+  display: flex;
+  position: absolute;
+  z-index: 3;
+  width: 125px;
+  height: 125px;
+  margin: 40px 0 0 1080px;
+}
+.introtextbox{
+  display: flex;
 }
 .intro1box {
-  height: 630px;
+  text-align: center;
+  width: 360px;
+  height: 440px;
   background-color: #fff;
   border-radius: 35px;
   border-width: 4px;
-  border-style: solid;
+  border-style:solid;
   border-color: #282828;
-  padding: 35px 75px 0 75px;
-  box-shadow: 12px 12px 3px #282828;
-}
-.intro2box img {
-  width: 820px;
-  height: 645px;
-  margin: 0 0 0 80px;
-  border-radius: 35px;
-}
-.introtitle {
-  font-size: 23px;
-  font-family: "MICEGothic Bold";
-  color: #282828;
-}
-.introbox {
-  display: flex;
+  margin: 30px 50px 40px 50px;
+  box-shadow: 6px 6px 3px #282828;
 }
 .iconbox {
+  display: flex;
   width: 90px;
   height: 90px;
   background-color: #00a32e;
-  border-radius: 15px;
-  margin: 0 0 40px 0px;
+  border-radius: 60px;
+  margin: 50px 0px 40px 130px;
 }
 .loadicon1 {
-  font-size: 33px;
+  font-size: 32px;
   color: white;
-  margin: 13px 0 0 25px;
+  margin: 6px 0 0 26px;
 }
 .loadicon2 {
-  font-size: 33px;
+  font-size: 32px;
   color: white;
-  margin: 15px 0 0 27px;
+  margin: 6px 0 0 30px;
 }
 .loadicon3 {
-  font-size: 36px;
+  font-size: 32px;
   color: white;
-  margin: 14px 0 0 27px;
+  margin: 8px 0 0 30px;
 }
 
 .introtext h3 {
@@ -142,94 +164,85 @@ body {
   font-weight: 900;
   color: #00a32e;
   margin: 0;
-  padding: 0 0 5px 40px;
+  padding: 0 40px 40px 40px;
 }
 .introtext p {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 700;
   color: #272829;
   margin: 0;
-  padding: 0 0 0 40px;
 }
 
 /* 블러블라 소개-2 */
 .intro02 {
   background-color: #ffffff;
+  display: flex;
 }
 #intro3 {
-  display: flex;
-  justify-content: center;
-  height: 900px;
+  text-align: left;
+  font-size: 22px;
   color: black;
   margin: auto;
-  justify-content: center;
-}
-.intro3box {
-  margin: 70px 0 0 0;
+  padding: 30px 70px 120px 0;
 }
 .intro3box img {
-  width: 800px;
-  height: 640px;
-  margin: 70px 80px 0 0;
-  border-radius: 70px;
-}
-.intro4box {
-  height: 630px;
-  background-color: #fff;
-  border-radius: 35px;
+  width: 580px;
+  height: 530px;
+  border-radius: 30px;
   border-width: 4px;
   border-style: solid;
   border-color: #282828;
-  box-shadow: 12px 12px 3px #282828;
-  padding: 41px 85px 0 85px;
-  margin: 140px 0 0 0;
+  border-radius: 30px;
+  box-shadow: 8px 8px 2px #2F2F2F;
+  margin: 0 0 0 70px;
 }
-.introtitle2 {
-  font-size: 23px;
-  font-family: "MICEGothic Bold";
-  color: #282828;
+.introtitles {
+  font-family: 'LeferiPoint-BlackA';
+  font-size: 43px;
+  margin: 50px 0 0 10px;
 }
-.introbox2 {
+.intro3box{
   display: flex;
 }
-.iconbox2 {
-  width: 90px;
-  height: 90px;
-  background-color: #39a5f7;
-  border-radius: 15px;
-  margin: 0 0 40px 0px;
-  /* z-index: 1; */
+.intro2 {
+  font-size: 22px;
 }
-.loadicon4 {
-  font-size: 33px;
-  color: white;
-  margin: 13px 0 0 25px;
+.numberbox {
+  width: 70px;
+  height: 70px;
+  background-color: #39A5F7;
+  border-radius: 10px;
+  box-shadow: 4px 4px 2px #2F2F2F;
+  margin: 37px 0 0 40px;
 }
-.loadicon5 {
-  font-size: 33px;
-  color: white;
-  margin: 15px 0 0 27px;
-}
-.loadicon6 {
+.numberbox .num1 {
+  color: #fff;
   font-size: 36px;
-  color: white;
-  margin: 14px 0 0 27px;
+  margin: 15px 0 0 26px;
+}
+.numberbox1 {
+  display: flex;
+  width: 640px;
+  height: 155px;
+  background-color: #fff;
+  border-width: 4px;
+  border-style: solid;
+  border-color: #282828;
+  border-radius: 20px;
+  box-shadow: 3px 3px 2px #2F2F2F;
+  margin: 38px 0 0 10px;
+}
+.numberbox1 h3 {
+  color: #0151D3;
+  font-size: 27px;
+  margin: 32px 0 0 40px;
+}
+.numberbox1 p {
+  font-size: 22px;
+  margin: 5px 0 0 40px;
 }
 
-.introtext2 h3 {
-  font-size: 28px;
-  font-weight: 900;
-  color: #0151d3;
-  margin: 0;
-  padding: 0 0 5px 40px;
-}
-.introtext2 p {
-  font-size: 24px;
-  font-weight: 700;
-  color: #272829;
-  margin: 0;
-  padding: 0 0 0 40px;
-}
+
 /* 라인 */
 .line {
   margin: 0 50px 0 50px;
@@ -255,7 +268,7 @@ body {
 .snslink {
   display: flex;
 }
-.adresslink p {
+.adresslink p{
   font-size: 18px;
   color: #fff;
   margin: 30px 50px 5px 0;

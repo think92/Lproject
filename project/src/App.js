@@ -4,8 +4,13 @@ import MainBody from "./MainBody";
 import Editor from "./Editor";
 import Login from "./Login";
 import Join from "./Join";
+import Premium from "./Premium";
+import Customer from "./Customer";
+import Mypage from "./Mypage";
 import AdminMain from "./AdminMain";
 import { LoginUserContext } from "./context/LoginUserContent";
+import MypageCustom from "./MypageCustom";
+import MypagePay from "./MypagePay";
 
 const App = () => {
   // 로그인시 회원의 필요한 정보
@@ -23,7 +28,14 @@ const App = () => {
             <Route path="/Editor" element={<Editor />} />
             <Route path="/Login" element={<Login />} />
             <Route path="/Join" element={<Join />} />
+            <Route path="/Premium" element={<Premium />} />
+            <Route path="/Customer" element={<Customer />} />
+            <Route path="/Mypage" element={<Mypage />} />
             <Route path="/Admin" element={<AdminMain />} />
+            <Route path="/MypageCustom" element={<MypageCustom />} />
+            <Route path="/MypagePay" element={<MypagePay />} />
+
+
           </Routes>
         </LoginUserContext.Provider>
       </div>
