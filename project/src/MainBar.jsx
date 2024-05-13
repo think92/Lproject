@@ -15,13 +15,7 @@ const MainBar = () => {
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     rel="stylesheet"
   />;
-  function LogOut(params) {
-    setLogin_id(false); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
-  }
-
-  const [content, setContent] = useState("");
-  console.log(content);
-
+  
   function LogOut(params) {
     setLogin_id(false); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
   }
