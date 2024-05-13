@@ -34,6 +34,8 @@ const App = () => {
             <Route path="/Admin" element={<AdminMain />} />
             <Route path="/MypageCustom" element={<MypageCustom />} />
             <Route path="/MypagePay" element={<MypagePay />} />
+
+
           </Routes>
         </LoginUserContext.Provider>
       </div>

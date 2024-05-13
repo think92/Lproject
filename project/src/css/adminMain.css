@@ -1,0 +1,207 @@
+.admin {
+  display: flex;
+}
+
+.summary {
+  background-color: #e4fab5;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  width: 800px;
+}
+.topconTainer {
+  display: flex;
+  flex-grow: 0;
+  margin: 25px;
+}
+.inqure {
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 10px;
+  flex-grow: 2;
+}
+.membership {
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 10px;
+  flex-grow: 1;
+  margin-left: 20px;
+}
+.subscriber {
+  background-color: white;
+  border: 3px solid black;
+  border-radius: 10px;
+  flex-grow: 2;
+  margin: 25px;
+  margin-top: 0;
+}
+
+.inqureHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.inqureHead h1 {
+  font-size: 20px;
+}
+.inqureHead p {
+  font-weight: bold;
+}
+
+.detail {
+  display: flex;
+  justify-content: center;
+  height: 80%;
+}
+
+.detail table {
+  border-collapse: collapse; /* 테두리 겹침을 방지 */
+  margin: 20px;
+  flex-grow: 1;
+}
+
+.detail th,
+.detail td {
+  border-collapse: collapse; /* 테두리 겹침을 방지 */
+  border: 2px solid #f0f0f0;
+  padding: 8px; /* 적절한 패딩 제공 */
+  text-align: center;
+  height: 40px;
+  font-weight: 600;
+}
+
+.detail thead th {
+  border-bottom: 2px solid #d9d9d9; /* thead와 tbody 사이에 강조된 테두리 */
+  background-color: #cccccc;
+  height: 40px;
+}
+
+.detail tbody tr:first-child td {
+  border-top: 2px solid #f0f0f0; /* 첫 번째 tr의 상단 테두리 */
+}
+
+.summaryDetail {
+  flex-grow: 0.1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px 20px 20px 0;
+  justify-content: space-between;
+  height: 250px;
+}
+
+.detailBorder {
+  border: solid 2px #d9d9d9;
+  width: 100%;
+}
+
+.newTitle {
+  background-color: #4ce577;
+  margin: 0;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.newCount {
+  margin: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.newConutI {
+  font-size: 30px;
+  margin-right: 5px;
+  color: #4ce577;
+}
+
+.answerC {
+  background-color: #fe7575;
+  margin: 0;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.answerCount {
+  margin: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.answerConutI {
+  font-size: 30px;
+  margin-right: 5px;
+  color: #fe7575;
+}
+
+.addC {
+  background-color: #80caff;
+  margin: 0;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.addCount {
+  margin: 0;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.addConutI {
+  font-size: 30px;
+  margin-right: 5px;
+  color: #80caff;
+}
+
+.subscriberDetail {
+  margin: 15px;
+  display: flex;
+}
+
+.newSubscriber {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1.2;
+}
+
+.newSubscriberTitle {
+  display: flex;
+  align-items: center;
+}
+
+.newSubscriberTitle h1 {
+  font-size: 20px;
+  margin: 0;
+  margin-left: 10px;
+}
+.chart {
+  height: 380px;
+}
+
+.newSubscriberShort {
+  flex-grow: 1;
+}
+
+.newSubscriberVeryShort {
+  flex-grow: 1;
+}

@@ -8,6 +8,8 @@ import {
   faCloudArrowUp,
   faSliders,
   faShapes,
+  faRobot,
+  faUsersViewfinder,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faTwitter,
