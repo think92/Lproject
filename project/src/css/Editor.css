@@ -1,27 +1,21 @@
 * {
   box-sizing: border-box;
 }
-
-body {
-  margin: 0;
+html body {
   background-color: #000;
-  width: 1920px;
+  margin: 0;
 }
-
 .sec {
   margin: 0 10px 10px 10px;
   display: flex;
   height: 850px;
 }
-
 button {
   cursor: pointer;
 }
-
 .buttons {
   flex-grow: 0;
 }
-
 .auto {
   background-color: #454545;
   color: white;
@@ -30,50 +24,111 @@ button {
   font-weight: bold;
   text-align: center;
   margin: 0;
-  padding: 12px 30px 12px 12px;
+  padding: 15px 30px 12px 30px;
 }
-
 .li {
   background-color: white;
   padding: 10px;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
 }
-
+.li2 {
+  background-color: white;
+  padding: 10px;
+  height: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.li p {
+  margin: 0;
+}
 .types {
   display: flex;
   justify-content: space-between;
-  margin-right: 10px;
+  align-items: center;
+  margin: 0px;
 }
+.types1 {
+  display: flex;
+  align-items: center;
+}
+.typeshape {
+  background: none;
+  color: #000;
+  font-size: 20px;
+  border: none;
+  width: 20px;
+  height: 20px;
+  margin: 0 13px 4px 9px;
+}
+.types2 {
+  display: flex;
+  align-items: center;
+}
+.typeclear {
+  background: none;
+  color: #000;
+  font-size: 20px;
+  border: none;
+  width: 20px;
+  height: 20px;
+  margin: 0 9px 4px 12px;
+}
+.slider {
+  -webkit-appearance: none; /* 기본 스타일 제거 */
+  width: 100px;
+  margin: 8px 0;
+  height: 6px; /* 트랙의 높이 */
+  background: #000; /* 트랙의 배경색을 검정색으로 설정 */
+  outline: none; /* 포커스 테두리 제거 */
+  border-radius: 20px;
+}
+/* 마우스 호버 시 트랙의 투명도 변경 */
 
+/* 슬라이더 핸들 스타일 */
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none; /* 기본 스타일 제거 */
+  appearance: none;
+  width: 20px; /* 핸들의 너비 */
+  height: 20px; /* 핸들의 높이 */
+  background: #4ce577; /* 핸들의 배경색을 초록색으로 설정 */
+  cursor: pointer; /* 커서를 포인터로 변경 */
+  border-radius: 50%; /* 핸들을 원형으로 만듦 */
+}
+.types p {
+  display: inline-block;
+  margin: 0;
+}
 .type {
   background-color: white;
   border: none;
   font-size: 20px;
 }
-
 .submits {
   margin-top: 120px;
   display: flex;
   flex-direction: column;
   background-color: black;
 }
-
 .submit {
   margin-top: 16px;
   padding: 10px;
-  font-size: 18px;
+  font-size: 20px;
   background-color: black;
   color: white;
   border: solid 2px #4ce577;
   font-weight: bold;
   border-radius: 5px;
 }
-
 .submit.active {
   background-color: #4ce577;
   color: black;
 }
-
 .edit {
+  font-size: 25px;
   margin-left: 20px;
   background-color: #626262;
   flex-shrink: 1;
@@ -81,22 +136,31 @@ button {
   padding: 15px;
   display: flex;
   justify-content: center;
-  
+  align-items: center; /* 이미지를 세로로 중앙에 위치시킵니다. */
+  overflow: hidden; /* 컨테이너를 넘는 이미지가 보이지 않도록 처리합니다. */
 }
-
+.imgEdit {
+  display: block;
+  width: 100%; /* 컨테이너 너비에 맞춥니다. */
+  height: 100%; /* 컨테이너 높이에 맞춥니다. */
+  height: auto;
+  width: auto;
+}
+.imgEdit img {
+  max-width: 100%; /* 이미지의 최대 너비를 컨테이너의 100%로 제한합니다. */
+  max-height: 100%; /* 이미지의 최대 높이를 컨테이너의 100%로 제한합니다. */
+  object-fit: contain; /* 비율을 유지하면서 최대 영역을 채우도록 합니다. */
+}
 .editor-specific #mainbar {
   background-color: #000;
 }
-
 .editor-specific .logo img {
   width: 160px;
   margin-top: 5px;
 }
-
 .editor-specific a {
   font-size: 20px;
 }
-
 .imgSaves {
   background-color: #323131;
   width: 250px;
@@ -106,45 +170,44 @@ button {
   flex-direction: column;
   overflow: auto;
 }
-
 .imgsave img {
-  width: 200px;
-  height: 200px;
-  margin: 15px;
+  width: 220px;
+  height: 160px;
+  margin: 10px 0px 0px;
   border: solid 3px;
   cursor: pointer;
   position: relative;
   display: inline-block;
 }
-
+.imgsave {
+  position: relative;
+}
 .imgsave:hover .delete-icon {
   display: block;
 }
-
 .delete-icon {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 20px;
+  right: 20px;
   display: none;
   padding: 5px;
+  cursor: pointer;
+  background-color: #000;
+  color: white;
 }
-
 ::-webkit-scrollbar {
   width: 12px; /* 스크롤바의 너비 */
 }
-
 /* 스크롤바 트랙 (바탕) 스타일 */
 ::-webkit-scrollbar-track {
   background-color: #2b2b2b; /* 트랙의 배경색을 진한 회색으로 설정 */
 }
-
 /* 스크롤바 핸들 (움직이는 부분) 스타일 */
 ::-webkit-scrollbar-thumb {
   background-color: #4ce577; /* 핸들의 배경색을 초록으로 설정 */
   border-radius: 10px; /* 핸들의 모서리를 둥글게 */
   border: 3px solid #2b2b2b; /* 핸들 주위에 진한 회색 테두리 추가 */
 }
-
 /* 스크롤바 핸들에 마우스 호버 시 스타일 */
 ::-webkit-scrollbar-thumb:hover {
   background-color: #888; /* 핸들의 배경색을 밝은 회색으로 변경 */

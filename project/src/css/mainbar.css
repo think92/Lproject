@@ -8,6 +8,7 @@
 
 section {
   margin: 0;
+  box-sizing: border-box;
 }
 
 body {
@@ -23,11 +24,11 @@ body {
   justify-content: space-between;
 }
 .logo img {
-  width: 250px;
+  width: 210px;
 }
 a {
   text-decoration: none;
-  font-size: 22px;
+  font-size: 20px;
   color: white;
   padding-right: 53px;
 }
@@ -35,3 +36,5 @@ a.alarm::before {
   content: "\f0f3";
   font-family: "Font Awesome 5 Free";
 }
+
+
