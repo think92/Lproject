@@ -19,6 +19,7 @@ const Editor = () => {
   const [images, setImages] = useState([]);
   const [intensityAuto, setIntensityAuto] = useState(50);
   const [intensity, setIntensity] = useState(50);
+  const [updatedAreas, setUpdatedAreas] = useState([]);
   const location = useLocation();
   // console.log(location.state);
 
@@ -90,7 +91,6 @@ const Editor = () => {
         // 이미지를 상태로 설정합니다.
         setImageView(imageUrl);
         // setAiImageFile(imageUrl);
-        console.log("aiImageFile : ", aiImageFile);
       } catch (error) {
         // 오류 처리 로직
         console.error(error);
@@ -101,50 +101,45 @@ const Editor = () => {
   //////// End 이미지 전송 관련 //////////////////////////////////////////////////
   //////// Start User Mozaic 전송 관련 //////////////////////////////////////////
 
-  const [userImageFile, setuserImageFile] = useState(""); // 이미지 파일의 정보를 담는 변수
-  const [userImageInfo, setuserImageInfo] = useState(""); // 이미지 파일의 정보를 담는 변수
+  // const userMozaic = async (event) => {
+  //   event.preventDefault();
 
-  const userMozaic = async (event) => {
-    event.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append("file", imageFile); // 이미지 파일 추가
+  //   formData.append("concent", intensity); // 사용자가 정한 모자이크 농도 값
 
-    const formData = new FormData();
-    formData.append("file", imageFile); // 이미지 파일 추가
-    formData.append("concent", intensity); // 사용자가 정한 모자이크 농도 값
+  //   const coord = JSON.stringify(selectedAreas);
+  //   formData.append("coord", coord);
 
-    console.log("concent : ", intensity);
-    if (faceButtonTrue) {
-      // faceButton or carNumButton들중 하나라도 True라면 axios 실행 -> 조건 뒤에 or로 계속 붙이면 됨.
-      try {
-        const response = await axios.post(
-          "http://localhost:8083/restApi/springToIamge",
-          formData,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-            responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
-          }
-        );
-        console.log("response : ", response);
-        // 리턴 받는 ai 모자이크 이미지를 가져오기
-        const base64Image = btoa(
-          new Uint8Array(response.data).reduce(
-            (data, byte) => data + String.fromCharCode(byte),
-            ""
-          )
-        );
-        // 이미지 경로를 설정
-        const imageUrl = `data:image/jpeg;base64,${base64Image}`;
-        // 이미지를 상태로 설정합니다.
-        setImageView(imageUrl);
-        // setAiImageFile(imageUrl);
-        console.log("aiImageFile : ", aiImageFile);
-      } catch (error) {
-        // 오류 처리 로직
-        console.error(error);
-      }
-    }
-  };
+  //   try {
+  //     const response = await axios.post(
+  //       "http://localhost:8083/restApi/userMozaic",
+  //       formData,
+  //       {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //         responseType: "arraybuffer", // 이 부분은 바이너리 데이터를 받아오기 위해 설정합니다.
+  //       }
+  //     );
+  //     console.log("response : ", response);
+  //     // 리턴 받는 ai 모자이크 이미지를 가져오기
+  //     const base64Image = btoa(
+  //       new Uint8Array(response.data).reduce(
+  //         (data, byte) => data + String.fromCharCode(byte),
+  //         ""
+  //       )
+  //     );
+  //     // 이미지 경로를 설정
+  //     const imageUrl = `data:image/jpeg;base64,${base64Image}`;
+  //     // 이미지를 상태로 설정합니다.
+  //     setImageView(imageUrl);
+  //     // setAiImageFile(imageUrl);
+  //   } catch (error) {
+  //     // 오류 처리 로직
+  //     console.error(error);
+  //   }
+  // };
   //////// End User Mozaic 전송 관련 ////////////////////////////////////////////
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
@@ -165,7 +160,9 @@ const Editor = () => {
 
     //////// Start 이미지 전송 관련 /////////////////////////
     const file = e.target.files;
-    console.log("Selected files:", file[0]);
+    console.log("Selected files:", selectedAreas[0]);
+    console.log("모자이크하려고 선택한 영역:", selectedAreas[0]);
+
     setImageFile(file[0]);
     //////// End 이미지 전송 관련 ///////////////////////////
 
@@ -174,7 +171,6 @@ const Editor = () => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          console.log("Image Data URL:", reader.result);
           resolve(reader.result);
         };
         reader.onerror = (error) => {
@@ -551,11 +547,6 @@ const Editor = () => {
               </button>
               <button className="type">
                 <FontAwesomeIcon icon={faCircle} />
-              </button>
-            </div>
-            <div>
-              <button className="typeSubmit" onClick={userMozaic}>
-                적용하기
               </button>
             </div>
           </div>
