@@ -9,6 +9,8 @@
   margin: 20px; /* 모든 측면에 15px 마진 */
   width: 97%;
   height: 96%;
+  border: 3px solid black;
+  border-radius: 10px;
 }
 
 .startTitle {
@@ -62,7 +64,7 @@ hr {
   width: 100%;
 }
 
-.buttons {
+.buttonss {
   display: flex;
   padding: 12px;
   justify-content: space-between;
@@ -117,7 +119,7 @@ table {
 
 th,
 td {
-  text-align: left;
+  text-align: center;
   padding: 12px 15px;
   border-bottom: 1px solid #ccc;
 }
@@ -139,4 +141,9 @@ input[type="checkbox"] {
   margin-left: auto;
   margin-right: auto;
   display: block;
+}
+
+.red-text {
+  color: red; /* 빨간색 글씨 */
+  font-weight: 600;
 }

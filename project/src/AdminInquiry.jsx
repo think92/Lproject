@@ -1,23 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminInquiry.css";
 
-const AdminMain = () => {
+const AdminInquiry = () => {
   // 검색창 상태
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectType, setSelectType] = useState("");
+  const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
 
-  // 입력 변경 처리
-  const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
-  };
-
-  // 검색 실행 함수
-  const handleSearch = () => {
-    console.log("검색어: ", searchTerm);
-    // 여기에 검색 로직을 추가할 수 있습니다.
-  };
-
-  const inquiries = [
+  const initialInquiries = [
     {
       id: 1,
       title: "로그인 문제",
@@ -39,7 +30,7 @@ const AdminMain = () => {
       title: "서비스 이용 문의",
       userId: "user789",
       inquiryDate: "2024-05-10",
-      answerStatus: "답변 완료",
+      answerStatus: "대기 중",
       answerDate: "2024-05-11",
     },
     {
@@ -51,6 +42,49 @@ const AdminMain = () => {
       answerDate: "-",
     },
   ];
+
+  // 데이터를 필터링하고 정렬하는 함수
+  const filterAndSortInquiries = () => {
+    let filtered = initialInquiries.filter((inquiry) => {
+      if (selectType && searchTerm) {
+        return inquiry[selectType]
+          .toString()
+          .toLowerCase()
+          .includes(searchTerm.toLowerCase());
+      }
+      return true;
+    });
+
+    // "대기 중" 상태가 같은 경우, 날짜를 비교하여 오래된 문의를 상위에 배치
+    filtered.sort((a, b) => {
+      if (a.answerStatus === "대기 중" && b.answerStatus !== "대기 중") {
+        return -1;
+      } else if (b.answerStatus === "대기 중" && a.answerStatus !== "대기 중") {
+        return 1;
+      } else if (a.answerStatus === "대기 중" && b.answerStatus === "대기 중") {
+        return a.inquiryDate < b.inquiryDate ? -1 : 1;
+      }
+      return 0;
+    });
+
+    setInquiries(filtered);
+  };
+
+  useEffect(() => {
+    filterAndSortInquiries(); // 초기 로드 시 필터 및 정렬 실행
+  }, []);
+
+  const handleSelectTypeChange = (event) => {
+    setSelectType(event.target.value);
+  };
+
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearch = () => {
+    filterAndSortInquiries(); // 검색 실행 시 필터 및 정렬 실행
+  };
   return (
     <div className="admin">
       <AdminMinBar />
@@ -79,7 +113,7 @@ const AdminMain = () => {
             </div>
           </div>
           <hr />
-          <div className="buttons">
+          <div className="buttonss">
             <button className="delete">삭제</button>
             <div className="seletes">
               <select className="select" name="select">
@@ -91,14 +125,18 @@ const AdminMain = () => {
                 <option value="">기타</option>
                 <option value="">신고</option>
               </select>
-              <select className="select" name="select">
+              <select
+                className="select"
+                name="select"
+                value={selectType}
+                onChange={handleSelectTypeChange}
+              >
                 <option value="">- 항목 -</option>
-                <option value="">전체</option>
-                <option value="">아이디</option>
-                <option value="">문의내용</option>
-                <option value="">작성일시</option>
-                <option value="">답변유무</option>
-                <option value="">답변일시</option>
+                <option value="userId">아이디</option>
+                <option value="title">문의제목</option>
+                <option value="inquiryDate">문의일시</option>
+                <option value="answerStatus">답변유무</option>
+                <option value="answerDate">답변일시</option>
               </select>
               <input
                 type="text"
@@ -132,7 +170,13 @@ const AdminMain = () => {
                     <td>{inquiry.title}</td>
                     <td>{inquiry.userId}</td>
                     <td>{inquiry.inquiryDate}</td>
-                    <td>{inquiry.answerStatus}</td>
+                    <td
+                      className={
+                        inquiry.answerStatus === "대기 중" ? "red-text" : ""
+                      }
+                    >
+                      {inquiry.answerStatus}
+                    </td>
                     <td>{inquiry.answerDate}</td>
                   </tr>
                 ))}
@@ -145,4 +189,4 @@ const AdminMain = () => {
   );
 };
 
-export default AdminMain;
+export default AdminInquiry;
