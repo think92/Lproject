@@ -62,7 +62,8 @@ button {
   border: none;
   width: 20px;
   height: 20px;
-  margin: 0 13px 4px 9px;
+  margin-left: 10px;
+  padding: 0;
 }
 .types2 {
   display: flex;
@@ -75,7 +76,8 @@ button {
   border: none;
   width: 20px;
   height: 20px;
-  margin: 0 9px 4px 12px;
+  padding: 0;
+  margin-left: 10px;
 }
 .slider {
   -webkit-appearance: none; /* 기본 스타일 제거 */
@@ -106,6 +108,7 @@ button {
   background-color: white;
   border: none;
   font-size: 20px;
+  color: #000;
 }
 .submits {
   margin-top: 120px;

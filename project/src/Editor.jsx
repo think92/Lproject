@@ -545,7 +545,7 @@ const Editor = () => {
               <button className="typeshape">
                 <FontAwesomeIcon icon={faSquare} />
               </button>
-              <button className="type">
+              <button className="typeshape">
                 <FontAwesomeIcon icon={faCircle} />
               </button>
             </div>
