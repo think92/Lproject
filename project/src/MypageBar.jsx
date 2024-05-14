@@ -1,10 +1,15 @@
-import React, { useState } from "react";
+import React, { Children, createContext, useRef, useState } from "react";
 import "./css/MypageBar.css";
 import { faHouse, faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 const MypageBar = () => {
+  const changeBtn = {
+    backgroundColor: "#4ce577",
+  };
+
+
   return (
     <div className="mypageBody">
       <section>
@@ -24,25 +29,44 @@ const MypageBar = () => {
                 alt="user"
               ></img>
             </div>
-            
+
             <p className="useremail">user1</p>
             <div>
-              <Link to={"/Mypage"} className="mypagetool">
-                <FontAwesomeIcon icon={faCircle} className="facircle" />
+              <NavLink
+                to={"/Mypage"}
+                className="mypagetool"
+                style={({ isActive }) => (isActive ? changeBtn : {})}
+              >
+                <FontAwesomeIcon
+                  icon={faCircle}
+                  className="facircle"
+                  to={"/Mypage"}
+                  style={({ isActive }) => (isActive ? changeBtn : {})}
+                />
                 <p className="mypagetools">작업내역</p>
-              </Link>
+              </NavLink>
             </div>
             <div>
-              <Link to={"/MypageCustom"} className="mypagecustomer">
-                <FontAwesomeIcon icon={faCircle} className="facirclewhite" />
+              <NavLink
+                to={"/MypageCustom"}
+                className="mypagecustomer"
+                style={({ isActive }) => (isActive ? changeBtn : {})}
+              >
+                <FontAwesomeIcon
+                  icon={faCircle}
+                  className="facirclewhite"
+                  onClick={() => {
+                    changeBtn();
+                  }}
+                />
                 <p className="mypagecustomers">문의사항</p>
-              </Link>
+              </NavLink>
             </div>
             <div>
-              <Link to={"/MypagePay"} className="mypagepay">
+              <NavLink to={"/MypagePay"} className="mypagepay" style={({ isActive }) => (isActive ? changeBtn : {})}>
                 <FontAwesomeIcon icon={faCircle} className="facirclewhite" />
                 <p className="mypagepays">결재내역</p>
-              </Link>
+              </NavLink>
             </div>
 
             <div className="mypagegologout">
