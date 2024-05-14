@@ -152,7 +152,9 @@ const AdminInquiry = () => {
                 value={searchTerm}
                 onChange={handleInputChange}
               />
-              <button onClick={handleSearch}>검색</button>
+              <button className="delete" onClick={handleSearch}>
+                검색
+              </button>
             </div>
           </div>
           <div className="table-responsive">
