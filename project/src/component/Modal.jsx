@@ -12,7 +12,10 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
         </span>
         <div className="modal-header">
           <div className="modal-title">
-            {inquiry.userId} · {inquiry.inquiryDate}
+            <h1>답변작성</h1>
+            <div>
+              {inquiry.userId} · {inquiry.inquiryDate}
+            </div>
           </div>
         </div>
         <div className="modal-body">
