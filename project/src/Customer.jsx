@@ -21,7 +21,7 @@ const Customer = () => {
       .then((res) => {
         setInquiri(res.data);
         setInquiriLength(res.data.length);
-        console.log(inquiri);
+        console.log(res.data);
       })
       .catch((res) => {
         // console.log("fail:",inquiri.length);

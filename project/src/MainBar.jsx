@@ -9,13 +9,11 @@ const MainBar = () => {
   const { login_id, setLogin_id, login_role, setLogin_role } =
     useContext(LoginUserContext);
 
-  console.log("현재 로그인 상태 확인 : ", login_id);
-
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
     rel="stylesheet"
   />;
-  
+
   function LogOut(params) {
     setLogin_id(false); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
   }
