@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminInquiry.css";
+import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
 
 const AdminInquiry = () => {
   // 검색창 상태
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
+  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
+  const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
 
   const initialInquiries = [
     {
@@ -30,7 +33,7 @@ const AdminInquiry = () => {
       title: "서비스 이용 문의",
       userId: "user789",
       inquiryDate: "2024-05-10",
-      answerStatus: "대기 중",
+      answerStatus: "답변 완료",
       answerDate: "2024-05-11",
     },
     {
@@ -84,6 +87,11 @@ const AdminInquiry = () => {
 
   const handleSearch = () => {
     filterAndSortInquiries(); // 검색 실행 시 필터 및 정렬 실행
+  };
+
+  const openModal = (inquiry) => {
+    setSelectedInquiry(inquiry);
+    setModalIsOpen(true);
   };
   return (
     <div className="admin">
@@ -167,7 +175,7 @@ const AdminInquiry = () => {
                       <input type="checkbox" />
                     </td>
                     <td>{inquiry.id}</td>
-                    <td>{inquiry.title}</td>
+                    <td onClick={() => openModal(inquiry)}>{inquiry.title}</td>
                     <td>{inquiry.userId}</td>
                     <td>{inquiry.inquiryDate}</td>
                     <td
@@ -183,6 +191,11 @@ const AdminInquiry = () => {
               </tbody>
             </table>
           </div>
+          <Modal
+            isOpen={modalIsOpen}
+            onClose={() => setModalIsOpen(false)}
+            inquiry={selectedInquiry}
+          />
         </div>
       </div>
     </div>
