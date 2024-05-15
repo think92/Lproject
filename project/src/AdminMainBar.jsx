@@ -35,7 +35,12 @@ const AdminMain = () => {
           >
             <p className="menuList">● 문의사항</p>
           </NavLink>
+          <NavLink
+            to={"/AdminUser"}
+            style={({ isActive }) => (isActive ? changeBtn : {})}
+          >
           <p className="menuList">● 회원관리</p>
+          </NavLink>
           <p className="menuList">● 기능 업데이트</p>
           <p className="menuList">● 알림 서비스</p>
           <p className="menuList">● 관리자 권한 설정</p>

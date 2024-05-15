@@ -134,7 +134,7 @@ const AdminMain = () => {
           <div className="membership">
             <div className="inqureHead">
               <h1>회원관리</h1>
-              <Link to={"/AdminInquiry"}>
+              <Link to={"/AdminUser"}>
                 <p>+더 보기</p>
               </Link>
             </div>
