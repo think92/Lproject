@@ -74,3 +74,24 @@ textarea {
   font-size: 0.9rem;
   color: #333;
 }
+
+.userInrtos {
+  align-items: center;
+  font-size: 15px;
+  background-color: #f9f8f8;
+  padding: 15px;
+}
+
+.userInrto {
+  display: flex;
+  align-items: center;
+}
+
+.userInrtos img {
+  width: 30px;
+  margin-right: 5px;
+}
+
+.titleIntro p {
+  font-weight: 900;
+}
