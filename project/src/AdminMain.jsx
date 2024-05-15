@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminMain.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,8 +15,28 @@ import {
   premiumData,
 } from "./component/WeekChart";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const AdminMain = () => {
+  const [board, setBoard] = useState([]);
+
+  useEffect(() => {
+    boardList();
+    console.log("length : ", board);
+  }, []);
+
+  const boardList = () => {
+    axios
+      .post("http://localhost:8083/admin/mainBoard", {})
+      .then((res) => {
+        setBoard(res.data);
+        console.log(res.data);
+      })
+      .catch((res) => {
+        // console.log("fail:",inquiri.length);
+      });
+  };
+
   return (
     <div className="admin">
       <AdminMinBar />
@@ -40,7 +60,7 @@ const AdminMain = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
+                  {/* <tr>
                     <td>1</td>
                     <td>일반</td>
                     <td>홍길동</td>
@@ -74,24 +94,36 @@ const AdminMain = () => {
                     <td>홍길동</td>
                     <td>2022-09-15</td>
                     <td>대기 중</td>
-                  </tr>
+                </tr>*/}
+                  {board.map(
+                    (qstns, index) =>
+                      index < 5 && (
+                        <tr>
+                          <td>{qstns.test_idx}</td>
+                          <td>{qstns.test_title}</td>
+                          <td>{qstns.test_context}</td>
+                          <td>{qstns.created_at}</td>
+                          <td>{qstns.test_answer}</td>
+                        </tr>
+                      )
+                  )}
                 </tbody>
               </table>
               <div className="summaryDetail">
                 <div className="detailBorder">
-                  <p className="newTitle">신규 문의</p>
+                  <p className="newTitle">문의 등록</p>
                   <p className="newCount">
                     <span className="newConutI">3</span>건
                   </p>
                 </div>
                 <div className="detailBorder">
-                  <p className="answerC">답변 완료</p>
+                  <p className="answerC">문의 답변</p>
                   <p className="answerCount">
                     <span className="answerConutI">2</span>건
                   </p>
                 </div>
                 <div className="detailBorder">
-                  <p className="addC">추가 댓글</p>
+                  <p className="addC">문의 대기</p>
                   <p className="addCount">
                     <span className="addConutI">3</span>건
                   </p>

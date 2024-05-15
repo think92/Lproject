@@ -15,6 +15,7 @@ const Customer = () => {
     boardList();
     console.log("length : ", inquiri);
   }, []);
+
   const boardList = () => {
     axios
       .post("http://localhost:8083/Customer/BoardList", {})
