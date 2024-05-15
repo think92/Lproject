@@ -26,7 +26,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
           </div>
         </div>
         <div className="modal-body">
-          <textarea placeholder="답변을 작성하세요"></textarea>
+          <textarea className="styled-textarea" placeholder="답변을 작성하세요"></textarea>
         </div>
         <div className="modal-footer">
           <button className="button" onClick={onClose}>
