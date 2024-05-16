@@ -25,10 +25,10 @@ const Customer = () => {
   }, []);
   const boardList = () => {
     axios
-      .post("http://localhost:8083/Customer/BoardList", {})
+      .post("http://localhost:8083/AdmApi/adminInquiry", {})
       .then((res) => {
-        setInquiri(res.data);
-        setInquiriLength(res.data.length);
+        setInquiri(res.data.aQstnsList);
+        setInquiriLength(res.data.length.aQstnsList);
         console.log(res.data);
       })
       .catch((res) => {
@@ -36,11 +36,16 @@ const Customer = () => {
       });
   };
 
-  // 날짜 변경하기
+  //날짜 변경하기
   const formatDate = (dateString) => {
+    if (!dateString) return ""; // null 또는 undefined 처리
     const date = new Date(dateString);
-    const formattedDate = date.toISOString().replace("T", " ").split(".")[0];
-    return formattedDate;
+    if (isNaN(date.getTime())) return ""; // 유효하지 않은 날짜 처리
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hour = String(date.getHours()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hour}:00`;
   };
 
   // 이전, 이후 페이지 나누기
@@ -52,8 +57,8 @@ const Customer = () => {
 
   const startIndex = (currentPage - 1) * pagesize;
   const dispalyedInquiries = inquiri
-    .sort((a, b) => b.test_idx - a.test_idx)
-    .slice(startIndex, startIndex + pagesize);
+  .sort((a, b) => b.qstn_idx - a.qstn_idx)
+  .slice(startIndex, startIndex + pagesize);
   const handlePreviousGroup = () => {
     if (currentGroup > 1) {
       setCurrenPage(currentGroup - 1); // 이전 그룹으로
@@ -109,9 +114,7 @@ const Customer = () => {
                 placeholder="검색어를 입력하세요"
                 className="searchinput"
               />
-              <button className="searchbtn" >
-                검색
-              </button>
+              <button className="searchbtn">검색</button>
             </div>
             <table className="customertable">
               <thead>
@@ -126,41 +129,42 @@ const Customer = () => {
               <tbody>
                 {dispalyedInquiries.map((inquiry) => (
                   <tr key={inquiry.num}>
-                    <td className="customernums">{inquiry.test_idx}</td>
-                    <td className="customerdivisons" onClick={() => openModal(inquiry)}>
-                      {inquiry.test_title === "비공개 글 입니다." && (
+                    <td className="customernums">{inquiry.qstn_idx}</td>
+                    <td
+                      className="customerdivisons"
+                      onClick={() => openModal(inquiry)}
+                    >
+                      {inquiry.qstn_title === "비공개 글 입니다." && (
                         <img
                           src="./img/secured-lock.png"
                           className="lockicon"
                           alt="잠금"
                         ></img>
                       )}
-                      {inquiry.test_title !== "비공개 글 입니다." && (
-                        <img
-                          src="./img/padlock-unlock.png"
-                          className="lockicon"
-                          alt="잠금해제"
-                        ></img>
-                      )}
 
-                      {inquiry.test_title}
+                      {inquiry.qstn_title}
                     </td>
-                    <td className="customerwriters">{inquiry.test_context}</td>
+                    <td className="customerwriters">{inquiry.qstn_content}</td>
                     <td className="customerdates">
-                      {formatDate(inquiry.createdAt)}
+                      {formatDate(inquiry.questioned_at)}
+                      {/* {inquiry.questioned_at} */}
                     </td>
-                    <td className={
-                          inquiry.test_answer === "N" ? "redText" : "blackText"
-                        }>{inquiry.test_answer}</td>
+                    <td
+                      className={
+                        inquiry.qstn_open === "N" ? "redText" : "blackText"
+                      }
+                    >
+                      {inquiry.qstn_open}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <Modal
-            isOpen={modalIsOpen}
-            onClose={() => setModalIsOpen(false)}
-            inquiry={selectedInquiry}
-          />
+              isOpen={modalIsOpen}
+              onClose={() => setModalIsOpen(false)}
+              inquiry={selectedInquiry}
+            />
             {/* 작성하기 버튼 */}
             <div className="customerwrite">
               <button className="customerwrites">작성하기</button>

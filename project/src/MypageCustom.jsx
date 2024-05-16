@@ -6,7 +6,7 @@ import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Modal from "./component/Modal";
 
-const pagesize = 12; // 12개 게시물 이상일때 다음 페이지로 이동
+const pagesize = 10; // 12개 게시물 이상일때 다음 페이지로 이동
 
 const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
@@ -25,9 +25,9 @@ const MypageCustom = () => {
 
   const boardList = () => {
     axios
-      .post("http://localhost:8083/Customer/BoardList", {})
+      .post("http://localhost:8083/AdmApi/adminInquiry", {})
       .then((res) => {
-        setInquiri(res.data);
+        setInquiri(res.data.aQstnsList);
         setInquiriLength(res.data.length);
         console.log(res.data);
       })
@@ -39,9 +39,14 @@ const MypageCustom = () => {
 
   // 날짜 변경하기
   const formatDate = (dateString) => {
+    if (!dateString) return ""; // null 또는 undefined 처리
     const date = new Date(dateString);
-    const formattedDate = date.toISOString().replace("T", " ").split(".")[0];
-    return formattedDate;
+    if (isNaN(date.getTime())) return ""; // 유효하지 않은 날짜 처리
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    const hour = String(date.getHours()).padStart(2, "0");
+    return `${year}-${month}-${day} ${hour}:00`;
   };
 
   // 페이지 버튼
@@ -53,7 +58,7 @@ const MypageCustom = () => {
 
   const startIndex = (currentPage - 1) * pagesize;
   const dispalyedInquiries = inquiri
-    .sort((a, b) => b.test_idx - a.test_idx)
+    .sort((a, b) => b.qstn_idx - a.qstn_idx)
     .slice(startIndex, startIndex + pagesize);
   const handlePreviousGroup = () => {
     if (currentGroup > 1) {
@@ -207,21 +212,24 @@ const MypageCustom = () => {
                       <td>
                         <input type="checkbox"></input>
                       </td>
-                      <td>{inquiry.test_idx}</td>
+                      <td>{inquiry.qstn_idx}</td>
                       <td
                         className="CustomNum"
                         onClick={() => openModal(inquiry)}
                       >
-                        {inquiry.test_title}
+                        {inquiry.qstn_title}
                       </td>
-                      <td>{inquiry.test_context}</td>
-                      <td>{formatDate(inquiry.createdAt)}</td>
+                      <td>{inquiry.mb_email}</td>
+                      <td>
+                        {formatDate(inquiry.questioned_at)}
+                        {/* {inquiry.questioned_at} */}
+                        </td>
                       <td
                         className={
-                          inquiry.test_answer === "N" ? "redText" : "blackText"
+                          inquiry.qstn_open === "N" ? "redText" : "blackText"
                         }
                       >
-                        {inquiry.test_answer}
+                        {inquiry.qstn_open}
                       </td>
                       <td>답변일시</td>
                     </tr>
