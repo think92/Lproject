@@ -19,7 +19,8 @@ import axios from "axios";
 
 const AdminMain = () => {
   const [board, setBoard] = useState([]);
-
+  const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
+  const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
   useEffect(() => {
     boardList();
     console.log("length : ", board);
@@ -60,41 +61,6 @@ const AdminMain = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* <tr>
-                    <td>1</td>
-                    <td>일반</td>
-                    <td>홍길동</td>
-                    <td>2022-09-15</td>
-                    <td>대기 중</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>일반</td>
-                    <td>홍길동</td>
-                    <td>2022-09-15</td>
-                    <td>대기 중</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>일반</td>
-                    <td>홍길동</td>
-                    <td>2022-09-15</td>
-                    <td>대기 중</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>일반</td>
-                    <td>홍길동</td>
-                    <td>2022-09-15</td>
-                    <td>대기 중</td>
-                  </tr>
-                  <tr>
-                    <td>1</td>
-                    <td>일반</td>
-                    <td>홍길동</td>
-                    <td>2022-09-15</td>
-                    <td>대기 중</td>
-                </tr>*/}
                   {board.map(
                     (qstns, index) =>
                       index < 5 && (
@@ -119,7 +85,7 @@ const AdminMain = () => {
                 <div className="detailBorder">
                   <p className="addC">문의 대기</p>
                   <p className="addCount">
-                    <span className="addConutI">2</span>건
+                    <span className="newConutI">3</span>건
                   </p>
                 </div>
               </div>
