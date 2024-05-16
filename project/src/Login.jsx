@@ -40,19 +40,6 @@ const Login = () => {
           // 회원 정보 context에 담기
           setLogin_id(res.data.mb_email);
           setLogin_role(res.data.mb_role);
-
-          // nav("/");
-
-          // 브라우저 자체에 데이터 저장
-          //window.localStorage.setItem("nick", res.data);
-
-          // 로그인 성공 실패 분기문
-          // if (res.data == "Success") {
-          //   window.localStorage.setItem("nick", res.data);
-          //   nav("/");
-          // } else {
-          //   alert("로그인 실패");
-          // }
         } else {
           alert("아이디 비밀번호가 잘 못 되었습니다.");
         }
