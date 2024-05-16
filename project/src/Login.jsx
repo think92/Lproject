@@ -23,7 +23,7 @@ const Login = () => {
 
     axios
       .get(
-        `http://localhost:8083/restApi/Login?mb_email=${inputEmail}&mb_pw=${inputPw}`
+        `http://localhost:8083/api/Login?mb_email=${inputEmail}&mb_pw=${inputPw}`
       )
       .then((res) => {
         console.log("로그인 정보보기  : ", res.data);

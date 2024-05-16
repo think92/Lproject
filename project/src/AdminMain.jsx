@@ -117,15 +117,15 @@ const AdminMain = () => {
                   </p>
                 </div>
                 <div className="detailBorder">
-                  <p className="answerC">문의 답변</p>
-                  <p className="answerCount">
-                    <span className="answerConutI">2</span>건
+                  <p className="addC">문의 답변</p>
+                  <p className="addCount">
+                    <span className="addConutI">2</span>건
                   </p>
                 </div>
                 <div className="detailBorder">
-                  <p className="addC">문의 대기</p>
-                  <p className="addCount">
-                    <span className="addConutI">3</span>건
+                  <p className="answerC">문의 대기</p>
+                  <p className="answerCount">
+                    <span className="answerConutI">1</span>건
                   </p>
                 </div>
               </div>
