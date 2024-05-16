@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminInquiry.css";
 import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
+import axios from "axios";
 
 const AdminInquiry = () => {
   // 검색창 상태
@@ -83,6 +84,7 @@ const AdminInquiry = () => {
 
   useEffect(() => {
     filterAndSortInquiries(); // 초기 로드 시 필터 및 정렬 실행
+    qntnsList(); // 문의사항 데이터 가져오기(문의 리스트, 금일문의/대기/답변 개수)
   }, []);
 
   const handleSelectTypeChange = (event) => {
@@ -101,6 +103,19 @@ const AdminInquiry = () => {
     setSelectedInquiry(inquiry);
     setModalIsOpen(true);
   };
+
+  const qntnsList = () => {
+    axios
+      .post("http://localhost:8083/AdmApi/adminInquiry")
+      .then((res) => {
+        // useState set에 저장할 변수
+        console.log(res.data);
+      })
+      .catch((res) => {
+        // console.log("fail:",inquiri.length);
+      });
+  };
+
   return (
     <div className="admin">
       <AdminMinBar />
