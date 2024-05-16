@@ -25,8 +25,6 @@ const MypageCustom = () => {
   const itemsPerPage = 10; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
 
-
-
   useEffect(() => {
     boardList();
     // console.log("length : ", inquiri);
@@ -229,7 +227,7 @@ const MypageCustom = () => {
                       <td>
                         {formatDate(inquiry.questioned_at)}
                         {/* {inquiry.questioned_at} */}
-                        </td>
+                      </td>
                       <td
                         className={
                           inquiry.qstn_open === "N" ? "redText" : "blackText"
@@ -249,22 +247,22 @@ const MypageCustom = () => {
             inquiry={selectedInquiry}
           />
           <div className="pagination">
-              {currentGroup > 1 && (
-                <button onClick={handlePrevGroup}>{"<"}</button>
-              )}
-              {pageNumbers.map((number) => (
-                <button
-                  key={number}
-                  onClick={() => handlePageChange(number)}
-                  className={currentPage === number ? "active" : ""}
-                >
-                  {number}
-                </button>
-              ))}
-              {currentGroup < totalGroups && (
-                <button onClick={handleNextGroup}>{">"}</button>
-              )}
-            </div>
+            {currentGroup > 1 && (
+              <button onClick={handlePrevGroup}>{"<"}</button>
+            )}
+            {pageNumbers.map((number) => (
+              <button
+                key={number}
+                onClick={() => handlePageChange(number)}
+                className={currentPage === number ? "active" : ""}
+              >
+                {number}
+              </button>
+            ))}
+            {currentGroup < totalGroups && (
+              <button onClick={handleNextGroup}>{">"}</button>
+            )}
+          </div>
         </div>
       </section>
     </div>

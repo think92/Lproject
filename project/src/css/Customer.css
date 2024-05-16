@@ -209,7 +209,7 @@ td {
   justify-content: end;
   text-align: end;
 }
-.customerwrites{
+.customerwrite button{
   width: 98px;
   height: 40px;
   background-color: #D4FE76;
@@ -218,5 +218,10 @@ td {
   font-weight: 600;
   font-family: "Pretendard-Regular";
   border-radius: 5px;
-  margin-top: 20px;
+}
+
+.pagination{
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
 }
