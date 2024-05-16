@@ -12,6 +12,7 @@ const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
   const [inquiri, setInquiri] = useState([]);
   const [inquirilength, setInquiriLength] = useState([]);
+  const [filteredInquiri, setFilteredInquiri] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
@@ -29,12 +30,13 @@ const MypageCustom = () => {
       .then((res) => {
         setInquiri(res.data);
         setInquiriLength(res.data.length);
+        setFilteredInquiri(res.data); // 처음 로드 시 모든 데이터를 필터링된 데이터로 설정
+
         console.log(res.data);
       })
       .catch((res) => {
         // console.log("fail:",inquiri.length);
       });
-      
   };
 
   // 날짜 변경하기
@@ -44,59 +46,18 @@ const MypageCustom = () => {
     return formattedDate;
   };
 
-  // 페이지 버튼
-  const [currentPage, setCurrenPage] = useState(1); // 현재 페이지 상태
-  const [currentGroup, setCurrenGroup] = useState(1); // 현재 페이지 그룹 상태
-
-  const totalPages = Math.ceil(inquirilength / pagesize); // 총 페이지 수
-  const totalGroups = Math.ceil(totalPages / 3); // 그룹당 3개 페이지
-
-  const startIndex = (currentPage - 1) * pagesize;
-  const dispalyedInquiries = inquiri
-    .sort((a, b) => b.test_idx - a.test_idx)
-    .slice(startIndex, startIndex + pagesize);
-  const handlePreviousGroup = () => {
-    if (currentGroup > 1) {
-      setCurrenPage(currentGroup - 1); // 이전 그룹으로
-      setCurrenGroup((currentGroup - 2) * 3 + 1); // 그룸의 첫 페이지로 이동
-    }
-  };
-
-  const handleNextGroup = () => {
-    if (currentGroup < totalGroups) {
-      setCurrenPage(Math.ceil(currentPage / 3) * 4); // 0으로 세팅하고 3 곱하기 페이징
-      setCurrenGroup(Math.ceil(currentPage / 3 + 1)); // 그룹의 다음 첫 페이지
-    }
-  };
-
-  const handlePageClick = (page) => {
-    setCurrenPage(page);
-  };
-
-  const getCurrentGroupPages = () => {
-    const start = (currentGroup - 1) * 3 + 1; // 그룹의 첫 페이지 번호
-    const end = Math.min(start + 2, totalPages); // 그룹의 마지막 페이지 번호
-    console.log("start, end        : ", start, end);
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  };
-
-  // 모달
-  const openModal = (inquiry) => {
-    setSelectedInquiry(inquiry);
-    setModalIsOpen(true);
-  };
-
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = () => {
-    let filtered = dispalyedInquiries.map((inquiry) => {
-      if (selectType && searchTerm) {
-        return inquiry[selectType]
-          .toString()
+    let filtered = inquiri;
+
+    if (selectType && searchTerm) {
+      filtered = filtered.filter((inquiry) =>
+        inquiry[selectType]
+          ?.toString()
           .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-      }
-      return true;
-    });
+          .includes(searchTerm.toLowerCase())
+      );
+    }
 
     // "대기 중" 상태가 같은 경우, 날짜를 비교하여 오래된 문의를 상위에 배치
     filtered.sort((a, b) => {
@@ -110,11 +71,8 @@ const MypageCustom = () => {
       return 0;
     });
 
-    setInquiri(filtered);
+    setFilteredInquiri(filtered);
   };
-  useEffect(() => {
-    filterAndSortInquiries();
-  }, []);
 
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
@@ -124,10 +82,48 @@ const MypageCustom = () => {
     setSearchTerm(event.target.value);
   };
 
-  const handleSearch = () => {
-    filterAndSortInquiries(); // 검색 실행 시 필터 및 정렬 실행
+  // 페이지 버튼
+  const [currentPage, setCurrenPage] = useState(1); // 현재 페이지 상태
+  const [currentGroup, setCurrenGroup] = useState(1); // 현재 페이지 그룹 상태
+
+  const totalPages = Math.ceil(filteredInquiri.length / pagesize); // 총 페이지 수
+  const totalGroups = Math.ceil(totalPages / 3); // 그룹당 3개 페이지
+
+  const startIndex = (currentPage - 1) * pagesize;
+  const dispalyedInquiries = filteredInquiri.slice(
+    startIndex,
+    startIndex + pagesize
+  );
+
+  const handlePreviousGroup = () => {
+    if (currentGroup > 1) {
+      setCurrenPage((currentGroup - 2) * 3 + 1); // 이전 그룹의 첫 페이지로 이동
+      setCurrenGroup(currentGroup - 1);
+    }
   };
 
+  const handleNextGroup = () => {
+    if (currentGroup < totalGroups) {
+      setCurrenPage(currentGroup * 3 + 1); // 다음 그룹의 첫 페이지로 이동
+      setCurrenGroup(currentGroup + 1);
+    }
+  };
+
+  const handlePageClick = (page) => {
+    setCurrenPage(page);
+  };
+
+  const getCurrentGroupPages = () => {
+    const start = (currentGroup - 1) * 3 + 1; // 그룹의 첫 페이지 번호
+    const end = Math.min(start + 2, totalPages); // 그룹의 마지막 페이지 번호
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
+  // 모달
+  const openModal = (inquiry) => {
+    setSelectedInquiry(inquiry);
+    setModalIsOpen(true);
+  };
 
   return (
     <div>
@@ -159,12 +155,12 @@ const MypageCustom = () => {
                 onChange={handleSelectTypeChange}
               >
                 <option className="opt">- 항목 -</option>
-                <option>전체</option>
-                <option>아이디</option>
-                <option>문의내용</option>
-                <option>작성일시</option>
-                <option>답변유무</option>
-                <option>답변일시</option>
+                <option value="">전체</option>
+                <option value="test_id">아이디</option>
+                <option value="test_context">문의내용</option>
+                <option value="createdAt">작성일시</option>
+                <option value="answerStatus">답변유무</option>
+                <option value="answeredAt">답변일시</option>
               </select>
             </div>
             <div>
@@ -182,7 +178,7 @@ const MypageCustom = () => {
               />
             </div>
             <div>
-              <button className="searchBtn" onClick={boardList}>
+              <button className="searchBtn" onClick={filterAndSortInquiries}>
                 검색
               </button>
             </div>
@@ -200,33 +196,27 @@ const MypageCustom = () => {
               </tr>
             </thead>
             <tbody>
-              {dispalyedInquiries.map(
-                (inquiry, index) =>
-                  index < 12 && (
-                    <tr key={inquiry.num}>
-                      <td>
-                        <input type="checkbox"></input>
-                      </td>
-                      <td>{inquiry.test_idx}</td>
-                      <td
-                        className="CustomNum"
-                        onClick={() => openModal(inquiry)}
-                      >
-                        {inquiry.test_title}
-                      </td>
-                      <td>{inquiry.test_context}</td>
-                      <td>{formatDate(inquiry.createdAt)}</td>
-                      <td
-                        className={
-                          inquiry.test_answer === "N" ? "redText" : "blackText"
-                        }
-                      >
-                        {inquiry.test_answer}
-                      </td>
-                      <td>답변일시</td>
-                    </tr>
-                  )
-              )}
+              {dispalyedInquiries.map((inquiry, index) => (
+                <tr key={inquiry.num}>
+                  <td>
+                    <input type="checkbox"></input>
+                  </td>
+                  <td>{inquiry.test_idx}</td>
+                  <td className="CustomNum" onClick={() => openModal(inquiry)}>
+                    {inquiry.test_title}
+                  </td>
+                  <td>{inquiry.test_context}</td>
+                  <td>{formatDate(inquiry.createdAt)}</td>
+                  <td
+                    className={
+                      inquiry.test_answer === "N" ? "redText" : "blackText"
+                    }
+                  >
+                    {inquiry.test_answer}
+                  </td>
+                  <td>답변일시</td>
+                </tr>
+              ))}
             </tbody>
           </table>
           <Modal
