@@ -79,6 +79,12 @@ const Customer = () => {
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
+  // 모달
+  const openModal = (inquiry) => {
+    setSelectedInquiry(inquiry);
+    setModalIsOpen(true);
+  };
+
   return (
     <div>
       <MainBar />
@@ -121,7 +127,7 @@ const Customer = () => {
                 {dispalyedInquiries.map((inquiry) => (
                   <tr key={inquiry.num}>
                     <td className="customernums">{inquiry.test_idx}</td>
-                    <td className="customerdivisons">
+                    <td className="customerdivisons" onClick={() => openModal(inquiry)}>
                       {inquiry.test_title === "비공개 글 입니다." && (
                         <img
                           src="./img/secured-lock.png"
@@ -143,7 +149,9 @@ const Customer = () => {
                     <td className="customerdates">
                       {formatDate(inquiry.createdAt)}
                     </td>
-                    <td className="customeranswers">{inquiry.test_answer}</td>
+                    <td className={
+                          inquiry.test_answer === "N" ? "redText" : "blackText"
+                        }>{inquiry.test_answer}</td>
                   </tr>
                 ))}
               </tbody>
