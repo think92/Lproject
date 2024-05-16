@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminUser.css";
-import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
+import Filter from "./component/Filter";
 
 const AdminUser = () => {
   // 검색창 상태
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [users, setUsers] = useState([]); // 데이터를 저장할 상태
-  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
-  const [selectedUser, setSelectedUser] = useState(null); // 선택된 문의 상태
+  const [editingUserId, setEditingUserId] = useState(null); // 수정 중인 사용자 ID
+  const [updatedGrade, setUpdatedGrade] = useState(""); // 업데이트된 등급
 
   const initialUsers = [
     {
@@ -72,10 +72,22 @@ const AdminUser = () => {
   const handleSearch = () => {
     filterAndSortUsers(); // 검색 실행 시 필터 및 정렬 실행
   };
+  const handleEditClick = (user) => {
+    setEditingUserId(user.id);
+    setUpdatedGrade(user.grade);
+  };
 
-  const openModal = (user) => {
-    setSelectedUser(user);
-    setModalIsOpen(true);
+  const handleGradeChange = (event) => {
+    setUpdatedGrade(event.target.value);
+  };
+
+  const handleSaveClick = (user) => {
+    setUsers((prevUsers) =>
+      prevUsers.map((u) =>
+        u.id === user.id ? { ...u, grade: updatedGrade } : u
+      )
+    );
+    setEditingUserId(null);
   };
 
   return (
@@ -86,7 +98,9 @@ const AdminUser = () => {
           <h1 className="startTitle">회원 관리</h1>
           <hr />
           <div className="summaryDetails">
-            <h1 className="aa">전체회원 <span className="bb">00</span>명</h1>
+            <h1 className="aa">
+              전체회원 <span className="bb">00</span>명
+            </h1>
           </div>
           <hr />
           <div className="buttonss">
@@ -133,22 +147,48 @@ const AdminUser = () => {
                   <tr key={user.id}>
                     <td>{user.id}</td>
                     <td>{user.userId}</td>
-                    <td>{user.grade}</td>
+                    <td>
+                      {editingUserId === user.id ? (
+                        <select
+                          className="styled-select"
+                          value={updatedGrade}
+                          onChange={handleGradeChange}
+                        >
+                          <option value="신규회원" className="new-member">
+                            신규회원
+                          </option>
+                          <option value="일반회원" className="regular-member">
+                            일반회원
+                          </option>
+                          <option
+                            value="프리미엄회원"
+                            className="premium-member"
+                          >
+                            프리미엄회원
+                          </option>
+                        </select>
+                      ) : (
+                        user.grade
+                      )}
+                    </td>
                     <td>{user.joinDate}</td>
                     <td>{user.paymentDate}</td>
                     <td>
-                      <button onClick={() => openModal(user)}>수정</button>
+                      {editingUserId === user.id ? (
+                        <button onClick={() => handleSaveClick(user)}>
+                          완료
+                        </button>
+                      ) : (
+                        <button onClick={() => handleEditClick(user)}>
+                          수정
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-          <Modal
-            isOpen={modalIsOpen}
-            onClose={() => setModalIsOpen(false)}
-            user={selectedUser}
-          />
         </div>
       </div>
     </div>

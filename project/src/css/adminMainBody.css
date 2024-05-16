@@ -89,3 +89,8 @@ body {
 .menuList {
   margin-left: 80px;
 }
+
+/* Option hover 효과를 위한 스타일 */
+.menuList:hover {
+  cursor: pointer;
+}
