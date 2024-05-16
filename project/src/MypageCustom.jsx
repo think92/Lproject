@@ -12,6 +12,7 @@ const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
   const [inquiri, setInquiri] = useState([]);
   const [inquirilength, setInquiriLength] = useState([]);
+  const [filteredInquiri, setFilteredInquiri] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
@@ -29,12 +30,13 @@ const MypageCustom = () => {
       .then((res) => {
         setInquiri(res.data.aQstnsList);
         setInquiriLength(res.data.length);
+        setFilteredInquiri(res.data); // 처음 로드 시 모든 데이터를 필터링된 데이터로 설정
+
         console.log(res.data);
       })
       .catch((res) => {
         // console.log("fail:",inquiri.length);
       });
-      
   };
 
   // 날짜 변경하기
@@ -93,15 +95,16 @@ const MypageCustom = () => {
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = () => {
-    let filtered = dispalyedInquiries.map((inquiry) => {
-      if (selectType && searchTerm) {
-        return inquiry[selectType]
-          .toString()
+    let filtered = inquiri;
+
+    if (selectType && searchTerm) {
+      filtered = filtered.filter((inquiry) =>
+        inquiry[selectType]
+          ?.toString()
           .toLowerCase()
-          .includes(searchTerm.toLowerCase());
-      }
-      return true;
-    });
+          .includes(searchTerm.toLowerCase())
+      );
+    }
 
     // "대기 중" 상태가 같은 경우, 날짜를 비교하여 오래된 문의를 상위에 배치
     filtered.sort((a, b) => {
@@ -115,11 +118,8 @@ const MypageCustom = () => {
       return 0;
     });
 
-    setInquiri(filtered);
+    setFilteredInquiri(filtered);
   };
-  useEffect(() => {
-    filterAndSortInquiries();
-  }, []);
 
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
@@ -128,11 +128,6 @@ const MypageCustom = () => {
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
   };
-
-  const handleSearch = () => {
-    filterAndSortInquiries(); // 검색 실행 시 필터 및 정렬 실행
-  };
-
 
   return (
     <div>
@@ -164,12 +159,12 @@ const MypageCustom = () => {
                 onChange={handleSelectTypeChange}
               >
                 <option className="opt">- 항목 -</option>
-                <option>전체</option>
-                <option>아이디</option>
-                <option>문의내용</option>
-                <option>작성일시</option>
-                <option>답변유무</option>
-                <option>답변일시</option>
+                <option value="">전체</option>
+                <option value="test_id">아이디</option>
+                <option value="test_context">문의내용</option>
+                <option value="createdAt">작성일시</option>
+                <option value="answerStatus">답변유무</option>
+                <option value="answeredAt">답변일시</option>
               </select>
             </div>
             <div>
@@ -187,7 +182,7 @@ const MypageCustom = () => {
               />
             </div>
             <div>
-              <button className="searchBtn" onClick={boardList}>
+              <button className="searchBtn" onClick={filterAndSortInquiries}>
                 검색
               </button>
             </div>

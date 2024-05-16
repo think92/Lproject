@@ -89,7 +89,7 @@
   flex-direction: column;
   align-items: center;
   margin: 20px 20px 20px 0;
-  justify-content: space-between;
+  justify-content: center;
   height: 250px;
 }
 
@@ -124,7 +124,7 @@
 }
 
 .answerC {
-  background-color: #fe7575;
+  background-color: #80caff;
   margin: 0;
   height: 30px;
   display: flex;
@@ -145,11 +145,11 @@
 .answerConutI {
   font-size: 30px;
   margin-right: 5px;
-  color: #fe7575;
+  color: #80caff;
 }
 
 .addC {
-  background-color: #80caff;
+  background-color: #fe7575;
   margin: 0;
   height: 30px;
   display: flex;
@@ -170,7 +170,7 @@
 .addConutI {
   font-size: 30px;
   margin-right: 5px;
-  color: #80caff;
+  color: #fe7575;
 }
 
 .subscriberDetail {
