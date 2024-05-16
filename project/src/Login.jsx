@@ -18,49 +18,36 @@ const Login = () => {
   function tryLogin() {
     // 사용자가 적은 ID, PW 값을 가져와서
     // SpringBoot 서버로 전송하겠습니다 ! --> 비동기 통신방식 (axios)
-    let inputEmail = mb_email.current.value;
-    let inputPw = mb_pw.current.value;
-
+    const formData = new FormData();
+    formData.append("mb_email", mb_email.current.value); // 아이디 값
+    formData.append("mb_pw", mb_pw.current.value); //비밀번호 값
     axios
-      .get(
-        `http://localhost:8083/MemApi/Login?mb_email=${inputEmail}&mb_pw=${inputPw}`
-      )
-      .then((res) => {
-        console.log("로그인 정보보기  : ", res.data);
-        console.log("로그인 이메일    : ", res.data.mb_email);
-        console.log("로그인 비번      : ", res.data.mb_pw);
-        console.log("로그인 등급      : ", res.data.mb_role);
-        console.log("로그인 가입일자  : ", res.data.joinedAt);
+    .post(`http://localhost:8083/MemApi/login`, formData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      console.log("로그인 정보보기  : ", res.data);
+      console.log("로그인 이메일    : ", res.data.mb_email);
+      console.log("로그인 비번      : ", res.data.mb_pw);
+      console.log("로그인 등급      : ", res.data.mb_role);
+      console.log("로그인 가입일자  : ", res.data.joinedAt);
 
-        if (res.data.mb_email !== undefined) {
-          // 회원 정보 context에 담기
-          setLogin_id(res.data.mb_email);
-          setLogin_role(res.data.mb_role);
+      if (res.data.mb_email !== undefined) {
+        // 회원 정보 context에 담기
+        setLogin_id(res.data.mb_email);
+        setLogin_role(res.data.mb_role);
+      } else {
+        alert("아이디 비밀번호가 잘 못 되었습니다.");
+      }
 
-          // nav("/");
-
-          // 브라우저 자체에 데이터 저장
-          //window.localStorage.setItem("nick", res.data);
-
-          // 로그인 성공 실패 분기문
-          // if (res.data == "Success") {
-          //   window.localStorage.setItem("nick", res.data);
-          //   nav("/");
-          // } else {
-          //   alert("로그인 실패");
-          // }
-        } else {
-          alert("아이디 비밀번호가 잘 못 되었습니다.");
-        }
-
-        if (res.data.mb_role === "A0") {
-          nav("/admin");
-        } else {
-          nav("/");
-        }
-      });
-
-    // 로그인 성공시 Nick 값 -> Main
+      if (res.data.mb_role === "A0") {
+        nav("/admin");
+      } else {
+        nav("/");
+      }
+    });
   }
 
   return (
