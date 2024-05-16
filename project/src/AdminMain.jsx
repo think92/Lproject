@@ -16,11 +16,14 @@ import {
 } from "./component/WeekChart";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import LoadingSpinner from "./component/LoadingSpinner";
 
 const AdminMain = () => {
   const [board, setBoard] = useState([]);
   const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
   const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
+  const [isLoading, setIsLoading] = useState(true); // 로딩 상태
+
   useEffect(() => {
     boardList();
     console.log("length : ", board);
@@ -28,14 +31,37 @@ const AdminMain = () => {
 
   const boardList = () => {
     axios
-      .post("http://localhost:8083/admin/mainBoard", {})
+      .post("http://localhost:8083/AdmApi/adminInquiry", {})
       .then((res) => {
-        setBoard(res.data);
-        console.log(res.data);
+        const data = res.data.aQstnsList || [];
+        setBoard(data);
+        console.log(data);
+
+        // 오늘 날짜와 비교
+        const today = new Date().toISOString().split("T")[0];
+        const todayInquiries = data.filter(
+          (inquiry) => inquiry.questioned_at.split("T")[0] === today
+        ).length;
+        setTodayCount(todayInquiries);
+
+        // 대기 중인 문의 수 계산
+        const waitingInquiries = data.filter(
+          (inquiry) => inquiry.qstn_open === "N"
+        ).length;
+        setWaitingCount(waitingInquiries);
+        setIsLoading(false); // 데이터 로드 완료
       })
-      .catch((res) => {
-        // console.log("fail:",inquiri.length);
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+        setIsLoading(false); // 데이터 로드 완료
       });
+  };
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   return (
@@ -61,31 +87,36 @@ const AdminMain = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {board.map(
-                    (qstns, index) =>
-                      index < 5 && (
-                        <tr>
-                          <td>{qstns.test_idx}</td>
-                          <td>{qstns.test_title}</td>
-                          <td>{qstns.test_context}</td>
-                          <td>{qstns.created_at}</td>
-                          <td>{qstns.test_answer}</td>
-                        </tr>
-                      )
-                  )}
+                  {board
+                    .sort(
+                      (a, b) =>
+                        new Date(b.questioned_at) - new Date(a.questioned_at)
+                    )
+                    .slice(0, 5)
+                    .map((qstns, index) => (
+                      <tr key={qstns.qstn_title + index}>
+                        <td>{index + 1}</td>
+                        <td>{qstns.qstn_title}</td>
+                        <td>{qstns.mb_email}</td>
+                        <td>{formatDate(qstns.questioned_at)}</td>
+                        <td>
+                          {qstns.qstn_open === "N" ? "대기 중" : "답변 완료"}
+                        </td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
               <div className="summaryDetail">
                 <div className="detailBorder">
                   <p className="newTitle">문의 등록</p>
                   <p className="newCount">
-                    <span className="newConutI">3</span>건
+                    <span className="newConutI">{todayCount}</span>건
                   </p>
                 </div>
                 <div className="detailBorder">
                   <p className="addC">문의 대기</p>
                   <p className="addCount">
-                    <span className="newConutI">3</span>건
+                    <span className="newConutI">{waitingCount}</span>건
                   </p>
                 </div>
               </div>
