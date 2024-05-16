@@ -18,13 +18,17 @@ const Login = () => {
   function tryLogin() {
     // 사용자가 적은 ID, PW 값을 가져와서
     // SpringBoot 서버로 전송하겠습니다 ! --> 비동기 통신방식 (axios)
-    let inputEmail = mb_email.current.value;
-    let inputPw = mb_pw.current.value;
+
+    const formData = new FormData();
+    formData.append("mb_email", mb_email.current.value); // 아이디 값
+    formData.append("mb_pw", mb_pw.current.value); //비밀번호 값
 
     axios
-      .get(
-        `http://localhost:8083/api/Login?mb_email=${inputEmail}&mb_pw=${inputPw}`
-      )
+      .post(`http://localhost:8083/MemApi/login`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
       .then((res) => {
         console.log("로그인 정보보기  : ", res.data);
         console.log("로그인 이메일    : ", res.data.mb_email);
