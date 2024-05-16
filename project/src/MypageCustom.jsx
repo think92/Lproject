@@ -46,6 +46,48 @@ const MypageCustom = () => {
     return formattedDate;
   };
 
+  // 페이지 버튼
+  const [currentPage, setCurrenPage] = useState(1); // 현재 페이지 상태
+  const [currentGroup, setCurrenGroup] = useState(1); // 현재 페이지 그룹 상태
+
+  const totalPages = Math.ceil(inquirilength / pagesize); // 총 페이지 수
+  const totalGroups = Math.ceil(totalPages / 3); // 그룹당 3개 페이지
+
+  const startIndex = (currentPage - 1) * pagesize;
+  const dispalyedInquiries = inquiri
+    .sort((a, b) => b.test_idx - a.test_idx)
+    .slice(startIndex, startIndex + pagesize);
+  const handlePreviousGroup = () => {
+    if (currentGroup > 1) {
+      setCurrenPage(currentGroup - 1); // 이전 그룹으로
+      setCurrenGroup((currentGroup - 2) * 3 + 1); // 그룸의 첫 페이지로 이동
+    }
+  };
+
+  const handleNextGroup = () => {
+    if (currentGroup < totalGroups) {
+      setCurrenPage(Math.ceil(currentPage / 3) * 4); // 0으로 세팅하고 3 곱하기 페이징
+      setCurrenGroup(Math.ceil(currentPage / 3 + 1)); // 그룹의 다음 첫 페이지
+    }
+  };
+
+  const handlePageClick = (page) => {
+    setCurrenPage(page);
+  };
+
+  const getCurrentGroupPages = () => {
+    const start = (currentGroup - 1) * 3 + 1; // 그룹의 첫 페이지 번호
+    const end = Math.min(start + 2, totalPages); // 그룹의 마지막 페이지 번호
+    console.log("start, end        : ", start, end);
+    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+  };
+
+  // 모달
+  const openModal = (inquiry) => {
+    setSelectedInquiry(inquiry);
+    setModalIsOpen(true);
+  };
+
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = () => {
     let filtered = inquiri;
@@ -80,49 +122,6 @@ const MypageCustom = () => {
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
-  };
-
-  // 페이지 버튼
-  const [currentPage, setCurrenPage] = useState(1); // 현재 페이지 상태
-  const [currentGroup, setCurrenGroup] = useState(1); // 현재 페이지 그룹 상태
-
-  const totalPages = Math.ceil(filteredInquiri.length / pagesize); // 총 페이지 수
-  const totalGroups = Math.ceil(totalPages / 3); // 그룹당 3개 페이지
-
-  const startIndex = (currentPage - 1) * pagesize;
-  const dispalyedInquiries = filteredInquiri.slice(
-    startIndex,
-    startIndex + pagesize
-  );
-
-  const handlePreviousGroup = () => {
-    if (currentGroup > 1) {
-      setCurrenPage((currentGroup - 2) * 3 + 1); // 이전 그룹의 첫 페이지로 이동
-      setCurrenGroup(currentGroup - 1);
-    }
-  };
-
-  const handleNextGroup = () => {
-    if (currentGroup < totalGroups) {
-      setCurrenPage(currentGroup * 3 + 1); // 다음 그룹의 첫 페이지로 이동
-      setCurrenGroup(currentGroup + 1);
-    }
-  };
-
-  const handlePageClick = (page) => {
-    setCurrenPage(page);
-  };
-
-  const getCurrentGroupPages = () => {
-    const start = (currentGroup - 1) * 3 + 1; // 그룹의 첫 페이지 번호
-    const end = Math.min(start + 2, totalPages); // 그룹의 마지막 페이지 번호
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  };
-
-  // 모달
-  const openModal = (inquiry) => {
-    setSelectedInquiry(inquiry);
-    setModalIsOpen(true);
   };
 
   return (
@@ -196,27 +195,33 @@ const MypageCustom = () => {
               </tr>
             </thead>
             <tbody>
-              {dispalyedInquiries.map((inquiry, index) => (
-                <tr key={inquiry.num}>
-                  <td>
-                    <input type="checkbox"></input>
-                  </td>
-                  <td>{inquiry.test_idx}</td>
-                  <td className="CustomNum" onClick={() => openModal(inquiry)}>
-                    {inquiry.test_title}
-                  </td>
-                  <td>{inquiry.test_context}</td>
-                  <td>{formatDate(inquiry.createdAt)}</td>
-                  <td
-                    className={
-                      inquiry.test_answer === "N" ? "redText" : "blackText"
-                    }
-                  >
-                    {inquiry.test_answer}
-                  </td>
-                  <td>답변일시</td>
-                </tr>
-              ))}
+              {dispalyedInquiries.map(
+                (inquiry, index) =>
+                  index < 12 && (
+                    <tr key={inquiry.num}>
+                      <td>
+                        <input type="checkbox"></input>
+                      </td>
+                      <td>{inquiry.test_idx}</td>
+                      <td
+                        className="CustomNum"
+                        onClick={() => openModal(inquiry)}
+                      >
+                        {inquiry.test_title}
+                      </td>
+                      <td>{inquiry.test_context}</td>
+                      <td>{formatDate(inquiry.createdAt)}</td>
+                      <td
+                        className={
+                          inquiry.test_answer === "N" ? "redText" : "blackText"
+                        }
+                      >
+                        {inquiry.test_answer}
+                      </td>
+                      <td>답변일시</td>
+                    </tr>
+                  )
+              )}
             </tbody>
           </table>
           <Modal
