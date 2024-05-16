@@ -32,8 +32,13 @@ const Premium = () => {
       axios
         .post("http://localhost:8083/api/kakaoPay")
         .then((res) => {
-          // 응답에서 받아온 URL로 리디렉션
-          window.location.href = res.data;
+          const redirectUrl = res.data; // 서버 응답의 URL 사용
+          console.log("카카오페이 응답 URL:", redirectUrl);
+          if (redirectUrl.startsWith("http")) {
+            window.location.href = redirectUrl; // 응답 URL로 리디렉션
+          } else {
+            console.error("Invalid URL:", redirectUrl);
+          }
         })
         .catch((error) => {
           console.log("결제 요청 실패:", error);
