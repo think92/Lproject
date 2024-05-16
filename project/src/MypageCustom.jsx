@@ -10,32 +10,50 @@ const pagesize = 10; // 12개 게시물 이상일때 다음 페이지로 이동
 
 const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
-  const [inquiri, setInquiri] = useState([]);
-  const [inquirilength, setInquiriLength] = useState([]);
-  const [filteredInquiri, setFilteredInquiri] = useState([]);
+  const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
+  const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
+  const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
+
+  // 페이지 버튼
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [currentGroup, setCurrentGroup] = useState(1); // 현재 페이지 그룹 상태
+  const itemsPerPage = 10; // 페이지당 항목 수
+  const pagesPerGroup = 5; // 그룹당 페이지 수
+
+
 
   useEffect(() => {
     boardList();
-    console.log("length : ", inquiri);
+    // console.log("length : ", inquiri);
   }, []);
 
   const boardList = () => {
     axios
       .post("http://localhost:8083/AdmApi/adminInquiry", {})
       .then((res) => {
-        setInquiri(res.data.aQstnsList);
-        setInquiriLength(res.data.length);
-        setFilteredInquiri(res.data); // 처음 로드 시 모든 데이터를 필터링된 데이터로 설정
-
-        console.log(res.data);
+        const data = Array.isArray(res.data.aQstnsList)
+          ? res.data.aQstnsList
+          : [];
+        setInquiries(data); // 데이터를 상태에 저장
+        filterAndSortInquiries(data); // 필터링 및 정렬 실행
+        const waiting = data.filter(
+          (inquiry) => inquiry.qstn_open === "N"
+        ).length;
+        setWaitingCount(waiting); // 대기 중인 문의 수 계산
+        const today = new Date().toISOString().split("T")[0];
+        const todayInquiries = data.filter(
+          (inquiry) => inquiry.questioned_at.split("T")[0] === today
+        ).length;
+        setTodayCount(todayInquiries); // 오늘 등록된 문의 수 계산
+        console.log(data);
       })
-      .catch((res) => {
-        // console.log("fail:",inquiri.length);
+      .catch((err) => {
+        console.error("Error fetching data:", err);
       });
   };
 
@@ -51,42 +69,6 @@ const MypageCustom = () => {
     return `${year}-${month}-${day} ${hour}:00`;
   };
 
-  // 페이지 버튼
-  const [currentPage, setCurrenPage] = useState(1); // 현재 페이지 상태
-  const [currentGroup, setCurrenGroup] = useState(1); // 현재 페이지 그룹 상태
-
-  const totalPages = Math.ceil(inquirilength / pagesize); // 총 페이지 수
-  const totalGroups = Math.ceil(totalPages / 3); // 그룹당 3개 페이지
-
-  const startIndex = (currentPage - 1) * pagesize;
-  const dispalyedInquiries = inquiri
-    .sort((a, b) => b.qstn_idx - a.qstn_idx)
-    .slice(startIndex, startIndex + pagesize);
-  const handlePreviousGroup = () => {
-    if (currentGroup > 1) {
-      setCurrenPage(currentGroup - 1); // 이전 그룹으로
-      setCurrenGroup((currentGroup - 2) * 3 + 1); // 그룸의 첫 페이지로 이동
-    }
-  };
-
-  const handleNextGroup = () => {
-    if (currentGroup < totalGroups) {
-      setCurrenPage(Math.ceil(currentPage / 3) * 4); // 0으로 세팅하고 3 곱하기 페이징
-      setCurrenGroup(Math.ceil(currentPage / 3 + 1)); // 그룹의 다음 첫 페이지
-    }
-  };
-
-  const handlePageClick = (page) => {
-    setCurrenPage(page);
-  };
-
-  const getCurrentGroupPages = () => {
-    const start = (currentGroup - 1) * 3 + 1; // 그룹의 첫 페이지 번호
-    const end = Math.min(start + 2, totalPages); // 그룹의 마지막 페이지 번호
-    console.log("start, end        : ", start, end);
-    return Array.from({ length: end - start + 1 }, (_, i) => start + i);
-  };
-
   // 모달
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
@@ -94,8 +76,8 @@ const MypageCustom = () => {
   };
 
   // 데이터를 필터링하고 정렬하는 함수
-  const filterAndSortInquiries = () => {
-    let filtered = inquiri;
+  const filterAndSortInquiries = (data) => {
+    let filtered = data;
 
     if (selectType && searchTerm) {
       filtered = filtered.filter((inquiry) =>
@@ -118,7 +100,7 @@ const MypageCustom = () => {
       return 0;
     });
 
-    setFilteredInquiri(filtered);
+    setInquiries(filtered);
   };
 
   const handleSelectTypeChange = (event) => {
@@ -128,6 +110,35 @@ const MypageCustom = () => {
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
   };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleNextGroup = () => {
+    setCurrentGroup(currentGroup + 1);
+    setCurrentPage((currentGroup - 1) * pagesPerGroup + 1);
+  };
+
+  const handlePrevGroup = () => {
+    setCurrentGroup(currentGroup - 1);
+    setCurrentPage((currentGroup - 2) * pagesPerGroup + 1);
+  };
+
+  // 현재 페이지에 해당하는 데이터 계산
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = inquiries.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 페이지 번호 계산
+  const totalPages = Math.ceil(inquiries.length / itemsPerPage);
+  const totalGroups = Math.ceil(totalPages / pagesPerGroup);
+  const startPage = (currentGroup - 1) * pagesPerGroup + 1;
+  const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
 
   return (
     <div>
@@ -200,7 +211,7 @@ const MypageCustom = () => {
               </tr>
             </thead>
             <tbody>
-              {dispalyedInquiries.map(
+              {currentItems.map(
                 (inquiry, index) =>
                   index < 12 && (
                     <tr key={inquiry.num}>
@@ -237,48 +248,23 @@ const MypageCustom = () => {
             onClose={() => setModalIsOpen(false)}
             inquiry={selectedInquiry}
           />
-          <div className="CustomArrow">
-            <div>
-              <button
-                className="mypageArrowBtn"
-                onClick={handlePreviousGroup}
-                disabled={currentGroup <= 1}
-              >
-                <img
-                  src="./img/arrow-circle-left-black.png"
-                  className="arrowLeftIcon"
-                  alt="이전 그룹"
-                ></img>
-              </button>
-            </div>
-
-            {/* 페이지 번호 버튼 생성 */}
-            <div className="pageNum">
-              {getCurrentGroupPages().map((page) => (
+          <div className="pagination">
+              {currentGroup > 1 && (
+                <button onClick={handlePrevGroup}>{"<"}</button>
+              )}
+              {pageNumbers.map((number) => (
                 <button
-                  className="pageNums"
-                  key={page}
-                  onClick={() => handlePageClick(page)}
+                  key={number}
+                  onClick={() => handlePageChange(number)}
+                  className={currentPage === number ? "active" : ""}
                 >
-                  {page}
+                  {number}
                 </button>
               ))}
+              {currentGroup < totalGroups && (
+                <button onClick={handleNextGroup}>{">"}</button>
+              )}
             </div>
-
-            <div>
-              <button
-                className="mypageArrowBtn"
-                onClick={handleNextGroup}
-                disabled={currentGroup >= totalGroups}
-              >
-                <img
-                  src="./img/arrow-circle-right-black.png"
-                  className="arrowRightIcon"
-                  alt="다음 페이지"
-                ></img>
-              </button>
-            </div>
-          </div>
         </div>
       </section>
     </div>
