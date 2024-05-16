@@ -19,6 +19,8 @@ const AdminInquiry = () => {
       inquiryDate: "2024-05-12",
       answerStatus: "대기 중",
       answerDate: "-",
+      content:
+        "로그인 시 시스템이 응답하지 않습니다. 여러 번 시도해 보았지만 계속 같은 문제가 발생합니다. 어떻게 해야 하나요?",
     },
     {
       id: 2,
@@ -27,6 +29,8 @@ const AdminInquiry = () => {
       inquiryDate: "2024-05-11",
       answerStatus: "답변 완료",
       answerDate: "2024-05-12",
+      content:
+        "결제 시도 중 오류 메시지가 표시되었습니다. 카드는 정상적이며 다른 웹사이트에서는 문제없이 사용됩니다. 확인 부탁드립니다.",
     },
     {
       id: 3,
@@ -35,6 +39,8 @@ const AdminInquiry = () => {
       inquiryDate: "2024-05-10",
       answerStatus: "답변 완료",
       answerDate: "2024-05-11",
+      content:
+        "서비스 가입 후 사용 방법이 잘 이해되지 않습니다. 기능 사용에 대한 자세한 설명서나 도움말이 필요합니다.",
     },
     {
       id: 4,
@@ -43,6 +49,8 @@ const AdminInquiry = () => {
       inquiryDate: "2024-05-09",
       answerStatus: "대기 중",
       answerDate: "-",
+      content:
+        "계정 접속이 불가능해졌습니다. 비밀번호 재설정을 시도했으나 등록된 이메일로 메일이 오지 않습니다. 계정 복구를 요청합니다.",
     },
   ];
 
@@ -177,7 +185,12 @@ const AdminInquiry = () => {
                       <input type="checkbox" />
                     </td>
                     <td>{inquiry.id}</td>
-                    <td onClick={() => openModal(inquiry)}>{inquiry.title}</td>
+                    <td
+                      className="clickable "
+                      onClick={() => openModal(inquiry)}
+                    >
+                      {inquiry.title}
+                    </td>
                     <td>{inquiry.userId}</td>
                     <td>{inquiry.inquiryDate}</td>
                     <td

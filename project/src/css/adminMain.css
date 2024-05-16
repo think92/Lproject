@@ -270,3 +270,7 @@ h1 {
 th {
   text-align: center;
 }
+
+.clickable {
+  cursor: pointer;
+}

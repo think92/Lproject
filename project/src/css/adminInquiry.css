@@ -24,6 +24,7 @@ hr {
 
 .summaryDetails {
   display: flex;
+  margin: 12px;
 }
 
 .detailBorder {

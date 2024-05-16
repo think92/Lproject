@@ -1,6 +1,6 @@
 import React from "react";
 import "./css/adminMainBody.css";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouseChimney,
@@ -8,6 +8,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 const AdminMain = () => {
+  const changeBtn = {
+    backgroundColor: "#4ce577",
+  };
   return (
     <section>
       <div className="home">
@@ -20,16 +23,27 @@ const AdminMain = () => {
         <img src="./img/blurbla_simbol.png" />
         <p>관리자(admin1)</p>
         <div className="adminMenu">
-          <Link to={"/Admin"}>
-            <p>● 대시보드</p>
-          </Link>{" "}
-          <Link to={"/AdminInquiry"}>
-            <p>● 문의사항</p>
-          </Link>
-          <p>● 회원관리</p>
-          <p>● 기능 업데이트</p>
-          <p>● 알림 서비스</p>
-          <p>● 관리자 권한 설정</p>
+          <NavLink
+            to={"/Admin"}
+            style={({ isActive }) => (isActive ? changeBtn : {})}
+          >
+            <p className="menuList">● 대시보드</p>
+          </NavLink>{" "}
+          <NavLink
+            to={"/AdminInquiry"}
+            style={({ isActive }) => (isActive ? changeBtn : {})}
+          >
+            <p className="menuList">● 문의사항</p>
+          </NavLink>
+          <NavLink
+            to={"/AdminUser"}
+            style={({ isActive }) => (isActive ? changeBtn : {})}
+          >
+          <p className="menuList">● 회원관리</p>
+          </NavLink>
+          <p className="menuList">● 기능 업데이트</p>
+          <p className="menuList">● 알림 서비스</p>
+          <p className="menuList">● 관리자 권한 설정</p>
         </div>
       </div>
       <div className="logout">

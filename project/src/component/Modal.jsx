@@ -13,14 +13,20 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
         <div className="modal-header">
           <div className="modal-title">
             <h1>답변작성</h1>
-            <div>
-              {inquiry.userId} · {inquiry.inquiryDate}
+            <div className="userInrtos">
+              <div className="userInrto">
+                <img src="./img/mypageuser.png" />
+                {inquiry.userId} {inquiry.inquiryDate}
+              </div>
+              <div>
+                <p className="titleIntro">제목 : {inquiry.title}</p>
+                <p className="titleIntro">{inquiry.content}</p>
+              </div>
             </div>
           </div>
         </div>
         <div className="modal-body">
-          <p>{inquiry.title}</p>
-          <textarea placeholder="답변을 작성하세요"></textarea>
+          <textarea className="styled-textarea" placeholder="답변을 작성하세요"></textarea>
         </div>
         <div className="modal-footer">
           <button className="button" onClick={onClose}>

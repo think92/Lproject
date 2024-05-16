@@ -54,9 +54,15 @@ body {
   width: 75px;
 }
 
+.adminMenu {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
 .adminMenu p {
   font-size: 18px;
-  margin-top: 50px;
   font-weight: 200;
 }
 
@@ -78,4 +84,8 @@ body {
 
 .logoutIcon {
   margin-left: 20px;
+}
+
+.menuList {
+  margin-left: 80px;
 }
