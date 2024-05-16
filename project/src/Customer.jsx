@@ -80,7 +80,8 @@ const Customer = () => {
               <h1 className="customerinquirys">문의내역</h1>
               <div>
                 <select name="choice" className="customerselectbox">
-                  <option className="opt">전체</option>
+                  <option className="opt">- 문의 종류 -</option>
+                  <option>전체</option>
                   <option>모자이크 관련</option>
                   <option>서비스 이용</option>
                   <option>프리미엄 결제</option>
