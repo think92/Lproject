@@ -18,17 +18,13 @@ const Login = () => {
   function tryLogin() {
     // 사용자가 적은 ID, PW 값을 가져와서
     // SpringBoot 서버로 전송하겠습니다 ! --> 비동기 통신방식 (axios)
-
-    const formData = new FormData();
-    formData.append("mb_email", mb_email.current.value); // 아이디 값
-    formData.append("mb_pw", mb_pw.current.value); //비밀번호 값
+    let inputEmail = mb_email.current.value;
+    let inputPw = mb_pw.current.value;
 
     axios
-      .post(`http://localhost:8083/MemApi/login`, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .get(
+        `http://localhost:8083/MemApi/Login?mb_email=${inputEmail}&mb_pw=${inputPw}`
+      )
       .then((res) => {
         console.log("로그인 정보보기  : ", res.data);
         console.log("로그인 이메일    : ", res.data.mb_email);
@@ -86,7 +82,7 @@ const Login = () => {
               />
               <img
                 src="./img/blurbla_logo(kr).png"
-                className="logokr"
+                className="loginlogokr"
                 alt="logokr"
               />
             </div>
@@ -97,7 +93,7 @@ const Login = () => {
                 id="email"
                 name="email"
                 placeholder="이메일"
-                className="email"
+                className="loginemail"
               />
               <input
                 ref={mb_pw}
@@ -105,32 +101,32 @@ const Login = () => {
                 id="pw"
                 name="pw"
                 placeholder="비밀번호"
-                className="password"
+                className="loginpassword"
               />
               {/* <Link to={"/"} className="loginbtn" onClick={tryLogin}> */}
               <button to={"/"} className="loginbtn" onClick={tryLogin}>
                 로그인
               </button>
 
-              <div className="find">
-                <Link to={"/"} className="find">
+              <div className="loginfind">
+                <button to={"/"} className="loginfinds">
                   비밀번호 찾기
-                </Link>
+                </button>
                 <p>l</p>
-                <Link to={"/"} className="find">
+                <button to={"/"} className="loginfinds">
                   아이디 찾기
-                </Link>
+                </button>
                 <p>l</p>
-                <Link to={"/Join"} className="find">
+                <Link to={"/Join"} className="loginfinds1">
                   회원가입
                 </Link>
               </div>
             </div>
           </span>
           <span className="loginbox2">
-            <div className="terms">
+            <div className="loginterms">
               <p>이용약관</p>
-              <p className="point">개인정보 처리방침</p>
+              <p className="loginpoint">개인정보 처리방침</p>
               <p>운영정책</p>
               <p>회원정보 고객센터</p>
               <p>공지사항</p>

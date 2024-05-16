@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import MainBar from "./MainBar";
 import "./css/Join.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Join = () => {
@@ -17,8 +17,8 @@ const Join = () => {
     if (inputPw.current.value === inputPwCheck.current.value) {
       axios
         .post("http://localhost:8083/restApi/join", {
-          mb_email: inputEmail.current.value,
-          mb_pw: inputPw.current.value,
+          email: inputEmail.current.value,
+          pw: inputPw.current.value,
         })
         .then((res) => console.log(res));
     } else {
@@ -38,8 +38,8 @@ const Join = () => {
               </Link>
             </div>
             <div>
-              <img src="./img/blurbla_simbol.png" className="joinsimbol" />
-              <img src="./img/blurbla_logo(kr).png" className="logokr" />
+              <img src="./img/blurbla_simbol.png" className="joinsimbol" alt="simbol"/>
+              <img src="./img/blurbla_logo(kr).png" className="joinlogokr" alt="logokr"/>
             </div>
             <div>
               <input
@@ -48,33 +48,33 @@ const Join = () => {
                 name="email"
                 ref={inputEmail}
                 placeholder="이메일"
-                className="email"
+                className="joinemail"
               />
               <input
-                type="email"
+                type="password"
                 id="pw"
                 ref={inputPw}
                 name="password"
                 placeholder="비밀번호"
-                className="password"
+                className="joinpassword"
               />
               <input
-                type="email"
+                type="password"
                 id="pw"
                 ref={inputPwCheck}
                 name="passwordcheck"
                 placeholder="비밀번호 확인"
-                className="password"
+                className="joinpassword"
               />
-              <Link to={"/Login"} className="joinbtn" onClick={joinMember}>
+              <button to={"/Login"} className="joinbtn" onClick={joinMember}>
                 회원가입
-              </Link>
+              </button>
             </div>
           </span>
           <span className="joinbox2">
-            <div className="terms">
+            <div className="jointerms">
               <p>이용약관</p>
-              <p className="point">개인정보 처리방침</p>
+              <p className="joinpoint">개인정보 처리방침</p>
               <p>운영정책</p>
               <p>회원정보 고객센터</p>
               <p>공지사항</p>

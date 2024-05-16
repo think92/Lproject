@@ -6,8 +6,6 @@ import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Modal from "./component/Modal";
 
-const pagesize = 10; // 12개 게시물 이상일때 다음 페이지로 이동
-
 const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
@@ -22,7 +20,7 @@ const MypageCustom = () => {
   // 페이지 버튼
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [currentGroup, setCurrentGroup] = useState(1); // 현재 페이지 그룹 상태
-  const itemsPerPage = 10; // 페이지당 항목 수
+  const itemsPerPage = 12; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
 
   useEffect(() => {

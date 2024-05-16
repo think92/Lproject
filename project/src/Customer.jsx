@@ -3,12 +3,17 @@ import MainBar from "./MainBar";
 import "./css/Customer.css";
 import axios from "axios";
 import Modal from "./component/Modal";
+import { useNavigate } from "react-router-dom";
 
-const pagesize = 8;
-
-const inquiries = [];
 
 const Customer = () => {
+  const navigate = useNavigate();
+
+  const handleClick = (message) => {
+    alert(message);
+    navigate("/Login");
+  };
+
     // 데이터베이스 정보 불러오기
     const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
 
@@ -22,7 +27,7 @@ const Customer = () => {
   // 페이지 버튼
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
   const [currentGroup, setCurrentGroup] = useState(1); // 현재 페이지 그룹 상태
-  const itemsPerPage = 8; // 페이지당 항목 수
+  const itemsPerPage = 10; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
 
   useEffect(() => {
@@ -98,14 +103,6 @@ const Customer = () => {
     });
 
     setInquiries(filtered);
-  };
-
-  const handleSelectTypeChange = (event) => {
-    setSelectType(event.target.value);
-  };
-
-  const handleInputChange = (event) => {
-    setSearchTerm(event.target.value);
   };
 
   const handlePageChange = (pageNumber) => {
@@ -215,9 +212,9 @@ const Customer = () => {
             
 
             {/* 페이지 버튼 */}
-            <div className="pagination">
+            <div className="paginations">
               <div></div>
-              <div>
+              <div className="ss">
 
               {currentGroup > 1 && (
                 <button onClick={handlePrevGroup}>{"<"}</button>
@@ -237,7 +234,8 @@ const Customer = () => {
               </div>
             {/* 작성하기 버튼 */}
             <div className="customerwrite">
-              <button className="customerwrites">작성하기</button>
+              <button id="bt" className="customerwrites"
+              onClick={() => handleClick("로그인이 필요합니다.")}>작성하기</button>
             </div>
             </div>
           </div>
