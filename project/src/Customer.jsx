@@ -2,20 +2,27 @@ import React, { useEffect, useState } from "react";
 import MainBar from "./MainBar";
 import "./css/Customer.css";
 import axios from "axios";
+import Modal from "./component/Modal";
 
 const pagesize = 8;
 
 const inquiries = [];
 
 const Customer = () => {
-  const [inquiri, setInquiri] = useState([]);
+  // 검색창 상태
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectType, setSelectType] = useState("");
+  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
+  const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
+
+  // 데이터 가져오기
+  const [inquiri, setInquiri] = useState([]); // 데이터를 저장할 상태
   const [inquirilength, setInquiriLength] = useState([]);
 
   useEffect(() => {
     boardList();
     console.log("length : ", inquiri);
   }, []);
-
   const boardList = () => {
     axios
       .post("http://localhost:8083/Customer/BoardList", {})
@@ -36,6 +43,7 @@ const Customer = () => {
     return formattedDate;
   };
 
+  // 이전, 이후 페이지 나누기
   const [currentPage, setCurrenPage] = useState(1); // 현재 페이지 상태
   const [currentGroup, setCurrenGroup] = useState(1); // 현재 페이지 그룹 상태
 
@@ -55,8 +63,8 @@ const Customer = () => {
 
   const handleNextGroup = () => {
     if (currentGroup < totalGroups) {
-      setCurrenPage(Math.ceil(currentPage / 3) * 4); // 0으로 세팅하고 3 곱하기 페이징
-      setCurrenGroup(Math.ceil(currentPage / 3 + 1)); // 그룹의 다음 첫 페이지
+      setCurrenPage(Math.ceil(currentPage / 3) * 4); // 다음 그룹으로
+      setCurrenGroup(Math.ceil(currentGroup / 3 + 1)); // 그룹의 첫 페이지로 이동
     }
   };
 
@@ -67,7 +75,7 @@ const Customer = () => {
   const getCurrentGroupPages = () => {
     const start = (currentGroup - 1) * 3 + 1; // 그룹의 첫 페이지 번호
     const end = Math.min(start + 2, totalPages); // 그룹의 마지막 페이지 번호
-    console.log("start, end        : ", start, end);
+    console.log("start, end        : ", start, end); // 그룹의 마지막 페이지 번호
     return Array.from({ length: end - start + 1 }, (_, i) => start + i);
   };
 
@@ -82,31 +90,22 @@ const Customer = () => {
               <div>
                 <select name="choice" className="customerselectbox">
                   <option className="opt">- 문의 종류 -</option>
-                  <option>전체</option>
-                  <option>모자이크 관련</option>
-                  <option>서비스 이용</option>
-                  <option>프리미엄 결제</option>
-                  <option>기타</option>
-                  <option>신고</option>
+                  <option value="">전체</option>
+                  <option value="">모자이크 관련</option>
+                  <option value="">서비스 이용</option>
+                  <option value="">프리미엄 결제</option>
+                  <option value="">기타</option>
+                  <option value="">신고</option>
                 </select>
               </div>
-              <div className="customersearch">
-                <input
-                  type="text"
-                  placeholder="검색"
-                  className="searchinput"
-                ></input>
-                <div>
-                  <button className="searchbtn">
-                    <img
-                      src="./img/search.png"
-                      className="searchicon"
-                      alt="검색"
-                      onClick={boardList}
-                    ></img>
-                  </button>
-                </div>
-              </div>
+              <input
+                type="text"
+                placeholder="검색어를 입력하세요"
+                className="searchinput"
+              />
+              <button className="searchbtn" >
+                검색
+              </button>
             </div>
             <table className="customertable">
               <thead>
@@ -144,11 +143,16 @@ const Customer = () => {
                     <td className="customerdates">
                       {formatDate(inquiry.createdAt)}
                     </td>
-                    <td className="customeranswers">{inquiry.answer}</td>
+                    <td className="customeranswers">{inquiry.test_answer}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
+            <Modal
+            isOpen={modalIsOpen}
+            onClose={() => setModalIsOpen(false)}
+            inquiry={selectedInquiry}
+          />
             {/* 작성하기 버튼 */}
             <div className="customerwrite">
               <button className="customerwrites">작성하기</button>
