@@ -32,11 +32,11 @@ const Premium = () => {
       axios
         .post("http://localhost:8083/api/kakaoPay")
         .then((res) => {
-          nav(res.data);
-          console.log(res.data);
+          // 응답에서 받아온 URL로 리디렉션
+          window.location.href = res.data;
         })
-        .catch((res) => {
-          // console.log("fail:",inquiri.length);
+        .catch((error) => {
+          console.log("결제 요청 실패:", error);
         });
     }
   };
