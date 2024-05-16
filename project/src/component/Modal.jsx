@@ -4,6 +4,11 @@ import "../css/modal.css";
 const Modal = ({ isOpen, onClose, inquiry }) => {
   if (!isOpen || !inquiry) return null;
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString();
+  };
+
   return (
     <div className="modal">
       <div className="modal-content">
@@ -16,17 +21,21 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
             <div className="userInrtos">
               <div className="userInrto">
                 <img src="./img/mypageuser.png" />
-                {inquiry.userId} {inquiry.inquiryDate}
+                {inquiry.mb_email} {formatDate(inquiry.questioned_at)}
               </div>
               <div>
-                <p className="titleIntro">제목 : {inquiry.title}</p>
-                <p className="titleIntro">{inquiry.content}</p>
+                <p className="titleIntro">제목 : {inquiry.qstn_title}</p>
+                <p className="titleIntro">{inquiry.qstn_content}</p>{" "}
+                {/* qstn_content를 표시 */}
               </div>
             </div>
           </div>
         </div>
         <div className="modal-body">
-          <textarea className="styled-textarea" placeholder="답변을 작성하세요"></textarea>
+          <textarea
+            className="styled-textarea"
+            placeholder="답변을 작성하세요"
+          ></textarea>
         </div>
         <div className="modal-footer">
           <button className="button" onClick={onClose}>
