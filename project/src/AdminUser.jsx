@@ -12,40 +12,14 @@ const AdminUser = () => {
   const [editingUserId, setEditingUserId] = useState(null); // 수정 중인 사용자 ID
   const [updatedGrade, setUpdatedGrade] = useState(""); // 업데이트된 등급
 
-  const initialUsers = [
-    {
-      id: 1,
-      userId: "user123",
-      grade: "신규회원",
-      joinDate: "2023-01-15",
-      paymentDate: "2024-05-10",
-    },
-    {
-      id: 2,
-      userId: "user456",
-      grade: "일반회원",
-      joinDate: "2022-11-23",
-      paymentDate: "2024-04-20",
-    },
-    {
-      id: 3,
-      userId: "user789",
-      grade: "프리미엄회원",
-      joinDate: "2023-02-10",
-      paymentDate: "2024-03-15",
-    },
-    {
-      id: 4,
-      userId: "user101",
-      grade: "일반회원",
-      joinDate: "2021-08-05",
-      paymentDate: "2024-01-25",
-    },
-  ];
+  const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
+  const [currentGroup, setCurrentGroup] = useState(1); // 현재 페이지 그룹 상태
+  const itemsPerPage = 8; // 페이지당 항목 수
+  const pagesPerGroup = 5; // 그룹당 페이지 수
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortUsers = () => {
-    let filtered = initialUsers.filter((user) => {
+    let filtered = users.filter((user) => {
       if (selectType && searchTerm) {
         return user[selectType]
           .toString()
@@ -96,12 +70,54 @@ const AdminUser = () => {
     axios
       .post("http://localhost:8083/AdmApi/adminUser")
       .then((res) => {
-        // useState set에 저장할 변수
-        console.log(res.data);
+        // res.data가 유효한지 확인
+        console.log(res);
+        const data = res.data;
+        if (Array.isArray(data)) {
+          setUsers(data);
+        } else {
+          console.error("API 응답 데이터가 배열이 아닙니다:", data);
+          setUsers([]); // 기본값으로 빈 배열 설정
+        }
       })
-      .catch((res) => {
-        // console.log("fail:",inquiri.length);
+      .catch((err) => {
+        console.error("API 요청 실패:", err);
+        setUsers([]); // 오류 발생 시 빈 배열 설정
       });
+  };
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleNextGroup = () => {
+    setCurrentGroup(currentGroup + 1);
+    setCurrentPage((currentGroup - 1) * pagesPerGroup + 1);
+  };
+
+  const handlePrevGroup = () => {
+    setCurrentGroup(currentGroup - 1);
+    setCurrentPage((currentGroup - 2) * pagesPerGroup + 1);
+  };
+
+  // 현재 페이지에 해당하는 데이터 계산
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = users.slice(indexOfFirstItem, indexOfLastItem);
+
+  // 페이지 번호 계산
+  const totalPages = Math.ceil(users.length / itemsPerPage);
+  const totalGroups = Math.ceil(totalPages / pagesPerGroup);
+  const startPage = (currentGroup - 1) * pagesPerGroup + 1;
+  const endPage = Math.min(startPage + pagesPerGroup - 1, totalPages);
+  const pageNumbers = [];
+  for (let i = startPage; i <= endPage; i++) {
+    pageNumbers.push(i);
+  }
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleString();
   };
 
   return (
@@ -157,12 +173,12 @@ const AdminUser = () => {
                 </tr>
               </thead>
               <tbody>
-                {users.map((user) => (
-                  <tr key={user.id}>
-                    <td>{user.id}</td>
-                    <td>{user.userId}</td>
+                {currentItems.map((user, index) => (
+                  <tr key={user.mb_email}>
+                    <td>{index + 1}</td>
+                    <td>{user.mb_email}</td>
                     <td>
-                      {editingUserId === user.id ? (
+                      {editingUserId === user.mb_email ? (
                         <select
                           className="styled-select"
                           value={updatedGrade}
@@ -182,13 +198,13 @@ const AdminUser = () => {
                           </option>
                         </select>
                       ) : (
-                        user.grade
+                        user.mb_role
                       )}
                     </td>
-                    <td>{user.joinDate}</td>
+                    <td>{formatDate(user.joinedAt)}</td>
                     <td>{user.paymentDate}</td>
                     <td>
-                      {editingUserId === user.id ? (
+                      {editingUserId === user.mb_email ? (
                         <button onClick={() => handleSaveClick(user)}>
                           완료
                         </button>
@@ -202,6 +218,23 @@ const AdminUser = () => {
                 ))}
               </tbody>
             </table>
+            <div className="pagination">
+              {currentGroup > 1 && (
+                <button onClick={handlePrevGroup}>{"<"}</button>
+              )}
+              {pageNumbers.map((number) => (
+                <button
+                  key={number}
+                  onClick={() => handlePageChange(number)}
+                  className={currentPage === number ? "active" : ""}
+                >
+                  {number}
+                </button>
+              ))}
+              {currentGroup < totalGroups && (
+                <button onClick={handleNextGroup}>{">"}</button>
+              )}
+            </div>
           </div>
         </div>
       </div>
