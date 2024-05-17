@@ -1,26 +1,28 @@
 import React from "react";
-import "../css/modal.css";
+import "../css/modalwrite.css";
 
-const Modal = ({ isOpen, onClose, inquiry }) => {
+const ModalWrite = ({ isOpen, onClose, inquiry }) => {
   if (!isOpen || !inquiry) return null;
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString();
   };
-
   return (
-    <div className="modal">
-      <div className="modal-content">
+    <div className="modalWrite">
+      <div className="modalWrite-content">
         <span className="close" onClick={onClose}>
           &times;
         </span>
-        <div className="modal-header">
-          <div className="modal-title">
-            <h1>답변작성</h1>
+        <div className="modalWrite-header">
+          <div className="modalWrite-title">
+            <h1>문의작성</h1>
+            <td>
+              <input type="checkbox"></input>
+            </td>
             <div className="userInrtos">
               <div className="userInrto">
-                <img src="./img/mypageuser.png" alt="mypageuser"/>
+                <img src="./img/mypageuser.png" alt="mypageuser" />
                 {inquiry.mb_email} {formatDate(inquiry.questioned_at)}
               </div>
               <div>
@@ -53,4 +55,4 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
   );
 };
 
-export default Modal;
+export default ModalWrite;

@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MainBar from "./MainBar";
 import "./css/Customer.css";
 import axios from "axios";
 import Modal from "./component/Modal";
+import ModalWrite from "./component/ModalWrite";
 import { useNavigate } from "react-router-dom";
-
+import { LoginUserContext } from "./context/LoginUserContent";
 
 const Customer = () => {
+  // 로그인한 회원 정보 저장하는 변수(아이디, 등급)
+  const { login_id, setLogin_id, login_role, setLogin_role } =
+    useContext(LoginUserContext);
+
   const navigate = useNavigate();
 
-  const handleClick = (message) => {
-    alert(message);
-    navigate("/Login");
-  };
-
-    // 데이터베이스 정보 불러오기
-    const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
+  // 데이터베이스 정보 불러오기
+  const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
@@ -134,6 +134,22 @@ const Customer = () => {
     pageNumbers.push(i);
   }
 
+  // 작성하기 버튼 클릭 핸들러
+  const handleClick = (message) => {
+    console.log(message);
+  };
+
+  // 작성하기 버튼 클릭 시 실행될 함수
+  const handleWriteButtonClick = () => {
+    if (login_id) {
+      setModalIsOpen(true);
+    } else {
+      alert("로그인이 필요합니다.");
+      navigate("/Login");
+      handleClick("로그인이 필요합니다.");
+    }
+  };
+
   return (
     <div>
       <MainBar />
@@ -178,27 +194,31 @@ const Customer = () => {
                       className="customerdivisons"
                       onClick={() => openModal(inquiry)}
                     >
-                      {inquiry.qstn_title === "비공개 글 입니다." && (
-                        <img
-                          src="./img/secured-lock.png"
-                          className="lockicon"
-                          alt="잠금"
-                        ></img>
+                      {inquiry.qstn_open === "N" && (
+                        <div>
+                          <img
+                            src="./img/secured-lock.png"
+                            className="lockicon"
+                            alt="잠금"
+                          ></img>
+                          비공개된 글 입니다.
+                        </div>
                       )}
-
-                      {inquiry.qstn_title}
+                      {inquiry.qstn_open !== "N" && (
+                        <div>{inquiry.qstn_title}</div>
+                      )}
                     </td>
-                    <td className="customerwriters">{inquiry.qstn_content}</td>
+                    <td className="customerwriters">{inquiry.mb_email}</td>
                     <td className="customerdates">
                       {formatDate(inquiry.questioned_at)}
                       {/* {inquiry.questioned_at} */}
                     </td>
                     <td
                       className={
-                        inquiry.qstn_open === "N" ? "redText" : "blackText"
+                        inquiry.qstn_answer === "N" ? "redText" : "blackText"
                       }
                     >
-                      {inquiry.qstn_open}
+                      {inquiry.qstn_answer}
                     </td>
                   </tr>
                 ))}
@@ -209,34 +229,42 @@ const Customer = () => {
               onClose={() => setModalIsOpen(false)}
               inquiry={selectedInquiry}
             />
-            
 
             {/* 페이지 버튼 */}
             <div className="paginations">
               <div></div>
               <div className="ss">
-
-              {currentGroup > 1 && (
-                <button onClick={handlePrevGroup}>{"<"}</button>
-              )}
-              {pageNumbers.map((number) => (
-                <button
-                key={number}
-                onClick={() => handlePageChange(number)}
-                className={currentPage === number ? "active" : ""}
-                >
-                  {number}
-                </button>
-              ))}
-              {currentGroup < totalGroups && (
-                <button onClick={handleNextGroup}>{">"}</button>
-              )}
+                {currentGroup > 1 && (
+                  <button onClick={handlePrevGroup}>{"<"}</button>
+                )}
+                {pageNumbers.map((number) => (
+                  <button
+                    key={number}
+                    onClick={() => handlePageChange(number)}
+                    className={currentPage === number ? "active" : ""}
+                  >
+                    {number}
+                  </button>
+                ))}
+                {currentGroup < totalGroups && (
+                  <button onClick={handleNextGroup}>{">"}</button>
+                )}
               </div>
-            {/* 작성하기 버튼 */}
-            <div className="customerwrite">
-              <button id="bt" className="customerwrites"
-              onClick={() => handleClick("로그인이 필요합니다.")}>작성하기</button>
-            </div>
+              {/* 작성하기 버튼 */}
+              <div className="customerwrite">
+                <button
+                  id="bt"
+                  className="customerwrites"
+                  onClick={handleWriteButtonClick}
+                >
+                  작성하기
+                </button>
+                <ModalWrite
+                  isOpen={modalIsOpen}
+                  onClose={() => setModalIsOpen(false)}
+                  inquiry={selectedInquiry}
+                />
+              </div>
             </div>
           </div>
 
