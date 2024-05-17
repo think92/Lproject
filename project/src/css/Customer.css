@@ -43,26 +43,9 @@ body {
   border-radius: 5px;
   margin: 20px 0 20px 680px;
 }
-.downbtn {
-  background-color: transparent;
-  border: none;
-  margin: 5px 0 0 12px;
-}
-.downincon {
-  width: 18px;
-  height: 18px;
-}
 /* 검색 버튼 */
-/* .customersearch {
-  display: flex;
-  width: 300px;
-  height: 40px;
-  background-color: #fff;
-  border-radius: 5px;
-  margin: 20px 0 20px 15px;
-} */
 .searchinput {
-  width: 310px;
+  width: 320px;
   height: 40px;
   border: none;
   border-radius: 5px;
@@ -70,14 +53,9 @@ body {
   font-family: "Pretendard-Regular";
   text-indent: 10px;
 }
-
 .arrowbtn {
   background-color: transparent;
   border: none;
-}
-.searchicon {
-  width: 20px;
-  height: 20px;
 }
 .customernum, .customerdivison, .customerwriter, .customerdate, .customeranswer {
   background-color: #4ce577;
@@ -100,23 +78,23 @@ td {
 }
 .customertable {
   background-color: #fff;
-  font-size: 20px;
+  font-size: 18px;
+  color: #000;
   border: 2.5px solid #1c1c1c;
   border-color: #000;
   border-collapse: collapse;
 }
 .customernum {
   width: 80px;
-  height: 45px;
 }
 .customerdivison {
   width: 690px;
 }
 .customerwriter {
-  width: 137px;
+  width: 180px;
 }
 .customerdate {
-  width: 285px;
+  width: 240px;
 }
 .customeranswer {
   width: 80px;
@@ -124,32 +102,26 @@ td {
 /* 문의 제목 */
 .customernums {
   text-align: center;
-  height: 55px;
+  height: 40px;
   font-size: 18px;
-  font-weight: 600;
 }
 .customerdivisons {
   text-indent: 15px;
   font-size: 18px;
-  font-weight: 600;
   text-align: left;
 }
 .customerwriters {
   text-align: center;
   font-size: 18px;
-  font-weight: 600;
 }
 .customerdates {
   text-align: center;
   font-size: 18px;
-  font-weight: 600;
 }
 .customeranswers {
   text-align: center;
   font-size: 18px;
-  font-weight: 600;
 }
-
 .customerbox2 {
   position: absolute;
   z-index: 2;
@@ -186,7 +158,6 @@ td {
 .arrowlefticon {
   width: 35px;
   height: 35px;
-
 }
 .arrowrighticon {
   width: 35px;
@@ -209,7 +180,7 @@ td {
   justify-content: end;
   text-align: end;
 }
-.customerwrites{
+#bt.customerwrites{
   width: 98px;
   height: 40px;
   background-color: #D4FE76;
@@ -218,5 +189,26 @@ td {
   font-weight: 600;
   font-family: "Pretendard-Regular";
   border-radius: 5px;
-  margin-top: 20px;
+}
+
+.paginations{
+  display: flex;
+  justify-content: space-between;
+  margin: 20px 0;
+}
+
+.paginations{
+  padding: 8px 12px;
+  border-radius: 4px;
+  outline: none; /* 포커스 테두리 제거 */
+  color: #000;
+  margin: 5px;
+  align-items: center;
+}
+
+.ss button{
+  margin-left: 8px;
+  color: #000;
+  background-color: #d6d6d6;
+  font-size: 18px;
 }

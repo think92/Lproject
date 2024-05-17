@@ -8,8 +8,6 @@ import {
   faCloudArrowUp,
   faSliders,
   faShapes,
-  faRobot,
-  faUsersViewfinder,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   faTwitter,
@@ -137,7 +135,7 @@ const MainBody = () => {
               </div>
 
               <div className="uploadimg">
-                <img src="img/main_img01.png" alt="mainimg" />
+                <img src="img/blurbla_main_img01.jpg" alt="mainimg" />
               </div>
             </div>
           </div>

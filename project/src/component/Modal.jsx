@@ -63,7 +63,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
             <h1>답변작성</h1>
             <div className="userInrtos">
               <div className="userInrto">
-                <img src="./img/mypageuser.png" />
+                <img src="./img/mypageuser.png" alt="mypageuser"/>
                 {inquiry.mb_email} {formatDate(inquiry.questioned_at)}
               </div>
               <div>

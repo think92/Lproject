@@ -18,40 +18,36 @@ const Login = () => {
   function tryLogin() {
     // 사용자가 적은 ID, PW 값을 가져와서
     // SpringBoot 서버로 전송하겠습니다 ! --> 비동기 통신방식 (axios)
-
     const formData = new FormData();
     formData.append("mb_email", mb_email.current.value); // 아이디 값
     formData.append("mb_pw", mb_pw.current.value); //비밀번호 값
-
     axios
-      .post(`http://localhost:8083/MemApi/login`, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((res) => {
-        console.log("로그인 정보보기  : ", res.data);
-        console.log("로그인 이메일    : ", res.data.mb_email);
-        console.log("로그인 비번      : ", res.data.mb_pw);
-        console.log("로그인 등급      : ", res.data.mb_role);
-        console.log("로그인 가입일자  : ", res.data.joinedAt);
+    .post(`http://localhost:8083/MemApi/login`, formData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      console.log("로그인 정보보기  : ", res.data);
+      console.log("로그인 이메일    : ", res.data.mb_email);
+      console.log("로그인 비번      : ", res.data.mb_pw);
+      console.log("로그인 등급      : ", res.data.mb_role);
+      console.log("로그인 가입일자  : ", res.data.joinedAt);
 
-        if (res.data.mb_email !== undefined) {
-          // 회원 정보 context에 담기
-          setLogin_id(res.data.mb_email);
-          setLogin_role(res.data.mb_role);
-        } else {
-          alert("아이디 비밀번호가 잘 못 되었습니다.");
-        }
+      if (res.data.mb_email !== undefined) {
+        // 회원 정보 context에 담기
+        setLogin_id(res.data.mb_email);
+        setLogin_role(res.data.mb_role);
+      } else {
+        alert("아이디 비밀번호가 잘 못 되었습니다.");
+      }
 
-        if (res.data.mb_role === "A0") {
-          nav("/admin");
-        } else {
-          nav("/");
-        }
-      });
-
-    // 로그인 성공시 Nick 값 -> Main
+      if (res.data.mb_role === "A0") {
+        nav("/admin");
+      } else {
+        nav("/");
+      }
+    });
   }
 
   return (
@@ -73,7 +69,7 @@ const Login = () => {
               />
               <img
                 src="./img/blurbla_logo(kr).png"
-                className="logokr"
+                className="loginlogokr"
                 alt="logokr"
               />
             </div>
@@ -84,7 +80,7 @@ const Login = () => {
                 id="email"
                 name="email"
                 placeholder="이메일"
-                className="email"
+                className="loginemail"
               />
               <input
                 ref={mb_pw}
@@ -92,32 +88,32 @@ const Login = () => {
                 id="pw"
                 name="pw"
                 placeholder="비밀번호"
-                className="password"
+                className="loginpassword"
               />
               {/* <Link to={"/"} className="loginbtn" onClick={tryLogin}> */}
               <button to={"/"} className="loginbtn" onClick={tryLogin}>
                 로그인
               </button>
 
-              <div className="find">
-                <Link to={"/"} className="find">
+              <div className="loginfind">
+                <button to={"/"} className="loginfinds">
                   비밀번호 찾기
-                </Link>
+                </button>
                 <p>l</p>
-                <Link to={"/"} className="find">
+                <button to={"/"} className="loginfinds">
                   아이디 찾기
-                </Link>
+                </button>
                 <p>l</p>
-                <Link to={"/Join"} className="find">
+                <Link to={"/Join"} className="loginfinds1">
                   회원가입
                 </Link>
               </div>
             </div>
           </span>
           <span className="loginbox2">
-            <div className="terms">
+            <div className="loginterms">
               <p>이용약관</p>
-              <p className="point">개인정보 처리방침</p>
+              <p className="loginpoint">개인정보 처리방침</p>
               <p>운영정책</p>
               <p>회원정보 고객센터</p>
               <p>공지사항</p>
