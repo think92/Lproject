@@ -30,7 +30,7 @@ const MypageBar = () => {
               ></img>
             </div>
 
-            <p className="useremail">user1</p>
+            <p className="useremail">doni</p>
             <div>
               <NavLink
                 to={"/Mypage"}

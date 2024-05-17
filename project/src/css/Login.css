@@ -19,19 +19,19 @@ body {
   position: absolute;
   z-index: 3;
   background-color: #fff;
-  width: 1000px;
-  height: 700px;
+  width: 660px;
+  height: 620px;
   margin: 400px 0 0 50%;
   transform: translate(-50%, -50%);
   border-radius: 20px;
-  border-width: 5px;
+  border-width: 4px;
   border-style: solid;
   border-color: #282828;
 }
 .loginbox2 {
   position: absolute;
   z-index: 2;
-  background-color: #b0e045;
+  background-color: #D4FE76;
   width: 100%;
   height: 380px;
   margin: 500px 0 0 0;
@@ -46,74 +46,97 @@ body {
   color: #000;
   margin: 15px 0 0 0;
   padding: 0 25px 0 10px;
+  text-decoration: none;
 }
 .loginsimbol {
   display: flex;
-  width: 120px;
-  height: 100px;
-  margin: 30px 0 0 45%;
+  width: 85px;
+  height: 70px;
+  margin: 30px 0 0 43%;
 }
-.logokr {
-  width: 320px;
-  margin: 0 0 10px 35%;
+.loginlogokr {
+  width: 230px;
+  margin: 0 0 0 32%;
 }
-.email {
+.loginemail {
   display: flex;
-  width: 620px;
-  height: 65px;
-  font-size: 26px;
+  width: 420px;
+  height: 50px;
+  font-size: 18px;
   text-indent: 10px;
   color: #817c7c;
   background-color: #f4f4f4;
-  border-radius: 15px;
+  border-radius: 10px;
   border-color: #2f2f2f;
-  margin: 0 0 0 21%;
+  margin: 20px 0 0 17.5%;
+  padding: 5px 0 0 0 ;
 }
-.password {
+.loginpassword {
   display: flex;
-  width: 620px;
-  height: 65px;
-  font-size: 26px;
+  width: 420px;
+  height: 50px;
+  font-size: 18px;
   text-indent: 10px;
   color: #817c7c;
   background-color: #f4f4f4;
-  border-radius: 15px;
+  border-radius: 10px;
   border-color: #2f2f2f;
-  margin: 8px 0 0 21%;
+  margin: 8px 0 0 17.5%;
+  padding: 5px 0 0 0 ;
 }
 .loginbtn {
   display: flex;
-  width: 620px;
-  height: 73px;
-  font-size: 30px;
+  width: 420px;
+  height: 50px;
+  font-size: 20px;
   font-weight: 600;
   justify-content: center;
   align-items: center;
   color: #292c31;
   background-color: #4ce577;
-  border-radius: 15px;
+  border-radius: 10px;
   border-color: #2f2f2f;
-  margin: 25px 0 0 21%;
+  margin: 25px 0 0 17.5%;
   padding: 0;
 }
-.find {
+.loginfind {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 16px;
   color: #000;
-  margin: 10px 0 0 30px;
+  margin: 10px 0 0 160px;
 }
-.find p {
-  margin: 10px 10px 0 0;
+.loginfinds {
+  background-color: #fff;
+  border: none;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Pretendard";
+  margin: 2px 4px 0 4px;
+  text-decoration: none;
 }
-.terms {
+.loginfinds1{
+  background-color: #fff;
+  border: none;
+  color: #000;
+  font-size: 16px;
+  font-weight: 500;
+  font-family: "Pretendard";
+  margin: 10px 8px 0 16px;
+  text-decoration: none;
+}
+.loginfind p {
+  text-align: center;
+  margin: 10px 0 0 0;
+}
+.loginterms {
   display: flex;
   justify-content: center;
 }
-.terms p {
-  font-size: 20px;
-  margin: 286px 40px 0 40px
+.loginterms p {
+  font-size: 16px;
+  margin: 240px 16px 0 16px;
 }
-.terms .point {
+.loginterms .loginpoint {
   font-weight: 600;
 }
