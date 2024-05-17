@@ -259,11 +259,11 @@ const Customer = () => {
                 >
                   작성하기
                 </button>
-                <ModalWrite
+                {/* <ModalWrite
                   isOpen={modalIsOpen}
                   onClose={() => setModalIsOpen(false)}
                   inquiry={selectedInquiry}
-                />
+                /> */}
               </div>
             </div>
           </div>
