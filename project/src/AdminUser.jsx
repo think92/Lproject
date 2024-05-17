@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminUser.css";
 import Filter from "./component/Filter";
+import axios from "axios";
 
 const AdminUser = () => {
   // 검색창 상태
@@ -59,6 +60,7 @@ const AdminUser = () => {
 
   useEffect(() => {
     filterAndSortUsers(); // 초기 로드 시 필터 및 정렬 실행
+    adminUser(); // 회원 정보 리스트
   }, []);
 
   const handleSelectTypeChange = (event) => {
@@ -88,6 +90,18 @@ const AdminUser = () => {
       )
     );
     setEditingUserId(null);
+  };
+
+  const adminUser = () => {
+    axios
+      .post("http://localhost:8083/AdmApi/adminUser")
+      .then((res) => {
+        // useState set에 저장할 변수
+        console.log(res.data);
+      })
+      .catch((res) => {
+        // console.log("fail:",inquiri.length);
+      });
   };
 
   return (

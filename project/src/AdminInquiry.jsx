@@ -212,8 +212,10 @@ const AdminInquiry = () => {
                     </td>
                     <td>{inquiry.mb_email}</td>
                     <td>{formatDate(inquiry.questioned_at)}</td>
-                    <td className={inquiry.qstn_open === "N" ? "red-text" : ""}>
-                      {inquiry.qstn_open === "N" ? "대기 중" : "답변 완료"}
+                    <td
+                      className={inquiry.qstn_answer === "N" ? "red-text" : ""}
+                    >
+                      {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                     </td>
                     <td>
                       {inquiry.answerDate
