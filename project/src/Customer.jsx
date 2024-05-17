@@ -109,9 +109,7 @@ const Customer = () => {
                 placeholder="검색어를 입력하세요"
                 className="searchinput"
               />
-              <button className="searchbtn" >
-                검색
-              </button>
+              <button className="searchbtn">검색</button>
             </div>
             <table className="customertable">
               <thead>
@@ -127,7 +125,10 @@ const Customer = () => {
                 {dispalyedInquiries.map((inquiry) => (
                   <tr key={inquiry.num}>
                     <td className="customernums">{inquiry.test_idx}</td>
-                    <td className="customerdivisons" onClick={() => openModal(inquiry)}>
+                    <td
+                      className="customerdivisons"
+                      onClick={() => openModal(inquiry)}
+                    >
                       {inquiry.test_title === "비공개 글 입니다." && (
                         <img
                           src="./img/secured-lock.png"
@@ -149,18 +150,22 @@ const Customer = () => {
                     <td className="customerdates">
                       {formatDate(inquiry.createdAt)}
                     </td>
-                    <td className={
-                          inquiry.test_answer === "N" ? "redText" : "blackText"
-                        }>{inquiry.test_answer}</td>
+                    <td
+                      className={
+                        inquiry.test_answer === "N" ? "redText" : "blackText"
+                      }
+                    >
+                      {inquiry.test_answer}
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
             <Modal
-            isOpen={modalIsOpen}
-            onClose={() => setModalIsOpen(false)}
-            inquiry={selectedInquiry}
-          />
+              isOpen={modalIsOpen}
+              onClose={() => setModalIsOpen(false)}
+              inquiry={selectedInquiry}
+            />
             {/* 작성하기 버튼 */}
             <div className="customerwrite">
               <button className="customerwrites">작성하기</button>

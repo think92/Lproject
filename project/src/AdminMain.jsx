@@ -31,11 +31,13 @@ const AdminMain = () => {
 
   const boardList = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminInquiry", {})
+      .post("http://localhost:8083/AdmApi/adminMain", {})
       .then((res) => {
+        console.log("adminMain ALL DATA : ", res.data.aMemberList);
+
         const data = res.data.aQstnsList || [];
         setBoard(data);
-        console.log(data);
+        console.log("adminMain aQstnsList : ", data);
 
         // 오늘 날짜와 비교
         const today = new Date().toISOString().split("T")[0];
