@@ -33,7 +33,6 @@ const AdminUser = () => {
   };
 
   useEffect(() => {
-    filterAndSortUsers(); // 초기 로드 시 필터 및 정렬 실행
     adminUser(); // 회원 정보 리스트
   }, []);
 
@@ -49,8 +48,8 @@ const AdminUser = () => {
     filterAndSortUsers(); // 검색 실행 시 필터 및 정렬 실행
   };
   const handleEditClick = (user) => {
-    setEditingUserId(user.id);
-    setUpdatedGrade(user.grade);
+    setEditingUserId(user.mb_email);
+    setUpdatedGrade(user.mb_role);
   };
 
   const handleGradeChange = (event) => {
@@ -60,7 +59,7 @@ const AdminUser = () => {
   const handleSaveClick = (user) => {
     setUsers((prevUsers) =>
       prevUsers.map((u) =>
-        u.id === user.id ? { ...u, grade: updatedGrade } : u
+        u.mb_email === user.mb_email ? { ...u, mb_role: updatedGrade } : u
       )
     );
     setEditingUserId(null);
@@ -74,7 +73,11 @@ const AdminUser = () => {
         console.log(res);
         const data = res.data;
         if (Array.isArray(data)) {
-          setUsers(data);
+          // 가입일시로 정렬(최신 가입 순)
+          const sortedData = data.sort(
+            (a,b) => new Date(b.joinedAt) - new Date(a.joinedAt)
+          );
+          setUsers(sortedData);
         } else {
           console.error("API 응답 데이터가 배열이 아닙니다:", data);
           setUsers([]); // 기본값으로 빈 배열 설정
@@ -129,7 +132,7 @@ const AdminUser = () => {
           <hr />
           <div className="summaryDetails">
             <h1 className="aa">
-              전체회원 <span className="bb">00</span>명
+              전체회원 <span className="bb">{users.length}</span>명
             </h1>
           </div>
           <hr />
@@ -175,7 +178,7 @@ const AdminUser = () => {
               <tbody>
                 {currentItems.map((user, index) => (
                   <tr key={user.mb_email}>
-                    <td>{index + 1}</td>
+                    <td>{users.length - indexOfFirstItem - index}</td>
                     <td>{user.mb_email}</td>
                     <td>
                       {editingUserId === user.mb_email ? (
@@ -184,14 +187,14 @@ const AdminUser = () => {
                           value={updatedGrade}
                           onChange={handleGradeChange}
                         >
-                          <option value="신규회원" className="new-member">
-                            신규회원
+                          <option value="A0" className="new-member">
+                            관리자
                           </option>
-                          <option value="일반회원" className="regular-member">
+                          <option value="M" className="regular-member">
                             일반회원
                           </option>
                           <option
-                            value="프리미엄회원"
+                            value="U"
                             className="premium-member"
                           >
                             프리미엄회원
