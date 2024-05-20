@@ -20,6 +20,7 @@ const Customer = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
+  const [moadlWriteIsOpen, setModalWriteIsOpen] = useState(false); // 작성 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
   const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
   const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
@@ -142,7 +143,7 @@ const Customer = () => {
   // 작성하기 버튼 클릭 시 실행될 함수
   const handleWriteButtonClick = () => {
     if (login_id) {
-      setModalIsOpen(true);
+      setModalWriteIsOpen(true);
     } else {
       alert("로그인이 필요합니다.");
       navigate("/Login");
@@ -194,7 +195,7 @@ const Customer = () => {
                       className="customerdivisons"
                       onClick={() => openModal(inquiry)}
                     >
-                      {inquiry.qstn_open === "N" && (
+                      {inquiry.qstn_open === "N" ? (
                         <div>
                           <img
                             src="./img/secured-lock.png"
@@ -203,10 +204,12 @@ const Customer = () => {
                           ></img>
                           비공개된 글 입니다.
                         </div>
-                      )}
-                      {inquiry.qstn_open !== "N" && (
+                      ) : (
                         <div>{inquiry.qstn_title}</div>
                       )}
+                      {/* {inquiry.qstn_open !== "N" && (
+                        <div>{inquiry.qstn_title}</div>
+                      )} */}
                     </td>
                     <td className="customerwriters">{inquiry.mb_email}</td>
                     <td className="customerdates">
@@ -228,6 +231,7 @@ const Customer = () => {
               isOpen={modalIsOpen}
               onClose={() => setModalIsOpen(false)}
               inquiry={selectedInquiry}
+              isPrivate={selectedInquiry?.qstn_open === "N"} // 지솔새 려주 덩갛
             />
 
             {/* 페이지 버튼 */}
@@ -255,15 +259,20 @@ const Customer = () => {
                 <button
                   id="bt"
                   className="customerwrites"
-                  onClick={handleWriteButtonClick}
+                  onClick={handleWriteButtonClick} // 수정된 함수 사용
+                  // onClick={() => {
+                  //   Modal === false
+                  //     ? handleWriteButtonClick(true)
+                  //     : handleWriteButtonClick(false);
+                  // }}
                 >
-                  작성하기
-                </button>
-                {/* <ModalWrite
+                  {/* <ModalWrite
                   isOpen={modalIsOpen}
-                  onClose={() => setModalIsOpen(false)}
+                  
                   inquiry={selectedInquiry}
                 /> */}
+                  작성하기
+                </button>
               </div>
             </div>
           </div>
@@ -273,6 +282,10 @@ const Customer = () => {
           </span>
         </div>
       </section>
+      <ModalWrite
+        isOpen={moadlWriteIsOpen}
+        onClose={() => setModalWriteIsOpen(false)}
+      />
     </div>
   );
 };
