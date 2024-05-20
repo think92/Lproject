@@ -1,9 +1,30 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import "../css/modal.css";
 import axios from "axios";
 
 const Modal = ({ isOpen, onClose, inquiry }) => {
   const qstnsToAnswer = useRef(); // 답변 내용
+  const [answer, setAnswer] = useState(""); // 답변 내용을 저장할 상태
+
+  useEffect(() => {
+    if (isOpen && inquiry) {
+      // 문의사항의 답변 보기
+      const formData = new FormData();
+      formData.append("qstn_idx", inquiry.qstn_idx); // 문의사항의 답변 내용
+
+      axios
+        .post(`http://localhost:8083/AdmApi/adminAnswer`, formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          if (res.data && res.data.answerContent) {
+            setAnswer(res.data.answerContent); // 답변 내용을 상태에 저장
+          }
+        });
+    }
+  }, [isOpen, inquiry]);
 
   if (!isOpen || !inquiry) return null;
 
@@ -12,33 +33,12 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
     return date.toLocaleString();
   };
 
-  // 문의사항의 답변 보기
-  const formData = new FormData();
-  formData.append("qstn_idx", inquiry.qstn_idx); // 문의사항의 답변 내용
-  console.log("문의 고유번호  : ", formData.get("qstn_idx"));
-
-  axios
-    .post(`http://localhost:8083/AdmApi/adminAnswer`, formData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then((res) => {
-      console.log("문의 답변보기  : ", res.data);
-    });
-
   // 답변 저장
-
-  function answer() {
+  function saveAnswer() {
     const ansFormData = new FormData();
-
     ansFormData.append("qstn_idx", inquiry.qstn_idx); // 문의사항의 고유 번호
     ansFormData.append("ans_content", qstnsToAnswer.current.value); // 문의사항의 답변 내용
     ansFormData.append("admin_id", "admin"); // 문의 답변한 관리자(추후 변경하도록)
-
-    console.log("[보냄] 문의 고유번호  : ", ansFormData.get("qstn_idx"));
-    console.log("[보냄] 문의 답변내용  : ", ansFormData.get("ans_content"));
-    console.log("[보냄] 문의 답변관리자  : ", ansFormData.get("admin_id"));
 
     axios
       .post(`http://localhost:8083/AdmApi/adminToAnswer`, ansFormData, {
@@ -47,8 +47,8 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
         },
       })
       .then((res) => {
-        console.log("문의 답변등록 여부  : ", res.data);
         alert("답변이 저장되었습니다.");
+        setAnswer(qstnsToAnswer.current.value); // 저장된 답변 내용을 상태에 반영
       });
   }
 
@@ -63,15 +63,20 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
             <h1>답변작성</h1>
             <div className="userInrtos">
               <div className="userInrto">
-                <img src="./img/mypageuser.png" alt="mypageuser"/>
+                <img src="./img/mypageuser.png" alt="mypageuser" />
                 {inquiry.mb_email} {formatDate(inquiry.questioned_at)}
               </div>
               <div>
                 <p className="titleIntro">제목 : {inquiry.qstn_title}</p>
-                <p className="titleIntro">{inquiry.qstn_content}</p>{" "}
-                {/* qstn_content를 표시 */}
+                <p className="titleIntro">{inquiry.qstn_content}</p>
               </div>
             </div>
+            {answer && (
+              <div className="answerContent">
+                <p className="titleIntro">답변 :</p>
+                <p>{answer}</p>
+              </div>
+            )}
           </div>
         </div>
         <div className="modal-body">
@@ -85,7 +90,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
           <button className="button" onClick={onClose}>
             닫기
           </button>
-          <button className="button" onClick={answer}>
+          <button className="button" onClick={saveAnswer}>
             저장
           </button>
         </div>
