@@ -2,7 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import "../css/modal.css";
 import axios from "axios";
 
-const Modal = ({ isOpen, onClose, inquiry }) => {
+const Modal = ({ isOpen, onClose, inquiry, isPrivate }) => {
   const qstnsToAnswer = useRef(); // 답변 내용
   const [answer, setAnswer] = useState(""); // 답변 내용을 저장할 상태
 
@@ -68,23 +68,27 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
               </div>
               <div>
                 <p className="titleIntro">제목 : {inquiry.qstn_title}</p>
-                <p className="titleIntro">{inquiry.qstn_content}</p>
+                <div>
+                {isPrivate ? (
+                  <p>비공개된 글 입니다. 작성자만 내용을 볼 수 있습니다.</p>
+                ) : (
+                  <p className="titleIntro">{inquiry.qstn_content}</p>
+                )}
+                </div>
               </div>
             </div>
-            {answer && (
-              <div className="answerContent">
-                <p className="titleIntro">답변 :</p>
-                <p>{answer}</p>
-              </div>
-            )}
           </div>
         </div>
         <div className="modal-body">
-          <textarea
-            ref={qstnsToAnswer}
-            className="styled-textarea"
-            placeholder="답변을 작성하세요"
-          ></textarea>
+          {isPrivate ? (
+            <p></p>
+          ) : (
+            <textarea
+              ref={qstnsToAnswer}
+              className="styled-textarea"
+              placeholder="답변을 작성하세요"
+            ></textarea>
+          )}
         </div>
         <div className="modal-footer">
           <button className="button" onClick={onClose}>
