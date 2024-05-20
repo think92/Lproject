@@ -16,8 +16,8 @@ import {
 } from "./component/WeekChart";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import LoadingSpinner from "./component/LoadingSpinner";
 
 const AdminMain = () => {
@@ -26,9 +26,8 @@ const AdminMain = () => {
   const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const [recentUsers, setRecentUsers] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date()) // 달력 선택을 위한 상태
+  const [selectedDate, setSelectedDate] = useState(new Date()); // 달력 선택을 위한 상태
   const [monthlyData, setMonthlyData] = useState(null); // MonthlySubscribersChart 데이터를 저장할 상태
-
 
   useEffect(() => {
     boardList();
@@ -36,15 +35,16 @@ const AdminMain = () => {
     console.log("length : ", board);
   }, [selectedDate]);
   ///////////달력가져오기
-  const handleDateChange = (date) =>{
+  const handleDateChange = (date) => {
     setSelectedDate(date);
-  }
+  };
 
   const boardList = () => {
     axios
       .post("http://localhost:8083/AdmApi/adminMain", {})
       .then((res) => {
         console.log("adminMain ALL DATA : ", res.data.aMemberList);
+        console.log("adminMain Pay DATA : ", res.data.aPayMemberList);
 
         const data = res.data.aQstnsList || [];
         setBoard(data);
@@ -70,31 +70,37 @@ const AdminMain = () => {
       });
   };
 
-  const fetchUsersData = () =>{
+  const fetchUsersData = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminUser",{})
-      .then((res)=> {
+      .post("http://localhost:8083/AdmApi/adminUser", {})
+      .then((res) => {
         const data = res.data;
-        if(Array.isArray(data)){
-          const month = selectedDate.getMonth() +1;
+        if (Array.isArray(data)) {
+          const month = selectedDate.getMonth() + 1;
           const year = selectedDate.getFullYear();
 
           // 월별 필터링 및 가입일시로 정렬
-          const filteredData = data.filter(user =>{
-            const userDate = new Date(user.joinedAt);
-            return userDate.getMonth() + 1 === month && userDate.getFullYear() === year;}).sort((a,b)=> new Date(b.joinedAt) - new Date(a.joinedAt));
-          
+          const filteredData = data
+            .filter((user) => {
+              const userDate = new Date(user.joinedAt);
+              return (
+                userDate.getMonth() + 1 === month &&
+                userDate.getFullYear() === year
+              );
+            })
+            .sort((a, b) => new Date(b.joinedAt) - new Date(a.joinedAt));
+
           // 최근 5명만 저장
-          setRecentUsers(filteredData.slice(0,5));
-          
+          setRecentUsers(filteredData.slice(0, 5));
+
           // 월별 가입자 수 데이터
           const dalilyCounts = Array(31).fill(0);
           const premiumCounts = Array(31).fill(0);
 
-          filteredData.forEach(user =>{
-            const day = new Date(user.joinedAt).getDate() -1;
+          filteredData.forEach((user) => {
+            const day = new Date(user.joinedAt).getDate() - 1;
             dalilyCounts[day]++;
-            if(user.mb_role ==='U'){
+            if (user.mb_role === "U") {
               premiumCounts[day]++;
             }
           });
@@ -103,20 +109,25 @@ const AdminMain = () => {
           const regularCounts = [];
           const premiumCountsAggregated = [];
 
-          for (let i = 0; i<dalilyCounts.length; i+= 5){
-            labels.push(`${month}월 ${i+1}일`);
-            regularCounts.push(dalilyCounts.slice(i, i + 5).reduce((acc, count)=> acc + count, 0));
+          for (let i = 0; i < dalilyCounts.length; i += 5) {
+            labels.push(`${month}월 ${i + 1}일`);
+            regularCounts.push(
+              dalilyCounts
+                .slice(i, i + 5)
+                .reduce((acc, count) => acc + count, 0)
+            );
           }
-          
+
           setMonthlyData({
-            labels : labels,
-            regular : regularCounts,
-            premium : premiumCountsAggregated
+            labels: labels,
+            regular: regularCounts,
+            premium: premiumCountsAggregated,
           });
         }
-      }).catch((err)=>{
-        console.error("Error fetching users data", err);
       })
+      .catch((err) => {
+        console.error("Error fetching users data", err);
+      });
   };
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -204,9 +215,9 @@ const AdminMain = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentUsers.map((user, index)=>(
+                  {recentUsers.map((user, index) => (
                     <tr key={user.mb_email}>
-                      <td>{index +1}</td>
+                      <td>{index + 1}</td>
                       <td>{user.mb_email}</td>
                       <td>{user.mb_role}</td>
                       <td>{formatDate(user.joinedAt)}</td>
@@ -232,9 +243,12 @@ const AdminMain = () => {
                   onChange={handleDateChange}
                   dateFormat="MM/yyyy"
                   showMonthYearPicker
-                  customInput = {<FontAwesomeIcon icon ={faCalendarDays} />}
+                  customInput={<FontAwesomeIcon icon={faCalendarDays} />}
                 />
-                <h1>{selectedDate.getFullYear()}년 {selectedDate.getMonth() +1}월 신규 가입자</h1>
+                <h1>
+                  {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
+                  신규 가입자
+                </h1>
               </div>
               <div className="chart">
                 <MonthlySubscribersChart monthlyData={monthlyData} />
