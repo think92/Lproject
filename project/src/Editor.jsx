@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faSquare, faCircle } from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
-import AWS from "aws-sdk";
+// import AWS from "aws-sdk";
 
 const Editor = () => {
   const fileInputRef = useRef(null);
@@ -34,57 +34,57 @@ const Editor = () => {
   const [activeArea, setActiveArea] = useState(null);
 
   ///////////////AWS S3설정/////////////
-  AWS.config.update({
-    accessKeyId: "",
-    secretAccessKey: "",
-    region: "",
-  });
+  // AWS.config.update({
+  //   accessKeyId: "",
+  //   secretAccessKey: "",
+  //   region: "",
+  // });
 
-  const s3 = new AWS.S3();
+  // const s3 = new AWS.S3();
 
   // S3 업로드 함수
-  const uploadToS3 = async (file, key) => {
-    const params = {
-      Bucket: "",
-      Key: key,
-      Body: file,
-      ContentType: file.type,
-    };
+  // const uploadToS3 = async (file, key) => {
+  //   const params = {
+  //     Bucket: "",
+  //     Key: key,
+  //     Body: file,
+  //     ContentType: file.type,
+  //   };
 
-    try {
-      const data = await s3.upload(params).promise();
-      console.log("Upload Success", data.Location);
-    } catch (err) {
-      console.log("Upload Error", err);
-    }
-  };
+  //   try {
+  //     const data = await s3.upload(params).promise();
+  //     console.log("Upload Success", data.Location);
+  //   } catch (err) {
+  //     console.log("Upload Error", err);
+  //   }
+  // };
 
-  const handleSubmit = async () => {
-    if (!imageView) return;
+  // const handleSubmit = async () => {
+  //   if (!imageView) return;
 
-    const response = await fetch(imageView);
-    const blob = await response.blob();
-    const imageFile = new File([blob], "imageView.png", { type: "image/png" });
-    await uploadToS3(imageFile, "imageView.png");
+  //   const response = await fetch(imageView);
+  //   const blob = await response.blob();
+  //   const imageFile = new File([blob], "imageView.png", { type: "image/png" });
+  //   await uploadToS3(imageFile, "imageView.png");
 
-    updatedAreas.forEach(async (area, index) => {
-      const { imageData } = area;
-      if (!imageData) return; // imageData가 존재하는지 확인
+  //   updatedAreas.forEach(async (area, index) => {
+  //     const { imageData } = area;
+  //     if (!imageData) return; // imageData가 존재하는지 확인
 
-      const canvas = document.createElement("canvas");
-      canvas.width = imageData.width;
-      canvas.height = imageData.height;
-      const ctx = canvas.getContext("2d");
-      ctx.putImageData(imageData, 0, 0);
+  //     const canvas = document.createElement("canvas");
+  //     canvas.width = imageData.width;
+  //     canvas.height = imageData.height;
+  //     const ctx = canvas.getContext("2d");
+  //     ctx.putImageData(imageData, 0, 0);
 
-      canvas.toBlob(async (blob) => {
-        const file = new File([blob], `area-${index}.png`, {
-          type: "image/png",
-        });
-        await uploadToS3(file, `area-${index}.png`);
-      }, "image/png");
-    });
-  };
+  //     canvas.toBlob(async (blob) => {
+  //       const file = new File([blob], `area-${index}.png`, {
+  //         type: "image/png",
+  //       });
+  //       await uploadToS3(file, `area-${index}.png`);
+  //     }, "image/png");
+  //   });
+  // };
 
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
@@ -426,9 +426,7 @@ const Editor = () => {
               </button>
             </div>
             <div>
-              <button className="typeSubmit" onClick={handleSubmit}>
-                적용하기
-              </button>
+              <button className="typeSubmit">적용하기</button>
             </div>
           </div>
           <p className="auto">User Mosaic</p>

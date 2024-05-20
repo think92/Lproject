@@ -3,6 +3,7 @@ import "../css/modal.css";
 import axios from "axios";
 
 const Modal = ({ isOpen, onClose, inquiry }) => {
+  console.log("Modal 방문 !");
   const qstnsToAnswer = useRef(); // 답변 내용
 
   if (!isOpen || !inquiry) return null;
@@ -63,7 +64,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
             <h1>답변작성</h1>
             <div className="userInrtos">
               <div className="userInrto">
-                <img src="./img/mypageuser.png" alt="mypageuser"/>
+                <img src="./img/mypageuser.png" alt="mypageuser" />
                 {inquiry.mb_email} {formatDate(inquiry.questioned_at)}
               </div>
               <div>

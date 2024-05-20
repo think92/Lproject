@@ -20,6 +20,7 @@ const Customer = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
+  const [modalIsWriteOpen, setModalIsWriteOpen] = useState(false); // 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
   const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
   const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
@@ -71,10 +72,24 @@ const Customer = () => {
     return `${year}-${month}-${day} ${hour}:00`;
   };
 
+  console.log("모달1 : ", modalIsOpen);
+  console.log("모달2 : ", modalIsWriteOpen);
   // 모달
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
     setModalIsOpen(true);
+  };
+
+  // 작성하기 버튼 클릭 시 실행될 함수
+  const handleWriteButtonClick = () => {
+    console.log("작성하기 클릭!");
+    // if (login_id) {
+    setModalIsWriteOpen(true);
+    // } else {
+    //   alert("로그인이 필요합니다.");
+    //   navigate("/Login");
+    //   handleClick("로그인이 필요합니다.");
+    // }
   };
 
   // 데이터를 필터링하고 정렬하는 함수
@@ -137,17 +152,6 @@ const Customer = () => {
   // 작성하기 버튼 클릭 핸들러
   const handleClick = (message) => {
     console.log(message);
-  };
-
-  // 작성하기 버튼 클릭 시 실행될 함수
-  const handleWriteButtonClick = () => {
-    if (login_id) {
-      setModalIsOpen(true);
-    } else {
-      alert("로그인이 필요합니다.");
-      navigate("/Login");
-      handleClick("로그인이 필요합니다.");
-    }
   };
 
   return (
@@ -224,11 +228,19 @@ const Customer = () => {
                 ))}
               </tbody>
             </table>
-            <Modal
-              isOpen={modalIsOpen}
-              onClose={() => setModalIsOpen(false)}
-              inquiry={selectedInquiry}
-            />
+            {modalIsOpen && (
+              <Modal
+                isOpen={modalIsOpen}
+                onClose={() => setModalIsOpen(false)}
+                inquiry={selectedInquiry}
+              />
+            )}
+            {modalIsWriteOpen && (
+              <ModalWrite
+                isOpen={modalIsWriteOpen}
+                onClose={() => setModalIsWriteOpen(false)}
+              />
+            )}
 
             {/* 페이지 버튼 */}
             <div className="paginations">
@@ -259,11 +271,6 @@ const Customer = () => {
                 >
                   작성하기
                 </button>
-                <ModalWrite
-                  isOpen={modalIsOpen}
-                  onClose={() => setModalIsOpen(false)}
-                  inquiry={selectedInquiry}
-                />
               </div>
             </div>
           </div>

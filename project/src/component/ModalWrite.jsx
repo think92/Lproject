@@ -2,6 +2,7 @@ import React from "react";
 import "../css/modalwrite.css";
 
 const ModalWrite = ({ isOpen, onClose, inquiry }) => {
+  console.log("ModalWrite 방문");
   if (!isOpen || !inquiry) return null;
 
   const formatDate = (dateString) => {
