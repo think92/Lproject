@@ -3,8 +3,8 @@ import "../css/modal.css";
 import axios from "axios";
 import { LoginUserContext } from "../context/LoginUserContent";
 
-const Modal = ({ isOpen, onClose, inquiry, isPrivate }) => {
-  const {login_id} = useContext(LoginUserContext);
+const Modal = ({ isOpen, onClose, inquiry }) => {
+  const { login_id } = useContext(LoginUserContext);
   const qstnsToAnswer = useRef(); // 답변 내용
   const [answer, setAnswer] = useState(""); // 답변 내용을 저장할 상태
 
@@ -54,7 +54,9 @@ const Modal = ({ isOpen, onClose, inquiry, isPrivate }) => {
       });
   }
 
-  const canViewContent = isPrivate && inquiry.mb_email === login_id;
+  const isPrivate = inquiry.qstn_open === "N";
+  const canViewContent =
+    !isPrivate || (isPrivate && inquiry.mb_email === login_id);
 
   return (
     <div className="modal">
@@ -73,22 +75,22 @@ const Modal = ({ isOpen, onClose, inquiry, isPrivate }) => {
               <div>
                 <p className="titleIntro">제목 : {inquiry.qstn_title}</p>
                 <div>
-                {isPrivate && !canViewContent ? (
-                  <p>비공개된 글 입니다. 작성자만 내용을 볼 수 있습니다.</p>
-                ) : (
-                  <p className="titleIntro">{inquiry.qstn_content}</p>
-                )}
+                  {canViewContent ? (
+                    <p className="titleIntro">{inquiry.qstn_content}</p>
+                  ) : (
+                    <p>비공개된 글 입니다. 작성자만 내용을 볼 수 있습니다.</p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
         <div className="modal-body">
-            <textarea
-              ref={qstnsToAnswer}
-              className="styled-textarea"
-              placeholder="답변을 작성하세요"
-            ></textarea>
+          <textarea
+            ref={qstnsToAnswer}
+            className="styled-textarea"
+            placeholder="답변을 작성하세요"
+          ></textarea>
         </div>
         <div className="modal-footer">
           <button className="button" onClick={onClose}>
