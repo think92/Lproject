@@ -7,12 +7,13 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
   const { login_id } = useContext(LoginUserContext);
   const qstnsToAnswer = useRef(); // 답변 내용
   const [answer, setAnswer] = useState(""); // 답변 내용을 저장할 상태
+  const [isAnswered, setIsAnswered] = useState(false); // 답변 완료 여부
 
   useEffect(() => {
     if (isOpen && inquiry) {
       // 문의사항의 답변 보기
       const formData = new FormData();
-      formData.append("qstn_idx", inquiry.qstn_idx); // 문의사항의 답변 내용
+      formData.append("qstn_idx", inquiry.qstn_idx); // 문의사항의 고유 번호
 
       axios
         .post(`http://localhost:8083/AdmApi/adminAnswer`, formData, {
@@ -21,10 +22,16 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
           },
         })
         .then((res) => {
-          console.log(res.data);
-          if (res.data && res.data.answerContent) {
-            setAnswer(res.data.answerContent); // 답변 내용을 상태에 저장
+          console.log("응답 데이터:", res.data);
+          if (res.data && res.data.length > 0) {
+            setAnswer(res.data[0].ans_content); // 답변 내용을 상태에 저장
+            setIsAnswered(true); // 답변 완료 여부 설정
+          } else {
+            setIsAnswered(false); // 답변 미완료 설정
           }
+        })
+        .catch((err) => {
+          console.error("Error fetching answer:", err);
         });
     }
   }, [isOpen, inquiry]);
@@ -53,6 +60,10 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
         console.log(res.data);
         alert("답변이 저장되었습니다.");
         setAnswer(qstnsToAnswer.current.value); // 저장된 답변 내용을 상태에 반영
+        setIsAnswered(true); // 답변 완료 여부 설정
+      })
+      .catch((err) => {
+        console.error("Error saving answer:", err);
       });
   }
 
@@ -85,22 +96,32 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
                 </div>
               </div>
             </div>
+            {isAnswered && (
+              <div className="answerContent">
+                <p className="titleIntro">답변 :</p>
+                <p>{answer}</p>
+              </div>
+            )}
           </div>
         </div>
-        <div className="modal-body">
-          <textarea
-            ref={qstnsToAnswer}
-            className="styled-textarea"
-            placeholder="답변을 작성하세요"
-          ></textarea>
-        </div>
+        {!isAnswered && (
+          <div className="modal-body">
+            <textarea
+              ref={qstnsToAnswer}
+              className="styled-textarea"
+              placeholder="답변을 작성하세요"
+            ></textarea>
+          </div>
+        )}
         <div className="modal-footer">
           <button className="button" onClick={onClose}>
             닫기
           </button>
-          <button className="button" onClick={saveAnswer}>
-            저장
-          </button>
+          {!isAnswered && (
+            <button className="button" onClick={saveAnswer}>
+              저장
+            </button>
+          )}
         </div>
       </div>
     </div>
