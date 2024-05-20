@@ -151,6 +151,17 @@ const Customer = () => {
     }
   };
 
+  // Customer 컴포넌트에서 Modal에 전달할 비공개 글 여부를 결정하는 함수
+  const isPrivateInquiryVisible = (inquiry) => {
+    if (
+      login_id &&
+      inquiry.mb_email === login_id &&
+      inquiry.qstn_open === "N"
+    ) {
+      return true;
+    }
+  };
+
   return (
     <div>
       <MainBar />
@@ -195,7 +206,9 @@ const Customer = () => {
                       className="customerdivisons"
                       onClick={() => openModal(inquiry)}
                     >
-                      {inquiry.qstn_open === "N" ? (
+                      {isPrivateInquiryVisible(inquiry) ? (
+                        <div>{inquiry.qstn_title}</div>
+                      ) : (
                         <div>
                           <img
                             src="./img/secured-lock.png"
@@ -204,8 +217,6 @@ const Customer = () => {
                           ></img>
                           비공개된 글 입니다.
                         </div>
-                      ) : (
-                        <div>{inquiry.qstn_title}</div>
                       )}
                       {/* {inquiry.qstn_open !== "N" && (
                         <div>{inquiry.qstn_title}</div>

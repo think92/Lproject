@@ -40,7 +40,7 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   type="radio"
                   name="privacy"
                   checked={isPrivate}
-                  onChange={(e) => setIsPrivate(true)}
+                  onChange={() => setIsPrivate(true)}
                   className="checkBox"
                 />
                 <p className="checkboxPrivate">비공개</p>
