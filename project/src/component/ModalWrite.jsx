@@ -31,7 +31,7 @@ const ModalWrite = ({ isOpen, onClose }) => {
                 <input
                   type="radio"
                   name="privacy"
-                  checked={isPrivate}
+                  checked="cheched"
                   onChange={() => setIsPrivate(false)}
                   className="checkBox"
                 />
@@ -39,7 +39,7 @@ const ModalWrite = ({ isOpen, onClose }) => {
                 <input
                   type="radio"
                   name="privacy"
-                  checked={isPrivate}
+                  checked="cheched"
                   onChange={() => setIsPrivate(true)}
                   className="checkBox"
                 />
@@ -53,7 +53,9 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   className="ModalWriteselectbox"
                   onChange={(e) => setTitle(e.target.value)}
                 >
-                  <option className="ModalWrite-opt">제목을 선택해주세요.</option>
+                  <option className="ModalWrite-opt">
+                    문의 종류를 선택해주세요.
+                  </option>
                   <option value="">전체</option>
                   <option value="">모자이크 관련</option>
                   <option value="">서비스 이용</option>
@@ -61,6 +63,7 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   <option value="">기타</option>
                   <option value="">신고</option>
                 </select>
+                <input type="text" placeholder="제목을 입력해주세요." className="ModalWriteTitle"></input>
               </div>
               <div>{/* qstn_content를 표시 */}</div>
             </div>

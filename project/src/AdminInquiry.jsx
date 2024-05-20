@@ -101,7 +101,7 @@ const AdminInquiry = () => {
 
   const handleNextGroup = () => {
     setCurrentGroup(currentGroup + 1);
-    setCurrentPage((currentGroup - 1) * pagesPerGroup + 1);
+    setCurrentPage(nextGroupStartPage);
   };
 
   const handlePrevGroup = () => {
@@ -123,6 +123,9 @@ const AdminInquiry = () => {
   for (let i = startPage; i <= endPage; i++) {
     pageNumbers.push(i);
   }
+
+  // 다음 페이지 번호 계산
+  const nextGroupStartPage = endPage + 1;
 
   return (
     <div className="admin">
