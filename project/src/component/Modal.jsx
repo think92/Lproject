@@ -21,6 +21,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
           },
         })
         .then((res) => {
+          console.log(res.data);
           if (res.data && res.data.answerContent) {
             setAnswer(res.data.answerContent); // 답변 내용을 상태에 저장
           }
@@ -49,6 +50,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
         },
       })
       .then((res) => {
+        console.log(res.data);
         alert("답변이 저장되었습니다.");
         setAnswer(qstnsToAnswer.current.value); // 저장된 답변 내용을 상태에 반영
       });
