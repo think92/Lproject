@@ -53,7 +53,7 @@ const Customer = () => {
           (inquiry) => inquiry.questioned_at.split("T")[0] === today
         ).length;
         setTodayCount(todayInquiries); // 오늘 등록된 문의 수 계산
-        console.log(data);
+        // console.log(data);
       })
       .catch((err) => {
         console.error("Error fetching data:", err);
@@ -120,13 +120,31 @@ const Customer = () => {
     setInquiries(filtered);
   };
 
+  const handleSelectTypeChange = (event) => {
+    setSelectType(event.target.value);
+  };
+
+  const handleInputChange = (event) => {
+    setSearchTerm(event.target.value);
+  };
+
+  const handleSearch = () => {
+    if(searchTerm.trim() === ""){
+      //검색어가 비어있는 경우 모든 문의 내역을 보여줌
+      boardList();
+    } else {
+      filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
+    }
+  };
+
+  //페이지
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
   const handleNextGroup = () => {
     setCurrentGroup(currentGroup + 1);
-    setCurrentPage((currentGroup - 1) * pagesPerGroup + 1);
+    setCurrentPage(nextGroupStartPage);
   };
 
   const handlePrevGroup = () => {
@@ -149,6 +167,9 @@ const Customer = () => {
     pageNumbers.push(i);
   }
 
+  // 다음 페이지 번호 계산
+  const nextGroupStartPage = endPage + 1;
+
   // 작성하기 버튼 클릭 핸들러
   const handleClick = (message) => {
     console.log(message);
@@ -163,22 +184,30 @@ const Customer = () => {
             <div className="customerinquiry">
               <h1 className="customerinquirys">문의내역</h1>
               <div>
-                <select name="choice" className="customerselectbox">
-                  <option className="opt">- 문의 종류 -</option>
-                  <option value="">전체</option>
-                  <option value="">모자이크 관련</option>
-                  <option value="">서비스 이용</option>
-                  <option value="">프리미엄 결제</option>
-                  <option value="">기타</option>
-                  <option value="">신고</option>
+                <select
+                  name="choice"
+                  className="customerselectbox"
+                  value={selectType}
+                  onChange={handleSelectTypeChange}
+                >
+                  <option value="">- 항목 -</option>
+                  <option >전체</option>
+                  <option value="qstn_title">문의제목</option>
+                  <option value="qstn_content">문의내용</option>
+                  <option value="mb_email">아이디</option>
+                  <option value="questioned_at">문의일시</option>
                 </select>
               </div>
               <input
                 type="text"
                 placeholder="검색어를 입력하세요"
                 className="searchinput"
+                value={searchTerm}
+                onChange={handleInputChange}
               />
-              <button className="searchbtn">검색</button>
+              <button className="searchbtn" onClick={handleSearch}>
+                검색
+              </button>
             </div>
             <table className="customertable">
               <thead>
