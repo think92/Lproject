@@ -20,7 +20,7 @@ const Customer = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
-  const [modalIsWriteOpen, setModalIsWriteOpen] = useState(false); // 모달 상태
+  const [moadlWriteIsOpen, setModalWriteIsOpen] = useState(false); // 작성 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
   const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
   const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
@@ -154,6 +154,17 @@ const Customer = () => {
     console.log(message);
   };
 
+  // Customer 컴포넌트에서 Modal에 전달할 비공개 글 여부를 결정하는 함수
+  const isPrivateInquiryVisible = (inquiry) => {
+    if (
+      login_id &&
+      inquiry.mb_email === login_id &&
+      inquiry.qstn_open === "N"
+    ) {
+      return true;
+    }
+  };
+
   return (
     <div>
       <MainBar />
@@ -198,7 +209,9 @@ const Customer = () => {
                       className="customerdivisons"
                       onClick={() => openModal(inquiry)}
                     >
-                      {inquiry.qstn_open === "N" && (
+                      {isPrivateInquiryVisible(inquiry) ? (
+                        <div>{inquiry.qstn_title}</div>
+                      ) : (
                         <div>
                           <img
                             src="./img/secured-lock.png"
@@ -208,9 +221,9 @@ const Customer = () => {
                           비공개된 글 입니다.
                         </div>
                       )}
-                      {inquiry.qstn_open !== "N" && (
+                      {/* {inquiry.qstn_open !== "N" && (
                         <div>{inquiry.qstn_title}</div>
-                      )}
+                      )} */}
                     </td>
                     <td className="customerwriters">{inquiry.mb_email}</td>
                     <td className="customerdates">
@@ -228,19 +241,12 @@ const Customer = () => {
                 ))}
               </tbody>
             </table>
-            {modalIsOpen && (
-              <Modal
-                isOpen={modalIsOpen}
-                onClose={() => setModalIsOpen(false)}
-                inquiry={selectedInquiry}
-              />
-            )}
-            {modalIsWriteOpen && (
-              <ModalWrite
-                isOpen={modalIsWriteOpen}
-                onClose={() => setModalIsWriteOpen(false)}
-              />
-            )}
+            <Modal
+              isOpen={modalIsOpen}
+              onClose={() => setModalIsOpen(false)}
+              inquiry={selectedInquiry}
+              isPrivate={selectedInquiry?.qstn_open === "N"} // 지솔새 려주 덩갛
+            />
 
             {/* 페이지 버튼 */}
             <div className="paginations">
@@ -267,8 +273,18 @@ const Customer = () => {
                 <button
                   id="bt"
                   className="customerwrites"
-                  onClick={handleWriteButtonClick}
+                  onClick={handleWriteButtonClick} // 수정된 함수 사용
+                  // onClick={() => {
+                  //   Modal === false
+                  //     ? handleWriteButtonClick(true)
+                  //     : handleWriteButtonClick(false);
+                  // }}
                 >
+                  {/* <ModalWrite
+                  isOpen={modalIsOpen}
+                  
+                  inquiry={selectedInquiry}
+                /> */}
                   작성하기
                 </button>
               </div>
@@ -280,6 +296,10 @@ const Customer = () => {
           </span>
         </div>
       </section>
+      <ModalWrite
+        isOpen={moadlWriteIsOpen}
+        onClose={() => setModalWriteIsOpen(false)}
+      />
     </div>
   );
 };

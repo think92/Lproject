@@ -5,7 +5,6 @@ import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
 import axios from "axios";
 
 const AdminInquiry = () => {
-  // 검색창 상태
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
@@ -33,7 +32,7 @@ const AdminInquiry = () => {
         setInquiries(data); // 데이터를 상태에 저장
         filterAndSortInquiries(data); // 필터링 및 정렬 실행
         const waiting = data.filter(
-          (inquiry) => inquiry.qstn_open === "N"
+          (inquiry) => inquiry.qstn_answer === "N"
         ).length;
         setWaitingCount(waiting); // 대기 중인 문의 수 계산
         const today = new Date().toISOString().split("T")[0];
@@ -61,13 +60,12 @@ const AdminInquiry = () => {
       );
     }
 
-    // "대기 중" 상태가 같은 경우, 날짜를 비교하여 오래된 문의를 상위에 배치
     filtered.sort((a, b) => {
-      if (a.qstn_open === "N" && b.qstn_open !== "N") {
+      if (a.qstn_answer === "N" && b.qstn_answer !== "N") {
         return -1;
-      } else if (b.qstn_open === "N" && a.qstn_open !== "N") {
+      } else if (b.qstn_answer === "N" && a.qstn_answer !== "N") {
         return 1;
-      } else if (a.qstn_open === "N" && b.qstn_open === "N") {
+      } else if (a.qstn_answer === "N" && b.qstn_answer === "N") {
         return new Date(a.questioned_at) < new Date(b.questioned_at) ? -1 : 1;
       }
       return 0;
@@ -92,6 +90,7 @@ const AdminInquiry = () => {
     setSelectedInquiry(inquiry);
     setModalIsOpen(true);
   };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString();
@@ -205,7 +204,7 @@ const AdminInquiry = () => {
                     </td>
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td
-                      className="clickable "
+                      className="clickable"
                       onClick={() => openModal(inquiry)}
                     >
                       {inquiry.qstn_title}

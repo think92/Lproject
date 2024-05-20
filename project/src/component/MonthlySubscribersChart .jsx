@@ -21,22 +21,14 @@ ChartJS.register(
   Filler
 );
 
-const MonthlySubscribersChart = () => {
+const MonthlySubscribersChart = ({monthlyData}) => {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({
-    labels: [
-      "5월 1일",
-      "5월 5일",
-      "5월 10일",
-      "5월 15일",
-      "5월 20일",
-      "5월 25일",
-      "5월 30일",
-    ],
+    labels: [],
     datasets: [
       {
         label: "신규 가입자 수",
-        data: [65, 75, 80, 100, 150, 120, 130],
+        data: [],
         borderColor: "#4CE577",
         pointBackgroundColor: "#fff",
         pointBorderColor: "#4CE577",
@@ -56,7 +48,7 @@ const MonthlySubscribersChart = () => {
       },
       {
         label: "프리미엄 가입자 수",
-        data: [20, 35, 40, 60, 80, 95, 100],
+        data: [],
         borderColor: "#FE7575",
         pointBackgroundColor: "#fff",
         pointBorderColor: "#FE7575",
@@ -76,6 +68,24 @@ const MonthlySubscribersChart = () => {
       },
     ],
   });
+
+  useEffect(()=>{
+    if(monthlyData){
+      setChartData({
+        labels : monthlyData.labels,
+        datasets :[
+          {
+            ...chartData.datasets[0],
+            data : monthlyData.regular,
+          },
+          {
+            ...chartData.datasets[1],
+            data : monthlyData.premium,
+          },
+        ],
+      });
+    }
+  }, [monthlyData])
 
   // Helper function to create gradient
   function getGradient(ctx, chartArea, color) {
