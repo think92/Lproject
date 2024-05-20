@@ -1,14 +1,22 @@
-import React, { Children, createContext, useRef, useState } from "react";
+import React, {
+  Children,
+  createContext,
+  useContext,
+  useRef,
+  useState,
+} from "react";
 import "./css/MypageBar.css";
 import { faHouse, faCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Link, NavLink } from "react-router-dom";
+import { LoginUserContext } from "./context/LoginUserContent";
 
 const MypageBar = () => {
+  const { login_id } = useContext(LoginUserContext);
+
   const changeBtn = {
     backgroundColor: "#4ce577",
   };
-
 
   return (
     <div className="mypageBody">
@@ -30,7 +38,7 @@ const MypageBar = () => {
               ></img>
             </div>
 
-            <p className="useremail">doni</p>
+            <p className="useremail">{login_id}</p>
             <div>
               <NavLink
                 to={"/Mypage"}
@@ -63,7 +71,11 @@ const MypageBar = () => {
               </NavLink>
             </div>
             <div>
-              <NavLink to={"/MypagePay"} className="mypagepay" style={({ isActive }) => (isActive ? changeBtn : {})}>
+              <NavLink
+                to={"/MypagePay"}
+                className="mypagepay"
+                style={({ isActive }) => (isActive ? changeBtn : {})}
+              >
                 <FontAwesomeIcon icon={faCircle} className="facirclewhite" />
                 <p className="mypagepays">결재내역</p>
               </NavLink>

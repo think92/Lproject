@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import { Children, createContext, useState } from "react";
 
 /* 
 
@@ -12,4 +12,18 @@ LoginUserContext
 (https://dev-syhy.tistory.com/39)
 
 */
+
 export const LoginUserContext = createContext();
+
+export const LoginUserProvider = ({ children }) => {
+  const [login_id, setLogin_id] = useState(null);
+  const [login_role, setLogin_role] = useState(null);
+
+  return (
+    <LoginUserContext.Provider
+      value={{ login_id, setLogin_id, login_role, setLogin_role }}
+    >
+      {children}
+    </LoginUserContext.Provider>
+  );
+};

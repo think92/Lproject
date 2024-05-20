@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./css/MypageCustom.css";
 import MypageBar from "./MypageBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Modal from "./component/Modal";
+import { LoginUserContext } from "./context/LoginUserContent";
 
 const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
+  const [filteredInquiries, setFilteredInquiries] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
@@ -23,10 +25,12 @@ const MypageCustom = () => {
   const itemsPerPage = 12; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
 
+  const { login_id } = useContext(LoginUserContext); // 로그인한 유저 아이디 가져오기
+
   useEffect(() => {
     boardList();
     // console.log("length : ", inquiri);
-  }, []);
+  }, [login_id, inquiries, searchTerm, selectType]);
 
   const boardList = () => {
     axios
@@ -73,7 +77,7 @@ const MypageCustom = () => {
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = (data) => {
-    let filtered = data;
+    let filtered = data.filter((inquiry) => inquiry.mb_email === login_id);
 
     if (selectType && searchTerm) {
       filtered = filtered.filter((inquiry) =>
@@ -214,7 +218,7 @@ const MypageCustom = () => {
                       <td>
                         <input type="checkbox"></input>
                       </td>
-                      <td>{inquiry.qstn_idx}</td>
+                      <td>{indexOfFirstItem + index + 1}</td>
                       <td
                         className="CustomNum"
                         onClick={() => openModal(inquiry)}

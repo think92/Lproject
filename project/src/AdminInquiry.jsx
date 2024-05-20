@@ -5,7 +5,6 @@ import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
 import axios from "axios";
 
 const AdminInquiry = () => {
-  // 검색창 상태
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
@@ -27,7 +26,6 @@ const AdminInquiry = () => {
     axios
       .post("http://localhost:8083/AdmApi/adminInquiry")
       .then((res) => {
-        console.log(res);
         const data = Array.isArray(res.data.aQstnsList)
           ? res.data.aQstnsList
           : [];
@@ -42,7 +40,6 @@ const AdminInquiry = () => {
           (inquiry) => inquiry.questioned_at.split("T")[0] === today
         ).length;
         setTodayCount(todayInquiries); // 오늘 등록된 문의 수 계산
-        console.log(data);
       })
       .catch((err) => {
         console.error("Error fetching data:", err);
@@ -62,7 +59,6 @@ const AdminInquiry = () => {
       );
     }
 
-    // "대기 중" 상태가 같은 경우, 날짜를 비교하여 오래된 문의를 상위에 배치
     filtered.sort((a, b) => {
       if (a.qstn_answer === "N" && b.qstn_answer !== "N") {
         return -1;
@@ -93,6 +89,7 @@ const AdminInquiry = () => {
     setSelectedInquiry(inquiry);
     setModalIsOpen(true);
   };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleString();
@@ -206,7 +203,7 @@ const AdminInquiry = () => {
                     </td>
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td
-                      className="clickable "
+                      className="clickable"
                       onClick={() => openModal(inquiry)}
                     >
                       {inquiry.qstn_title}
