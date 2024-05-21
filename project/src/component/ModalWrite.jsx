@@ -25,7 +25,7 @@ const ModalWrite = ({ isOpen, onClose }) => {
         </span>
         <div className="modalWrite-header">
           <div className="modalWrite-title">
-            <h1 className="modalWrite-titles">문의작성</h1>
+            <h1 className="modalWrite-titles">문의사항 작성하기</h1>
             <div className="modalCheckbox-container">
               <label className="checkBoxes">
                 <input
@@ -54,6 +54,7 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   onChange={(e) => setTitle(e.target.value)}
                 >
                   <option className="ModalWrite-opt">
+                    항목을 선택해주세요.
                   </option>
                   <option value="">전체</option>
                   <option value="">모자이크 관련</option>
@@ -62,7 +63,14 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   <option value="">기타</option>
                   <option value="">신고</option>
                 </select>
-                <input type="text" placeholder="제목을 입력해주세요." className="ModalWriteTitle"></input>
+                <div id="ModalWriteTitles">
+                  <p>제목 : </p>
+                    <input
+                      type="text"
+                      placeholder="제목을 입력해주세요."
+                      id="ModalWriteTitle"
+                    ></input>
+                </div>
               </div>
               <div>{/* qstn_content를 표시 */}</div>
             </div>
@@ -77,10 +85,10 @@ const ModalWrite = ({ isOpen, onClose }) => {
           ></textarea>
         </div>
         <div className="modalWrite-footer">
-          <button className="modalWritebutton" onClick={onClose}>
+          <button className="modalWriteClosebutton" onClick={onClose}>
             닫기
           </button>
-          <button className="modalWritebutton" onClick={handleSubmit}>
+          <button className="modalWriteSavebutton" onClick={handleSubmit}>
             저장
           </button>
         </div>
