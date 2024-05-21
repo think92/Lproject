@@ -21,7 +21,8 @@ const Mypage = () => {
               </div>
               <div className="MosaicImg">
                 <div className="MosaicImgs">
-                  <div className="ImgCheck"></div>
+                  <div className="ImgCheck">
+                  </div>
                 </div>
                 <div className="MosaicImgs">
                   <div className="ImgCheck"></div>

@@ -347,6 +347,50 @@ const Editor = () => {
     });
   }
 
+  // 이미지 로컬 다운로드 함수 추가
+  const downloadImage = () => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const link = document.createElement("a");
+    link.href = canvas.toDataURL("image/png");
+    link.download = "mosaic-image.png";
+    link.click();
+  };
+
+  // 이미지 업로드
+  const uploadImage = async (imageDataUrl) => {
+    try{
+      const response = await axios.post('/api/upload', {image: imageDataUrl})
+      return response.data;
+    }catch(error) {
+      console.error('Image upload failed:', error);
+      return null;
+    }
+  }
+
+  // 저장 버튼 클릭 핸들러 추가
+  const handleSave = async () => {
+    const canvas = canvasRef.current;
+    if(!canvas) return;
+
+    const imageDataUrl = canvas.toDataURL("image/png");
+
+    // 이미지 다운로드
+    downloadImage();
+
+    // 이미지 서버 업로드
+    const uploadResponse = await uploadImage(imageDataUrl);
+    if(uploadResponse) {
+      console.log('Image successfully uploaded:', uploadResponse);
+
+      // 여기서 사용자 프로필을 업데이트하는 로직을 추가합니다.
+      // 예: 사용자 상태를 업데이트하거나, Mypage.jsx에 이미지를 추가하는 등
+    } else{
+      console.log('Image upload failed');
+    }
+  }
+
   return (
     <div className="editor-specific">
       <MainBar />
@@ -466,7 +510,7 @@ const Editor = () => {
             <button onClick={handleButtonClick} className="submit active">
               사진/영상 업로드
             </button>
-            <button className="submit">저장</button>
+            <button className="submit" onClick={handleSave}>저장</button>
             <button className="submit">삭제</button>
           </div>
         </div>
