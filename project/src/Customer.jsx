@@ -82,12 +82,13 @@ const Customer = () => {
   // 작성하기 버튼 클릭 시 실행될 함수
   const handleWriteButtonClick = () => {
     console.log("작성하기 클릭!");
-    // if (login_id) {
-    // } else {
-    //   alert("로그인이 필요합니다.");
-    //   navigate("/Login");
-    //   handleClick("로그인이 필요합니다.");
-    // }
+    if (sessionStorage.getItem("mb_email") === null) {
+      alert("로그인이 필요합니다.");
+      navigate("/Login");
+      handleClick("로그인이 필요합니다.");
+    } else {
+      setModalWriteIsOpen(true);
+    }
   };
 
   // 데이터를 필터링하고 정렬하는 함수
@@ -105,12 +106,12 @@ const Customer = () => {
 
     // "대기 중" 상태가 같은 경우, 날짜를 비교하여 오래된 문의를 상위에 배치
     filtered.sort((a, b) => {
-      if (a.answerStatus === "N" && b.answerStatus !== "N") {
+      if (a.qstn_answer === "N" && b.qstn_answer !== "N") {
         return -1;
-      } else if (b.answerStatus === "N" && a.answerStatus !== "N") {
+      } else if (b.qstn_answer === "N" && a.qstn_answer !== "N") {
         return 1;
-      } else if (a.answerStatus === "N" && b.answerStatus === "N") {
-        return a.inquiryDate < b.inquiryDate ? -1 : 1;
+      } else if (a.qstn_answer === "N" && b.qstn_answer === "N") {
+        return new Date(a.questioned_at) < new Date(b.questioned_at) ? -1 : 1;
       }
       return 0;
     });
@@ -218,9 +219,10 @@ const Customer = () => {
                 </tr>
               </thead>
               <tbody>
-                {currentItems.map((inquiry) => (
+                {currentItems.map((inquiry, index) => (
                   <tr key={inquiry.num}>
-                    <td className="customernums">{inquiry.qstn_idx}</td>
+                    <td className="customernums">
+                    {indexOfFirstItem + index + 1}</td>
                     <td
                       className="customerdivisons"
                       onClick={() => openModal(inquiry)}
@@ -251,7 +253,7 @@ const Customer = () => {
                         inquiry.qstn_answer === "N" ? "redText" : "blackText"
                       }
                     >
-                      {inquiry.qstn_answer}
+                      {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                     </td>
                   </tr>
                 ))}

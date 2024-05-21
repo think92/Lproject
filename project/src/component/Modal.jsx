@@ -76,8 +76,8 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
 
   const isPrivate = inquiry.qstn_open === "N";
   const canViewContent =
-    !isPrivate || (isPrivate && inquiry.mb_email === login_id);
-
+    !isPrivate || (isPrivate && sessionStorage.getItem("mb_email") === inquiry.mb_email);
+    
   return (
     <div className="modal">
       <div className="modal-content">
@@ -102,7 +102,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
                 {canViewContent ? (
                   <p>{inquiry.qstn_content}</p>
                 ) : (
-                  <p>비공개된 글 입니다. 작성자만 내용을 볼 수 있습니다.</p>
+                  <p>비공개된 글 입니다.</p>
                 )}
               </div>
             </div>
