@@ -16,8 +16,8 @@ import { useLocation } from "react-router-dom";
 
 const Editor = () => {
   const fileInputRef = useRef(null);
-  const [imageView, setImageView] = useState(null);
-  const [images, setImages] = useState([]);
+  const [mediaView, setMediaView] = useState(null);
+  const [medias, setMedias] = useState([]);
   const [intensityAuto, setIntensityAuto] = useState(50);
   const [intensity, setIntensity] = useState(50);
   const [updatedAreas, setUpdatedAreas] = useState([]);
@@ -89,17 +89,17 @@ const Editor = () => {
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
     if (location.state?.images) {
-      setImages(location.state.images);
-      setImageView(location.state.images[0]);
+      setMedias(location.state.medias);
+      setMediaView(location.state.medias[0]);
     } else {
       console.error("No images passed in state.");
     }
   }, [location.state]);
 
   useEffect(() => {
-    if (!imageView) return;
+    if (!mediaView) return;
     const image = new Image();
-    image.src = imageView;
+    image.src = mediaView;
     image.onload = () => {
       imageRef.current = image;
       const canvas = canvasRef.current;
@@ -115,7 +115,7 @@ const Editor = () => {
         ctx.strokeRect(area.x, area.y, area.width, area.height);
       });
     };
-  }, [imageView, updatedAreas]);
+  }, [mediaView, updatedAreas]);
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
@@ -134,14 +134,18 @@ const Editor = () => {
           console.error("Error reading file:", error);
           reject(error);
         };
-        reader.readAsDataURL(file);
+        if(file.type.startsWith("image/")){
+          reader.readAsDataURL(file);
+        } else if (file.type.startsWith("video/")){
+          resolve(URL.createObjectURL(file))
+        }
       });
     });
     Promise.all(promises).then(
-      (newImages) => {
-        setImages((prevImages) => [...prevImages, ...newImages]);
-        if (newImages.length > 0) {
-          setImageView(newImages[0]);
+      (newMedias) => {
+        setMedias((prevMedias) => [...prevMedias, ...newMedias]);
+        if (newMedias.length > 0) {
+          setMediaView(newMedias[0]);
         }
       },
       (error) => {
@@ -150,22 +154,22 @@ const Editor = () => {
     );
   };
 
-  const selectImage = (event, image) => {
+  const selectMedia = (event, media) => {
     event.stopPropagation();
-    setImageView(image);
+    setMediaView(media);
     setUpdatedAreas([]);
   };
 
   const handleRemoveImage = (event, index) => {
     event.stopPropagation();
-    setImages((prevImages) => {
-      const filteredImages = prevImages.filter((_, idx) => idx !== index);
-      if (index === 0 && filteredImages.length > 0) {
-        setImageView(filteredImages[0]);
-      } else if (filteredImages.length === 0) {
-        setImageView(null);
+    setMedias((prevMedias) => {
+      const filteredMedias = prevMedias.filter((_, idx) => idx !== index);
+      if (index === 0 && filteredMedias.length > 0) {
+        setMediaView(filteredMedias[0]);
+      } else if (filteredMedias.length === 0) {
+        setMediaView(null);
       }
-      return filteredImages;
+      return filteredMedias;
     });
   };
 
@@ -231,11 +235,11 @@ const Editor = () => {
       );
       if (mosaicResult) {
         setUpdatedAreas((prevAreas) => [...prevAreas, newArea]);
-        const updatedImages = images.map((img) =>
-          img === imageView ? mosaicResult.mosaicImage : img
+        const updatedMedias = medias.map((img) =>
+          img === mediaView ? mosaicResult.mosaicImage : img
         );
-        setImages(updatedImages);
-        setImageView(mosaicResult.mosaicImage);
+        setMedias(updatedMedias);
+        setMediaView(mosaicResult.mosaicImage);
       }
     } else if (activeTool === "except") {
       setUpdatedAreas((prevAreas) => [...prevAreas, { ...newArea, imageData }]);
@@ -400,6 +404,7 @@ const Editor = () => {
         ref={fileInputRef}
         onChange={handleImageChange}
         multiple
+        accept="image/*, video/*"
       />
 
       <section className="sec">
@@ -515,29 +520,41 @@ const Editor = () => {
           </div>
         </div>
         <div className="edit">
-          {imageView ? (
+          {mediaView ? (
             <>
-              <canvas
-                ref={canvasRef}
-                className="imgEdit"
-                onMouseDown={handleMouseDown}
-                onMouseMove={handleMouseMove}
-                onMouseUp={handleMouseUp}
-                onClick={handleCanvasClick}
-              />
+              {mediaView.startsWith("blob:")?(
+                <video controls className="videoEdit">
+                  <source src={mediaView} type="video/mp4" />
+                </video>
+              ) : (
+                <canvas
+                  ref={canvasRef}
+                  className="imgEdit"
+                  onMouseDown={handleMouseDown}
+                  onMouseMove={handleMouseMove}
+                  onMouseUp={handleMouseUp}
+                  onClick={handleCanvasClick}
+                />
+              )}
             </>
           ) : (
             <p>이미지를 선택하세요</p>
           )}
         </div>
         <div className="imgSaves">
-          {images.map((image, index) => (
+          {medias.map((media, index) => (
             <div
               key={index}
               className="imgsave"
-              onClick={(event) => selectImage(event, image)}
+              onClick={(event) => selectMedia(event, media)}
             >
-              <img src={image} alt={`이미지 ${index + 1}`}></img>
+              {media.startsWith("blob:")?(
+                <video className="thumb">
+                  <source src={media} type="video/mp4" />
+                </video>
+              ) : (
+                <img src={media} alt={`미디어 ${index +1}`}></img>
+              )}
               <div
                 className="delete-icon"
                 onClick={(event) => handleRemoveImage(event, index)}
