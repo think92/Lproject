@@ -1,8 +1,22 @@
 import React from "react";
 import "./css/MypagePay.css";
 import MypageBar from "./MypageBar";
+import axios from "axios";
 
 const MypagePay = () => {
+  const formData = new FormData();
+  formData.append("mb_email", sessionStorage.getItem("mb_email"));
+
+  axios
+    .post("http://localhost:8083/MemApi/MypagePay", formData, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => {
+      console.log(res.data);
+    });
+
   return (
     <div>
       <MypageBar />

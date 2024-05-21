@@ -73,7 +73,6 @@ const Customer = () => {
   };
 
   console.log("모달1 : ", modalIsOpen);
-  console.log("모달2 : ", modalIsWriteOpen);
   // 모달
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
@@ -84,7 +83,6 @@ const Customer = () => {
   const handleWriteButtonClick = () => {
     console.log("작성하기 클릭!");
     // if (login_id) {
-    setModalIsWriteOpen(true);
     // } else {
     //   alert("로그인이 필요합니다.");
     //   navigate("/Login");
@@ -129,7 +127,7 @@ const Customer = () => {
   };
 
   const handleSearch = () => {
-    if(searchTerm.trim() === ""){
+    if (searchTerm.trim() === "") {
       //검색어가 비어있는 경우 모든 문의 내역을 보여줌
       boardList();
     } else {
@@ -191,7 +189,7 @@ const Customer = () => {
                   onChange={handleSelectTypeChange}
                 >
                   <option value="">- 항목 -</option>
-                  <option >전체</option>
+                  <option>전체</option>
                   <option value="qstn_title">문의제목</option>
                   <option value="qstn_content">문의내용</option>
                   <option value="mb_email">아이디</option>

@@ -15,7 +15,7 @@ const MainBar = () => {
   />;
 
   function LogOut(params) {
-    setLogin_id(false); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
+    sessionStorage.clear(); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
   }
 
   const [content, setContent] = useState("");
@@ -36,12 +36,18 @@ const MainBar = () => {
             <Link to={"/Customer"}>고객센터</Link>
 
             {/* 회원정보가 없으면 헤더에 로그인 */}
-            {false === login_id && <Link to={"/Login"}>로그인</Link>}
+            {null === sessionStorage.getItem("mb_email") && (
+              <Link to={"/Login"}>로그인</Link>
+            )}
 
             {/* 회원정보가 있으면 헤더에 로그아웃, 마이페이지, 벨 */}
-            {false !== login_id && <Link onClick={LogOut}>로그아웃</Link>}
-            {false !== login_id && <Link to={"/Mypage"}>마이페이지</Link>}
-            {false !== login_id && (
+            {null !== sessionStorage.getItem("mb_email") && (
+              <Link onClick={LogOut}>로그아웃</Link>
+            )}
+            {null !== sessionStorage.getItem("mb_email") && (
+              <Link to={"/Mypage"}>마이페이지</Link>
+            )}
+            {null !== sessionStorage.getItem("mb_email") && (
               <a>
                 <FontAwesomeIcon icon={faBell} className="bell" />
               </a>

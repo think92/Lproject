@@ -1,4 +1,4 @@
-import { Children, createContext, useState } from "react";
+import { Children, createContext, useState, useEffect } from "react";
 
 /* 
 
@@ -16,8 +16,11 @@ LoginUserContext
 export const LoginUserContext = createContext();
 
 export const LoginUserProvider = ({ children }) => {
-  const [login_id, setLogin_id] = useState(null);
-  const [login_role, setLogin_role] = useState(null);
+  // sessionStorage에 저장된 search 값을 가져옴
+  const sessionSearch = window.sessionStorage;
+  // search input 값이 바뀔때마다 상태 관리
+  const [login_id, setLogin_id] = useState();
+  const [login_role, setLogin_role] = useState();
 
   return (
     <LoginUserContext.Provider

@@ -22,22 +22,22 @@ const Login = () => {
     formData.append("mb_email", mb_email.current.value); // 아이디 값
     formData.append("mb_pw", mb_pw.current.value); //비밀번호 값
     axios
-    .post(`http://localhost:8083/MemApi/login`, formData, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-    .then((res) => {
-      console.log("로그인 정보보기  : ", res.data);
-      console.log("로그인 이메일    : ", res.data.mb_email);
-      console.log("로그인 비번      : ", res.data.mb_pw);
-      console.log("로그인 등급      : ", res.data.mb_role);
-      console.log("로그인 가입일자  : ", res.data.joinedAt);
+      .post(`http://localhost:8083/MemApi/login`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log("로그인 정보보기  : ", res.data);
+        console.log("로그인 이메일    : ", res.data.mb_email);
+        console.log("로그인 비번      : ", res.data.mb_pw);
+        console.log("로그인 등급      : ", res.data.mb_role);
+        console.log("로그인 가입일자  : ", res.data.joinedAt);
 
         if (res.data.mb_email !== undefined) {
-          // 회원 정보 context에 담기
-          setLogin_id(res.data.mb_email);
-          setLogin_role(res.data.mb_role);
+          // 로그인 성공한 회원 정보 Session에 담기
+          sessionStorage.setItem("mb_email", res.data.mb_email);
+          sessionStorage.setItem("mb_role", res.data.mb_role);
         } else {
           alert("아이디 비밀번호가 잘 못 되었습니다.");
         }
