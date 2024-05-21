@@ -96,6 +96,7 @@ const AdminMain = () => {
             Array(7).fill(0)
           );
           const dailyCounts = Array(31).fill(0);
+          let recentUsersList = [];
 
           data.forEach((user) => {
             const userDate = new Date(user.joinedAt);
@@ -105,6 +106,7 @@ const AdminMain = () => {
             ) {
               const day = userDate.getDate() - 1;
               dailyCounts[day]++;
+              recentUsersList.push(user); // 최근 사용자 추가
               const week = getWeekNumber(userDate);
               if (week >= 1 && week <= 5) {
                 const dayOfWeek = userDate.getDay();
@@ -112,6 +114,13 @@ const AdminMain = () => {
               }
             }
           });
+
+          // 최근 가입한 순서대로 정렬
+          recentUsersList = recentUsersList.sort(
+            (a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)
+          );
+
+          setRecentUsers(recentUsersList.slice(0, 5)); // 최근 사용자 5명 설정
 
           const labels = [];
           const regularCounts = [];
@@ -303,7 +312,7 @@ const AdminMain = () => {
                       <td>{user.mb_email}</td>
                       <td>{user.mb_role}</td>
                       <td>{formatDate(user.joinedAt)}</td>
-                      <td>{user.paymentDate}</td>
+                      <td>{user.paymentDate || "N/A"}</td>
                     </tr>
                   ))}
                 </tbody>
