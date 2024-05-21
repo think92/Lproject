@@ -8,17 +8,11 @@ import {
   faFaceGrinWide,
 } from "@fortawesome/free-solid-svg-icons";
 import MonthlySubscribersChart from "./component/MonthlySubscribersChart "; // 그래프 컴포넌트 임포트
-import {
-  RegularSignupChart,
-  PremiumSignupChart,
-  regularData,
-  premiumData,
-} from "./component/WeekChart";
+import { RegularSignupChart, PremiumSignupChart } from "./component/WeekChart";
 import { Link } from "react-router-dom";
 import axios from "axios";
-import DatePicker from "react-datepicker"
-import "react-datepicker/dist/react-datepicker.css"
-import LoadingSpinner from "./component/LoadingSpinner";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const AdminMain = () => {
   const [board, setBoard] = useState([]);
@@ -26,27 +20,38 @@ const AdminMain = () => {
   const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
   const [recentUsers, setRecentUsers] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date()) // 달력 선택을 위한 상태
-  const [monthlyData, setMonthlyData] = useState(null); // MonthlySubscribersChart 데이터를 저장할 상태
-
+  const [selectedDate, setSelectedDate] = useState(new Date()); // 달력 선택을 위한 상태
+  const [selectedWeek, setSelectedWeek] = useState(1); // 선택된 주차
+  const [monthlyData, setMonthlyData] = useState({
+    labels: [],
+    regular: [],
+    premium: [],
+  }); // MonthlySubscribersChart 데이터를 저장할 상태
+  const [weeklyData, setWeeklyData] = useState({
+    regular: [],
+    premium: [],
+  });
 
   useEffect(() => {
     boardList();
     fetchUsersData(); // 최근 가입한 회원 데이터 가져오기
-    console.log("length : ", board);
-  }, [selectedDate]);
-  ///////////달력가져오기
-  const handleDateChange = (date) =>{
+    fetchPremiumUsersData(); // 프리미엄 가입자 데이터 가져오기
+  }, [selectedDate, selectedWeek]);
+
+  const handleDateChange = (date) => {
     setSelectedDate(date);
-  }
+  };
+
+  const handleWeekChange = (event) => {
+    setSelectedWeek(Number(event.target.value));
+  };
 
   const boardList = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminInquiry", {})
+      .post("http://localhost:8083/AdmApi/adminMain", {})
       .then((res) => {
         const data = res.data.aQstnsList || [];
         setBoard(data);
-        console.log(data);
 
         // 오늘 날짜와 비교
         const today = new Date().toISOString().split("T")[0];
@@ -68,54 +73,140 @@ const AdminMain = () => {
       });
   };
 
-  const fetchUsersData = () =>{
+  const getWeekNumber = (date) => {
+    const day = date.getDate();
+    if (day >= 1 && day <= 4) return 1;
+    else if (day >= 5 && day <= 11) return 2;
+    else if (day >= 12 && day <= 18) return 3;
+    else if (day >= 19 && day <= 25) return 4;
+    else return 5;
+  };
+
+  const fetchUsersData = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminUser",{})
-      .then((res)=> {
-        const data = res.data;
-        if(Array.isArray(data)){
-          const month = selectedDate.getMonth() +1;
+      .post("http://localhost:8083/AdmApi/adminMain", {})
+      .then((res) => {
+        const data = res.data.aMemberList || [];
+
+        if (Array.isArray(data)) {
+          const month = selectedDate.getMonth() + 1;
           const year = selectedDate.getFullYear();
 
-          // 월별 필터링 및 가입일시로 정렬
-          const filteredData = data.filter(user =>{
-            const userDate = new Date(user.joinedAt);
-            return userDate.getMonth() + 1 === month && userDate.getFullYear() === year;}).sort((a,b)=> new Date(b.joinedAt) - new Date(a.joinedAt));
-          
-          // 최근 5명만 저장
-          setRecentUsers(filteredData.slice(0,5));
-          
-          // 월별 가입자 수 데이터
-          const dalilyCounts = Array(31).fill(0);
-          const premiumCounts = Array(31).fill(0);
+          const weeklyRegularData = Array.from({ length: 5 }, () =>
+            Array(7).fill(0)
+          );
+          const dailyCounts = Array(31).fill(0);
+          let recentUsersList = [];
 
-          filteredData.forEach(user =>{
-            const day = new Date(user.joinedAt).getDate() -1;
-            dalilyCounts[day]++;
-            if(user.mb_role ==='U'){
-              premiumCounts[day]++;
+          data.forEach((user) => {
+            const userDate = new Date(user.joinedAt);
+            if (
+              userDate.getMonth() + 1 === month &&
+              userDate.getFullYear() === year
+            ) {
+              const day = userDate.getDate() - 1;
+              dailyCounts[day]++;
+              recentUsersList.push(user); // 최근 사용자 추가
+              const week = getWeekNumber(userDate);
+              if (week >= 1 && week <= 5) {
+                const dayOfWeek = userDate.getDay();
+                weeklyRegularData[week - 1][dayOfWeek]++;
+              }
             }
           });
 
+          // 최근 가입한 순서대로 정렬
+          recentUsersList = recentUsersList.sort(
+            (a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)
+          );
+
+          setRecentUsers(recentUsersList.slice(0, 5)); // 최근 사용자 5명 설정
+
           const labels = [];
           const regularCounts = [];
+
+          for (let i = 0; i < dailyCounts.length; i += 5) {
+            labels.push(`${month}월 ${i + 1}일`);
+            regularCounts.push(
+              dailyCounts.slice(i, i + 5).reduce((acc, count) => acc + count, 0)
+            );
+          }
+
+          setMonthlyData((prevData) => ({
+            ...prevData,
+            labels: labels,
+            regular: regularCounts,
+          }));
+
+          setWeeklyData((prevData) => ({
+            ...prevData,
+            regular: weeklyRegularData,
+          }));
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching users data", err);
+      });
+  };
+
+  const fetchPremiumUsersData = () => {
+    axios
+      .post("http://localhost:8083/AdmApi/adminMain", {})
+      .then((res) => {
+        const payData = res.data.aPayMemberList || [];
+        console.log(payData);
+
+        if (Array.isArray(payData)) {
+          const month = selectedDate.getMonth() + 1;
+          const year = selectedDate.getFullYear();
+
+          const weeklyPremiumData = Array.from({ length: 5 }, () =>
+            Array(7).fill(0)
+          );
+          const premiumCounts = Array(31).fill(0);
+
+          payData.forEach((user) => {
+            const userDate = new Date(user.joinedAt);
+            if (
+              userDate.getMonth() + 1 === month &&
+              userDate.getFullYear() === year
+            ) {
+              const day = userDate.getDate() - 1;
+              premiumCounts[day]++;
+              const week = getWeekNumber(userDate);
+              if (week >= 1 && week <= 5) {
+                const dayOfWeek = userDate.getDay();
+                weeklyPremiumData[week - 1][dayOfWeek]++;
+              }
+            }
+          });
+
           const premiumCountsAggregated = [];
 
-          for (let i = 0; i<dalilyCounts.length; i+= 5){
-            labels.push(`${month}월 ${i+1}일`);
-            regularCounts.push(dalilyCounts.slice(i, i + 5).reduce((acc, count)=> acc + count, 0));
+          for (let i = 0; i < premiumCounts.length; i += 5) {
+            premiumCountsAggregated.push(
+              premiumCounts
+                .slice(i, i + 5)
+                .reduce((acc, count) => acc + count, 0)
+            );
           }
-          
-          setMonthlyData({
-            labels : labels,
-            regular : regularCounts,
-            premium : premiumCountsAggregated
-          });
+
+          setMonthlyData((prevData) => ({
+            ...prevData,
+            premium: premiumCountsAggregated,
+          }));
+
+          setWeeklyData((prevData) => ({
+            ...prevData,
+            premium: weeklyPremiumData,
+          }));
         }
-      }).catch((err)=>{
-        console.error("Error fetching users data", err);
       })
+      .catch((err) => {
+        console.error("Error fetching premium users data", err);
+      });
   };
+
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const year = date.getFullYear();
@@ -123,6 +214,19 @@ const AdminMain = () => {
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
+
+  const getWeeklyDataForSelectedWeek = () => {
+    const weekIndex = selectedWeek - 1;
+    const regularData = weeklyData.regular[weekIndex] || [];
+    const premiumData = weeklyData.premium[weekIndex] || [];
+
+    return {
+      regular: regularData,
+      premium: premiumData,
+    };
+  };
+
+  const weeklyDataForSelectedWeek = getWeeklyDataForSelectedWeek();
 
   return (
     <div className="admin">
@@ -202,13 +306,13 @@ const AdminMain = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {recentUsers.map((user, index)=>(
+                  {recentUsers.map((user, index) => (
                     <tr key={user.mb_email}>
-                      <td>{index +1}</td>
+                      <td>{index + 1}</td>
                       <td>{user.mb_email}</td>
                       <td>{user.mb_role}</td>
                       <td>{formatDate(user.joinedAt)}</td>
-                      <td>{user.paymentDate}</td>
+                      <td>{user.paymentDate || "N/A"}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -216,7 +320,7 @@ const AdminMain = () => {
             </div>
           </div>
         </div>
-        <div className="subscriber ">
+        <div className="subscriber">
           <div className="inqureHead">
             <h1>가입자 현황</h1>
             <p>+더 보기</p>
@@ -230,36 +334,76 @@ const AdminMain = () => {
                   onChange={handleDateChange}
                   dateFormat="MM/yyyy"
                   showMonthYearPicker
-                  customInput = {<FontAwesomeIcon icon ={faCalendarDays} />}
+                  customInput={<FontAwesomeIcon icon={faCalendarDays} />}
                 />
-                <h1>{selectedDate.getFullYear()}년 {selectedDate.getMonth() +1}월 신규 가입자</h1>
+                <h1>
+                  {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
+                  신규 가입자
+                </h1>
+                <div className="weekSelection">
+                  <select
+                    id="week"
+                    value={selectedWeek}
+                    onChange={handleWeekChange}
+                  >
+                    <option value={1}>1주차</option>
+                    <option value={2}>2주차</option>
+                    <option value={3}>3주차</option>
+                    <option value={4}>4주차</option>
+                    <option value={5}>5주차</option>
+                  </select>
+                </div>
               </div>
               <div className="chart">
                 <MonthlySubscribersChart monthlyData={monthlyData} />
               </div>
             </div>
+
             <div className="weekchars">
               <div className="newSubscriberShort">
                 <div className="newSubscriberShortTitle">
                   <FontAwesomeIcon icon={faCalendarWeek} />
-                  <h1>신규 가입(5~4주차)</h1>
+                  <h1>신규 가입({selectedWeek}주차)</h1>
                 </div>
                 <div className="chartTotal">
                   <div className="weekChart">
-                    <RegularSignupChart data={regularData} />
+                    <RegularSignupChart
+                      data={{
+                        labels: ["일", "월", "화", "수", "목", "금", "토"],
+                        datasets: [
+                          {
+                            label: "신규 가입자 수",
+                            data: weeklyDataForSelectedWeek.regular,
+                          },
+                        ],
+                      }}
+                    />
                   </div>
                   <div>
                     <div className="weekChartTotla">
                       <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
                       <span className="con">
-                        일주일 <span className="conDe"> 35명</span>
+                        일주일{" "}
+                        <span className="conDe">
+                          {weeklyDataForSelectedWeek.regular.reduce(
+                            (a, b) => a + b,
+                            0
+                          )}
+                          명
+                        </span>
                       </span>{" "}
                     </div>
                     <div className="weekChartTotla">
                       <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
                       <span className="con">
-                        한달 <span className="conDe"> 35명</span>
-                      </span>
+                        한달{" "}
+                        <span className="conDe">
+                          {monthlyData.regular
+                            ? monthlyData.regular.reduce((a, b) => a + b, 0)
+                            : 0}
+                          명
+                        </span>
+                      </span>{" "}
                     </div>
                   </div>
                 </div>
@@ -267,24 +411,47 @@ const AdminMain = () => {
               <div className="newSubscriberVeryShort">
                 <div className="newSubscriberVeryShortTitle">
                   <FontAwesomeIcon icon={faCalendarWeek} />
-                  <h1>프리미엄 가입(5~4주차)</h1>
+                  <h1>프리미엄 가입({selectedWeek}주차)</h1>
                 </div>
                 <div className="chartTotal">
                   <div className="weekChart">
-                    <PremiumSignupChart data={premiumData} />
+                    <PremiumSignupChart
+                      data={{
+                        labels: ["일", "월", "화", "수", "목", "금", "토"],
+                        datasets: [
+                          {
+                            label: "프리미엄 가입자 수",
+                            data: weeklyDataForSelectedWeek.premium,
+                          },
+                        ],
+                      }}
+                    />
                   </div>
                   <div>
                     <div className="weekChartTotla red">
                       <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
                       <span className="con">
-                        일주일 <span className="conDe"> 35명</span>
+                        일주일{" "}
+                        <span className="conDe">
+                          {weeklyDataForSelectedWeek.premium.reduce(
+                            (a, b) => a + b,
+                            0
+                          )}
+                          명
+                        </span>
                       </span>{" "}
                     </div>
                     <div className="weekChartTotla red">
                       <FontAwesomeIcon className="emo" icon={faFaceGrinWide} />
                       <span className="con">
-                        한달 <span className="conDe"> 33명</span>
-                      </span>
+                        한달{" "}
+                        <span className="conDe">
+                          {monthlyData.premium
+                            ? monthlyData.premium.reduce((a, b) => a + b, 0)
+                            : 0}
+                          명
+                        </span>
+                      </span>{" "}
                     </div>
                   </div>
                 </div>

@@ -5,22 +5,27 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const Join = () => {
+  const nav = useNavigate();
   const inputEmail = useRef(null);
   const inputPw = useRef(null);
   const inputPwCheck = useRef(null);
 
   function joinMember() {
-    console.log(inputEmail.current.value);
-    console.log(inputPw.current.value);
-    console.log(inputPwCheck.current.value);
+    const formData = new FormData();
+    formData.append("mb_email", inputEmail.current.value);
+    formData.append("mb_pw", inputPw.current.value);
 
     if (inputPw.current.value === inputPwCheck.current.value) {
       axios
-        .post("http://localhost:8083/restApi/join", {
-          email: inputEmail.current.value,
-          pw: inputPw.current.value,
+        .post("http://localhost:8083/MemApi/join", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
         })
-        .then((res) => console.log(res));
+        .then((res) => {
+          console.log(res);
+          nav("/");
+        });
     } else {
       alert("비밀번호가 일치하지 않습니다.");
     }
@@ -38,8 +43,16 @@ const Join = () => {
               </Link>
             </div>
             <div>
-              <img src="./img/blurbla_simbol.png" className="joinsimbol" alt="simbol"/>
-              <img src="./img/blurbla_logo(kr).png" className="joinlogokr" alt="logokr"/>
+              <img
+                src="./img/blurbla_simbol.png"
+                className="joinsimbol"
+                alt="simbol"
+              />
+              <img
+                src="./img/blurbla_logo(kr).png"
+                className="joinlogokr"
+                alt="logokr"
+              />
             </div>
             <div>
               <input

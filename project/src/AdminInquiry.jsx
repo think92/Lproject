@@ -40,6 +40,7 @@ const AdminInquiry = () => {
           (inquiry) => inquiry.questioned_at.split("T")[0] === today
         ).length;
         setTodayCount(todayInquiries); // 오늘 등록된 문의 수 계산
+        console.log("문의사항 데이터 : ", data);
       })
       .catch((err) => {
         console.error("Error fetching data:", err);

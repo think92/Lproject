@@ -54,7 +54,6 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   onChange={(e) => setTitle(e.target.value)}
                 >
                   <option className="ModalWrite-opt">
-                    문의 종류를 선택해주세요.
                   </option>
                   <option value="">전체</option>
                   <option value="">모자이크 관련</option>

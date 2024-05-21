@@ -72,10 +72,22 @@ const Customer = () => {
     return `${year}-${month}-${day} ${hour}:00`;
   };
 
+  console.log("모달1 : ", modalIsOpen);
   // 모달
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
     setModalIsOpen(true);
+  };
+
+  // 작성하기 버튼 클릭 시 실행될 함수
+  const handleWriteButtonClick = () => {
+    console.log("작성하기 클릭!");
+    // if (login_id) {
+    // } else {
+    //   alert("로그인이 필요합니다.");
+    //   navigate("/Login");
+    //   handleClick("로그인이 필요합니다.");
+    // }
   };
 
   // 데이터를 필터링하고 정렬하는 함수
@@ -115,7 +127,7 @@ const Customer = () => {
   };
 
   const handleSearch = () => {
-    if(searchTerm.trim() === ""){
+    if (searchTerm.trim() === "") {
       //검색어가 비어있는 경우 모든 문의 내역을 보여줌
       boardList();
     } else {
@@ -161,17 +173,6 @@ const Customer = () => {
     console.log(message);
   };
 
-  // 작성하기 버튼 클릭 시 실행될 함수
-  const handleWriteButtonClick = () => {
-    if (login_id) {
-      setModalWriteIsOpen(true);
-    } else {
-      alert("로그인이 필요합니다.");
-      navigate("/Login");
-      handleClick("로그인이 필요합니다.");
-    }
-  };
-
   return (
     <div>
       <MainBar />
@@ -188,7 +189,7 @@ const Customer = () => {
                   onChange={handleSelectTypeChange}
                 >
                   <option value="">- 항목 -</option>
-                  <option >전체</option>
+                  <option>전체</option>
                   <option value="qstn_title">문의제목</option>
                   <option value="qstn_content">문의내용</option>
                   <option value="mb_email">아이디</option>

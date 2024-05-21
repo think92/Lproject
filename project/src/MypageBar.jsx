@@ -38,7 +38,7 @@ const MypageBar = () => {
               ></img>
             </div>
 
-            <p className="useremail">{login_id}</p>
+            <p className="useremail">{sessionStorage.getItem("mb_email")}</p>
             <div>
               <NavLink
                 to={"/Mypage"}

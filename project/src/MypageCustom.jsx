@@ -30,7 +30,7 @@ const MypageCustom = () => {
   useEffect(() => {
     boardList();
     // console.log("length : ", inquiri);
-  }, [login_id, inquiries, searchTerm, selectType]);
+  }, [login_id, searchTerm, selectType]);
 
   const boardList = () => {
     axios
@@ -77,7 +77,9 @@ const MypageCustom = () => {
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = (data) => {
-    let filtered = data.filter((inquiry) => inquiry.mb_email === login_id);
+    let filtered = data.filter(
+      (inquiry) => inquiry.mb_email === sessionStorage.getItem("mb_email")
+    );
 
     if (selectType && searchTerm) {
       filtered = filtered.filter((inquiry) =>

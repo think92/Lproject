@@ -57,6 +57,26 @@ const AdminUser = () => {
   };
 
   const handleSaveClick = (user) => {
+    console.log("등급 변경!", user);
+    const meFormDate = new FormData();
+    meFormDate.append("mb_role", updatedGrade);
+    meFormDate.append("mb_email", editingUserId);
+
+    axios
+      .post("http://localhost:8083/AdmApi/memberRoleUpdate", meFormDate, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        // res.data가 유효한지 확인
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error("API 요청 실패:", err);
+        setUsers([]); // 오류 발생 시 빈 배열 설정
+      });
+
     setUsers((prevUsers) =>
       prevUsers.map((u) =>
         u.mb_email === user.mb_email ? { ...u, mb_role: updatedGrade } : u
@@ -75,7 +95,7 @@ const AdminUser = () => {
         if (Array.isArray(data)) {
           // 가입일시로 정렬(최신 가입 순)
           const sortedData = data.sort(
-            (a,b) => new Date(b.joinedAt) - new Date(a.joinedAt)
+            (a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)
           );
           setUsers(sortedData);
         } else {
@@ -193,10 +213,7 @@ const AdminUser = () => {
                           <option value="M" className="regular-member">
                             일반회원
                           </option>
-                          <option
-                            value="U"
-                            className="premium-member"
-                          >
+                          <option value="U" className="premium-member">
                             프리미엄회원
                           </option>
                         </select>
