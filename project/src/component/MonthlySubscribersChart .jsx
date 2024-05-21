@@ -21,7 +21,7 @@ ChartJS.register(
   Filler
 );
 
-const MonthlySubscribersChart = ({monthlyData}) => {
+const MonthlySubscribersChart = ({ monthlyData }) => {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({
     labels: [],
@@ -69,23 +69,23 @@ const MonthlySubscribersChart = ({monthlyData}) => {
     ],
   });
 
-  useEffect(()=>{
-    if(monthlyData){
+  useEffect(() => {
+    if (monthlyData) {
       setChartData({
-        labels : monthlyData.labels,
-        datasets :[
+        labels: monthlyData.labels,
+        datasets: [
           {
             ...chartData.datasets[0],
-            data : monthlyData.regular,
+            data: monthlyData.regular,
           },
           {
             ...chartData.datasets[1],
-            data : monthlyData.premium,
+            data: monthlyData.premium,
           },
         ],
       });
     }
-  }, [monthlyData])
+  }, [monthlyData]);
 
   // Helper function to create gradient
   function getGradient(ctx, chartArea, color) {
@@ -151,11 +151,9 @@ const MonthlySubscribersChart = ({monthlyData}) => {
         if (context.type !== "data" || context.xStarted) {
           return 0;
         }
-        return context.index * 150; // 각 데이터 포인트마다 150ms의 지연을 추가하여 순차적으로 그리기
+        return context.index * 100; // 각 데이터 포인트마다 150ms의 지연을 추가하여 순차적으로 그리기
       },
-      onComplete: () => {
-        console.log("Animation completed!");
-      },
+      onComplete: () => {},
     },
   };
 

@@ -6,7 +6,7 @@ import { LoginUserContext } from "../context/LoginUserContent";
 const Modal = ({ isOpen, onClose, inquiry }) => {
   const { login_id } = useContext(LoginUserContext);
   const qstnsToAnswer = useRef(); // 답변 내용
-  const [answer, setAnswer] = useState(""); // 답변 내용을 저장할 상태
+  const [answers, setAnswers] = useState([]); // 답변 내용을 저장할 상태
   const [isAnswered, setIsAnswered] = useState(false); // 답변 완료 여부
 
   useEffect(() => {
@@ -24,7 +24,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
         .then((res) => {
           console.log("응답 데이터:", res.data);
           if (res.data && res.data.length > 0) {
-            setAnswer(res.data[0].ans_content); // 답변 내용을 상태에 저장
+            setAnswers(res.data); // 답변 내용을 상태에 저장
             setIsAnswered(true); // 답변 완료 여부 설정
           } else {
             setIsAnswered(false); // 답변 미완료 설정
@@ -59,7 +59,14 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
       .then((res) => {
         console.log(res.data);
         alert("답변이 저장되었습니다.");
-        setAnswer(qstnsToAnswer.current.value); // 저장된 답변 내용을 상태에 반영
+        setAnswers((prevAnswers) => [
+          ...prevAnswers,
+          {
+            ans_content: qstnsToAnswer.current.value,
+            admin_id: "admin",
+            answered_at: new Date().toISOString(),
+          },
+        ]); // 저장된 답변 내용을 상태에 반영
         setIsAnswered(true); // 답변 완료 여부 설정
       })
       .catch((err) => {
@@ -79,31 +86,48 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
         </span>
         <div className="modal-header">
           <div className="modal-title">
-            <h1>답변작성</h1>
-            <div className="userInrtos">
-              <div className="userInrto">
-                <img src="./img/mypageuser.png" alt="mypageuser" />
-                {inquiry.mb_email} {formatDate(inquiry.questioned_at)}
-              </div>
+            <h1>문의사항 답변</h1>
+            <div className="user-info">
+              <img src="./img/mypageuser.png" alt="mypageuser" />
               <div>
-                <p className="titleIntro">제목 : {inquiry.qstn_title}</p>
-                <div>
-                  {canViewContent ? (
-                    <p className="titleIntro">{inquiry.qstn_content}</p>
-                  ) : (
-                    <p>비공개된 글 입니다. 작성자만 내용을 볼 수 있습니다.</p>
-                  )}
-                </div>
+                <span className="user-email">{inquiry.mb_email}</span>
+                <span className="question-date">
+                  {formatDate(inquiry.questioned_at)}
+                </span>
               </div>
             </div>
-            {isAnswered && (
-              <div className="answerContent">
-                <p className="titleIntro">답변 :</p>
-                <p>{answer}</p>
+            <div className="question-details">
+              <p className="question-title">제목: {inquiry.qstn_title}</p>
+              <div className="question-content">
+                {canViewContent ? (
+                  <p>{inquiry.qstn_content}</p>
+                ) : (
+                  <p>비공개된 글 입니다. 작성자만 내용을 볼 수 있습니다.</p>
+                )}
               </div>
-            )}
+            </div>
           </div>
         </div>
+        {isAnswered && (
+          <div className="answer-section">
+            {answers.map((ans, index) => (
+              <div key={index} className="answer-content">
+                <div className="user-info">
+                  <img src="./img/blurbla_simbol.png" alt="mypageuser" />
+                  <div>
+                    <span className="user-email">{ans.admin_id}</span>
+                    <span className="question-date">
+                      {formatDate(ans.answered_at)}
+                    </span>
+                  </div>
+                </div>
+                <div className="question-details">
+                  <p className="question-content">{ans.ans_content}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
         {!isAnswered && (
           <div className="modal-body">
             <textarea
@@ -114,11 +138,11 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
           </div>
         )}
         <div className="modal-footer">
-          <button className="button" onClick={onClose}>
+          <button className="button close-button" onClick={onClose}>
             닫기
           </button>
           {!isAnswered && (
-            <button className="button" onClick={saveAnswer}>
+            <button className="button save-button" onClick={saveAnswer}>
               저장
             </button>
           )}

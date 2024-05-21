@@ -156,4 +156,4 @@ const premiumData = {
   ],
 };
 
-export { RegularSignupChart, PremiumSignupChart, regularData, premiumData };
+export { RegularSignupChart, PremiumSignupChart };
