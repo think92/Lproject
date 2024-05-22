@@ -14,12 +14,14 @@
 .modal-content {
   background: #fff;
   width: 50%;
-  max-width: 600px;
+  max-width: 650px;
+  max-height: 600px;
   border-radius: 10px;
   padding: 1.5rem;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
+  overflow-y: auto;
   animation: slide-in 0.3s ease-out;
   font-size: 0.9rem; /* 전체 글씨 크기 조정 */
 }

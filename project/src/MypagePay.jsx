@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./css/MypagePay.css";
 import MypageBar from "./MypageBar";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const MypagePay = () => {
   const formData = new FormData();
@@ -40,34 +41,65 @@ const MypagePay = () => {
       <MypageBar />
       <section className="mypagePay">
         <div className="PayBody">
-          <p className="PayList">결재내역</p>
+        <div className="ToolListBody">
+            <p className="PayList">작업내역</p>
+            <div className="MypageNavbar">
+              <div>
+              <Link to={"/Editor"} className="EditorBoxBody">모자이크 처리</Link>
+              </div>
+              <div>
+              <Link to={"/Premium"} className="PremiumBoxBody">프리미엄 가입</Link>
+              </div>
+              <div>
+              <Link to={"/Customer"} className="CustomerBoxBody">고객센터</Link>
+              </div>
+            </div>
+          </div>
+          {/* <p className="PayList">결재내역</p>
+          <div className="MypageNavbar">
+            <div>
+              <Link to={"/Editor"} className="EditorBoxBody">
+                모자이크 처리
+              </Link>
+            </div>
+            <div>
+              <Link to={"/Premium"} className="PremiumBoxBody">
+                프리미엄 가입
+              </Link>
+            </div>
+            <div>
+              <Link to={"/Customer"} className="CustomerBoxBody">
+                고객센터
+              </Link>
+            </div>
+          </div> */}
           <hr className="Paytoolhr" />
           <div className="PayBodys">
             <div className="PayContainer">
               <input type="date" i="date" className="PayDate"></input>
               <div className="PayDateBoxContainer">
                 {payData.length > 0 ? (
-                payData.map((payment, index) => (
-                  <div key={index} className="PayDateBox">
-                    <p className="PayDates">{formatDate(payment.payed_at)}</p>
-                    <p className="PaySuccess">
-                      결재완료
-                      <span className="Pays">{payment.pay_amount}원</span>
-                    </p>
-                    <p className="paySuccess">
-                      블러블라 프리미엄
-                      <span className="pays">{payment.pay_amount}원</span>
-                    </p>
-                    <div className="PayBox">
-                      <p className="payCash">현금영수증</p>
-                      <p className="payCheck">거래확인증</p>
+                  payData.map((payment, index) => (
+                    <div key={index} className="PayDateBox">
+                      <p className="PayDates">{formatDate(payment.payed_at)}</p>
+                      <p className="PaySuccess">
+                        결재완료
+                        <span className="Pays">{payment.pay_amount}원</span>
+                      </p>
+                      <p className="paySuccess">
+                        블러블라 프리미엄
+                        <span className="pays">{payment.pay_amount}원</span>
+                      </p>
+                      <div className="PayBox">
+                        <p className="payCash">현금영수증</p>
+                        <p className="payCheck">거래확인증</p>
+                      </div>
+                      <hr />
                     </div>
-                    <hr />
-                  </div>
-                ))
-              ) : (
-                <div className="no-payments">결재 내역이 없습니다.</div>
-              )}
+                  ))
+                ) : (
+                  <div className="no-payments">결재 내역이 없습니다.</div>
+                )}
               </div>
             </div>
           </div>
