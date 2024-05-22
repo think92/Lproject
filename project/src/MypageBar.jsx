@@ -18,6 +18,10 @@ const MypageBar = () => {
     backgroundColor: "#4ce577",
   };
 
+  function LogOut(params) {
+    sessionStorage.clear(); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
+  }
+
   return (
     <div className="mypageBody">
       <section>
@@ -83,7 +87,7 @@ const MypageBar = () => {
 
             <div className="mypagegologout">
               <FontAwesomeIcon icon={faHouse} className="bracket" />
-              <Link to={"/"} className="mypagegologouts">
+              <Link to={"/"} className="mypagegologouts" onClick={LogOut}>
                 로그아웃
               </Link>
             </div>

@@ -73,11 +73,12 @@ body {
   /* height: calc(100% - 84px); */
 }
 .PayDateBox {
-  width: 1555px;
+  width: 1560px;
   height: auto;
   background-color: #fff;
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
+  margin: 0 0 0 10px;
 }
 .PayDates {
   font-size: 23px;
@@ -141,4 +142,11 @@ body {
   font-size: 20px;
   color: #424242;
   font-weight: 600;
+}
+/* 결재내역 */
+.no-payments{
+  text-align: center;
+  font-size: 25px;
+  margin: 30px;
+  color: #45a049;
 }
