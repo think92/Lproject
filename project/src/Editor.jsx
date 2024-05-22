@@ -27,12 +27,15 @@ const Editor = () => {
   const imageRef = useRef(null);
   const [dragStart, setDragStart] = useState(null);
   const [dragging, setDragging] = useState(false);
-  const [faceButtonTrue, setFaceButtonTrue] = useState(false);
-  const [cigarButtonTrue, setCigarButtonTrue] = useState(false);
-  const [carNumButtonTrue, setCarNumButtonTrue] = useState(false);
-  const [knifeButtonTrue, setKnifeButtonTrue] = useState(false);
   const [selectedAreas, setSelectedAreas] = useState([]); // 선택된 영역
   const [activeArea, setActiveArea] = useState([]);
+
+  const [buttonStates, setButtonStates] = useState({
+    face: false,
+    carNumber: false,
+    knife: false,
+    cigar: false,
+  });
 
   /////////////AWS S3설정/////////////
   AWS.config.update({
@@ -93,6 +96,13 @@ const Editor = () => {
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
+  };
+
+  const aiHandleButtonClick = (buttonType) => {
+    setButtonStates((prevState) => ({
+      ...prevState,
+      [buttonType]: !prevState[buttonType],
+    }));
   };
 
   const handleImageChange = (e) => {
@@ -235,13 +245,15 @@ const Editor = () => {
     const mediaFileName = `mediaView-${Date.now()}.png`;
     await uploadToS3(mediaFile, mediaFileName);
 
+    const mb_email = sessionStorage.getItem("mb_email");
+
     const originalPhoto = {
       file_name: mediaFileName,
       file_rename: mediaFileName,
       file_type: mediaFile.type,
       file_size: mediaFile.size,
       created_at: new Date().toISOString(),
-      mb_email: null, // Replace with actual user email
+      mb_email: mb_email ? mb_email : null, // Replace with actual user email
     };
 
     console.log("원본 파일 정보", originalPhoto);
@@ -271,7 +283,7 @@ const Editor = () => {
               file_type: file.type,
               file_size: file.size,
               created_at: new Date().toISOString(),
-              mb_email: null, // Replace with actual user email
+              mb_email: mb_email ? mb_email : null, // Replace with actual user email
             };
 
             console.log("사용자 선택영역 파일 정보", areaFileInfo);
@@ -294,6 +306,11 @@ const Editor = () => {
         editorData.append(`area_${index}_${key}`, areaFileInfo[key]);
       }
     });
+
+    for (const key in buttonStates) {
+      editorData.append(key, buttonStates[key]);
+    }
+    editorData.append("intensityAuto", intensityAuto); // 추가된 부분
 
     axios
       .post("http://localhost:8083/AdmApi/uploadFileInfo", editorData, {
@@ -477,37 +494,39 @@ const Editor = () => {
               <p>타입</p>
               <button
                 className="type"
-                onClick={() => setFaceButtonTrue((prev) => !prev)}
+                onClick={() => aiHandleButtonClick("face")}
               >
                 <FontAwesomeIcon
-                  style={{ color: faceButtonTrue ? "green" : "inherit" }}
+                  style={{ color: buttonStates.face ? "green" : "inherit" }}
                   icon={faFaceSmile}
                 />
               </button>
               <button
                 className="type"
-                onClick={() => setCarNumButtonTrue((prev) => !prev)}
+                onClick={() => aiHandleButtonClick("carNumber")}
               >
                 <FontAwesomeIcon
-                  style={{ color: carNumButtonTrue ? "green" : "inherit" }}
+                  style={{
+                    color: buttonStates.carNumber ? "green" : "inherit",
+                  }}
                   icon={faCar}
                 />
               </button>
               <button
                 className="type"
-                onClick={() => setKnifeButtonTrue((prev) => !prev)}
+                onClick={() => aiHandleButtonClick("knife")}
               >
                 <FontAwesomeIcon
-                  style={{ color: knifeButtonTrue ? "green" : "inherit" }}
+                  style={{ color: buttonStates.knife ? "green" : "inherit" }}
                   icon={faPhone}
                 />
               </button>
               <button
                 className="type"
-                onClick={() => setCigarButtonTrue((prev) => !prev)}
+                onClick={() => aiHandleButtonClick("cigar")}
               >
                 <FontAwesomeIcon
-                  style={{ color: cigarButtonTrue ? "green" : "inherit" }}
+                  style={{ color: buttonStates.cigar ? "green" : "inherit" }}
                   icon={faSmoking}
                 />
               </button>
