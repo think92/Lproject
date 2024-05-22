@@ -39,6 +39,45 @@ body {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
+.ToolListBody{
+  display: flex;
+}
+/* 마이페이지 네비바 */
+.MypageNavbar{
+  display: flex;
+  font-size: 20px;
+  margin: 10px 0 0 1010px;
+}
+.EditorBoxBody{
+  color: #000;
+  background-color: #e4fab5;
+  border: solid 1px #000;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  text-decoration: none;
+  margin: 0 5px 0 5px;
+  padding: 10px 20px 10px 20px;
+}
+.PremiumBoxBody{
+  color: #000;
+  background-color: #e4fab5;
+  border: solid 1px #000;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  text-decoration: none;
+  margin: 0 5px 0 5px;
+  padding: 10px 20px 10px 20px;
+}
+.CustomerBoxBody{
+  color: #000;
+  background-color: #e4fab5;
+  border: solid 1px #000;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  text-decoration: none;
+  margin: 0 5px 0 5px;
+  padding: 10px 20px 10px 20px;
+}
 .ToolList {
   font-size: 25px;
   font-weight: 700;

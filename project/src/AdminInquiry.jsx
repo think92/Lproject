@@ -250,6 +250,7 @@ const AdminInquiry = () => {
             isOpen={modalIsOpen}
             onClose={() => setModalIsOpen(false)}
             inquiry={selectedInquiry}
+            isAdmin={true} // 관리자 페이지에서는 관리자 모드를 true로 설정
           />
         </div>
       </div>
