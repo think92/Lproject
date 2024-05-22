@@ -12,7 +12,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { faSquare, faCircle } from "@fortawesome/free-regular-svg-icons";
 import { useLocation } from "react-router-dom";
-// import AWS from "aws-sdk";
+import AWS from "aws-sdk";
 
 const Editor = () => {
   const fileInputRef = useRef(null);
@@ -30,65 +30,39 @@ const Editor = () => {
   const [faceButtonTrue, setFaceButtonTrue] = useState(false);
   const [cigarButtonTrue, setCigarButtonTrue] = useState(false);
   const [carNumButtonTrue, setCarNumButtonTrue] = useState(false);
+  const [knifeButtonTrue, setKnifeButtonTrue] = useState(false);
   const [selectedAreas, setSelectedAreas] = useState([]); // 선택된 영역
-  const [activeArea, setActiveArea] = useState(null);
+  const [activeArea, setActiveArea] = useState([]);
 
-  ///////////////AWS S3설정/////////////
-  // AWS.config.update({
-  //   accessKeyId: "",
-  //   secretAccessKey: "",
-  //   region: "",
-  // });
+  /////////////AWS S3설정/////////////
+  AWS.config.update({
+    accessKeyId: process.env.REACT_APP_API_KEY,
+    secretAccessKey: process.env.REACT_APP_SECRET_KEY,
+    region: process.env.REACT_APP_REGION,
+  });
 
-  // const s3 = new AWS.S3();
+  const s3 = new AWS.S3();
 
   // S3 업로드 함수
-  // const uploadToS3 = async (file, key) => {
-  //   const params = {
-  //     Bucket: "",
-  //     Key: key,
-  //     Body: file,
-  //     ContentType: file.type,
-  //   };
+  const uploadToS3 = async (file, key) => {
+    const params = {
+      Bucket: process.env.REACT_APP_AWS_BUCKET,
+      Key: key,
+      Body: file,
+      ContentType: file.type,
+    };
 
-  //   try {
-  //     const data = await s3.upload(params).promise();
-  //     console.log("Upload Success", data.Location);
-  //   } catch (err) {
-  //     console.log("Upload Error", err);
-  //   }
-  // };
-
-  // const handleSubmit = async () => {
-  //   if (!imageView) return;
-
-  //   const response = await fetch(imageView);
-  //   const blob = await response.blob();
-  //   const imageFile = new File([blob], "imageView.png", { type: "image/png" });
-  //   await uploadToS3(imageFile, "imageView.png");
-
-  //   updatedAreas.forEach(async (area, index) => {
-  //     const { imageData } = area;
-  //     if (!imageData) return; // imageData가 존재하는지 확인
-
-  //     const canvas = document.createElement("canvas");
-  //     canvas.width = imageData.width;
-  //     canvas.height = imageData.height;
-  //     const ctx = canvas.getContext("2d");
-  //     ctx.putImageData(imageData, 0, 0);
-
-  //     canvas.toBlob(async (blob) => {
-  //       const file = new File([blob], `area-${index}.png`, {
-  //         type: "image/png",
-  //       });
-  //       await uploadToS3(file, `area-${index}.png`);
-  //     }, "image/png");
-  //   });
-  // };
+    try {
+      const data = await s3.upload(params).promise();
+      console.log("Upload Success", data.Location);
+    } catch (err) {
+      console.log("Upload Error", err);
+    }
+  };
 
   useEffect(() => {
     console.log("Location state on editor load:", location.state);
-    if (location.state?.images) {
+    if (location.state?.medias && location.state.medias.length > 0) {
       setMedias(location.state.medias);
       setMediaView(location.state.medias[0]);
     } else {
@@ -134,10 +108,10 @@ const Editor = () => {
           console.error("Error reading file:", error);
           reject(error);
         };
-        if(file.type.startsWith("image/")){
+        if (file.type.startsWith("image/")) {
           reader.readAsDataURL(file);
-        } else if (file.type.startsWith("video/")){
-          resolve(URL.createObjectURL(file))
+        } else if (file.type.startsWith("video/")) {
+          resolve(URL.createObjectURL(file));
         }
       });
     });
@@ -217,6 +191,7 @@ const Editor = () => {
       y: dragStart.y,
       width: endX - dragStart.x,
       height: endY - dragStart.y,
+      imageData: null,
     };
     const ctx = canvasRef.current.getContext("2d");
     const imageData = ctx.getImageData(
@@ -225,6 +200,8 @@ const Editor = () => {
       newArea.width,
       newArea.height
     );
+    newArea.imageData = imageData;
+
     if (activeTool === "moza") {
       const mosaicResult = applyMosaic(
         dragStart.x,
@@ -242,10 +219,95 @@ const Editor = () => {
         setMediaView(mosaicResult.mosaicImage);
       }
     } else if (activeTool === "except") {
-      setUpdatedAreas((prevAreas) => [...prevAreas, { ...newArea, imageData }]);
+      setUpdatedAreas((prevAreas) => [...prevAreas, newArea]);
+      setSelectedAreas((prevAreas) => [...prevAreas, newArea]);
+      console.log("Active area set:", newArea);
     }
     setDragStart(null);
   }
+
+  const handleSubmit = async () => {
+    if (!mediaView) return;
+
+    const response = await fetch(mediaView);
+    const blob = await response.blob();
+    const mediaFile = new File([blob], "mediaView.png", { type: "image/png" });
+    const mediaFileName = `mediaView-${Date.now()}.png`;
+    await uploadToS3(mediaFile, mediaFileName);
+
+    const originalPhoto = {
+      file_name: mediaFileName,
+      file_rename: mediaFileName,
+      file_type: mediaFile.type,
+      file_size: mediaFile.size,
+      created_at: new Date().toISOString(),
+      mb_email: null, // Replace with actual user email
+    };
+
+    console.log("원본 파일 정보", originalPhoto);
+
+    let areaFileInfoArray = [];
+
+    if (selectedAreas.length > 0) {
+      for (let i = 0; i < selectedAreas.length; i++) {
+        const area = selectedAreas[i];
+        const canvas = document.createElement("canvas");
+        canvas.width = area.width;
+        canvas.height = area.height;
+        const ctx = canvas.getContext("2d");
+        ctx.putImageData(area.imageData, 0, 0);
+
+        await new Promise((resolve) => {
+          canvas.toBlob(async (blob) => {
+            const file = new File([blob], `area-${Date.now()}.png`, {
+              type: "image/png",
+            });
+            const fileName = `area-${Date.now()}.png`;
+            await uploadToS3(file, fileName);
+
+            const areaFileInfo = {
+              file_name: fileName,
+              file_rename: fileName,
+              file_type: file.type,
+              file_size: file.size,
+              created_at: new Date().toISOString(),
+              mb_email: null, // Replace with actual user email
+            };
+
+            console.log("사용자 선택영역 파일 정보", areaFileInfo);
+            areaFileInfoArray.push(areaFileInfo);
+            resolve();
+          }, "image/png");
+        });
+      }
+    } else {
+      console.log("Active area is not set");
+    }
+
+    const editorData = new FormData();
+    for (const key in originalPhoto) {
+      editorData.append(`original_${key}`, originalPhoto[key]);
+    }
+
+    areaFileInfoArray.forEach((areaFileInfo, index) => {
+      for (const key in areaFileInfo) {
+        editorData.append(`area_${index}_${key}`, areaFileInfo[key]);
+      }
+    });
+
+    axios
+      .post("http://localhost:8083/AdmApi/uploadFileInfo", editorData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error("API 요청 실패:", err);
+      });
+  };
 
   function applyMosaic(x, y, width, height, intensity) {
     const canvas = canvasRef.current;
@@ -364,19 +426,19 @@ const Editor = () => {
 
   // 이미지 업로드
   const uploadImage = async (imageDataUrl) => {
-    try{
-      const response = await axios.post('/api/upload', {image: imageDataUrl})
+    try {
+      const response = await axios.post("/api/upload", { image: imageDataUrl });
       return response.data;
-    }catch(error) {
-      console.error('Image upload failed:', error);
+    } catch (error) {
+      console.error("Image upload failed:", error);
       return null;
     }
-  }
+  };
 
   // 저장 버튼 클릭 핸들러 추가
   const handleSave = async () => {
     const canvas = canvasRef.current;
-    if(!canvas) return;
+    if (!canvas) return;
 
     const imageDataUrl = canvas.toDataURL("image/png");
 
@@ -385,15 +447,15 @@ const Editor = () => {
 
     // 이미지 서버 업로드
     const uploadResponse = await uploadImage(imageDataUrl);
-    if(uploadResponse) {
-      console.log('Image successfully uploaded:', uploadResponse);
+    if (uploadResponse) {
+      console.log("Image successfully uploaded:", uploadResponse);
 
       // 여기서 사용자 프로필을 업데이트하는 로직을 추가합니다.
       // 예: 사용자 상태를 업데이트하거나, Mypage.jsx에 이미지를 추가하는 등
-    } else{
-      console.log('Image upload failed');
+    } else {
+      console.log("Image upload failed");
     }
-  }
+  };
 
   return (
     <div className="editor-specific">
@@ -431,8 +493,14 @@ const Editor = () => {
                   icon={faCar}
                 />
               </button>
-              <button className="type">
-                <FontAwesomeIcon icon={faPhone} />
+              <button
+                className="type"
+                onClick={() => setKnifeButtonTrue((prev) => !prev)}
+              >
+                <FontAwesomeIcon
+                  style={{ color: knifeButtonTrue ? "green" : "inherit" }}
+                  icon={faPhone}
+                />
               </button>
               <button
                 className="type"
@@ -475,7 +543,9 @@ const Editor = () => {
               </button>
             </div>
             <div>
-              <button className="typeSubmit">적용하기</button>
+              <button className="typeSubmit" onClick={handleSubmit}>
+                적용하기
+              </button>
             </div>
           </div>
           <p className="auto">User Mosaic</p>
@@ -515,14 +585,16 @@ const Editor = () => {
             <button onClick={handleButtonClick} className="submit active">
               사진/영상 업로드
             </button>
-            <button className="submit" onClick={handleSave}>저장</button>
+            <button className="submit" onClick={handleSave}>
+              저장
+            </button>
             <button className="submit">삭제</button>
           </div>
         </div>
         <div className="edit">
           {mediaView ? (
             <>
-              {mediaView.startsWith("blob:")?(
+              {mediaView.startsWith("blob:") ? (
                 <video controls className="videoEdit">
                   <source src={mediaView} type="video/mp4" />
                 </video>
@@ -548,12 +620,12 @@ const Editor = () => {
               className="imgsave"
               onClick={(event) => selectMedia(event, media)}
             >
-              {media.startsWith("blob:")?(
+              {media.startsWith("blob:") ? (
                 <video className="thumb">
                   <source src={media} type="video/mp4" />
                 </video>
               ) : (
-                <img src={media} alt={`미디어 ${index +1}`}></img>
+                <img src={media} alt={`미디어 ${index + 1}`}></img>
               )}
               <div
                 className="delete-icon"
