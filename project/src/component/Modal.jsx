@@ -3,7 +3,7 @@ import "../css/modal.css";
 import axios from "axios";
 import { LoginUserContext } from "../context/LoginUserContent";
 
-const Modal = ({ isOpen, onClose, inquiry }) => {
+const Modal = ({ isOpen, onClose, inquiry, isAdmin }) => {
   const { login_id } = useContext(LoginUserContext);
   const qstnsToAnswer = useRef(); // 답변 내용
   const [answers, setAnswers] = useState([]); // 답변 내용을 저장할 상태
@@ -34,6 +34,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
           console.error("Error fetching answer:", err);
         });
     }
+    // 문의사항의 공개 여부 확인
   }, [isOpen, inquiry]);
 
   if (!isOpen || !inquiry) return null;
@@ -122,13 +123,17 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
                   </div>
                 </div>
                 <div className="question-details">
-                  <p className="question-content">{ans.ans_content}</p>
+                  {canViewContent ? (
+                    <p className="question-content">{ans.ans_content}</p>
+                  ) : (
+                    <p>비공개된 답변 글 입니다.</p>
+                  )}
                 </div>
               </div>
             ))}
           </div>
         )}
-        {!isAnswered && (
+        {!isAnswered && isAdmin && (
           <div className="modal-body">
             <textarea
               ref={qstnsToAnswer}
@@ -141,7 +146,7 @@ const Modal = ({ isOpen, onClose, inquiry }) => {
           <button className="button close-button" onClick={onClose}>
             닫기
           </button>
-          {!isAnswered && (
+          {!isAnswered && isAdmin && (
             <button className="button save-button" onClick={saveAnswer}>
               저장
             </button>
