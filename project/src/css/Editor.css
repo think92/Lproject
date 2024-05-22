@@ -169,35 +169,51 @@ button {
   width: 250px;
   margin-left: 15px;
   display: flex;
-  align-items: center;
   flex-direction: column;
-  overflow: auto;
+  flex-wrap: nowrap; /* 수정된 부분: 미디어 파일들을 그리드 형식으로 정렬 */
+  align-items: top;
+  justify-content: flex-start;
+  overflow: scroll;
 }
-.imgsave img {
-  width: 220px;
-  height: 160px;
-  margin: 10px 0px 0px;
-  border: solid 3px;
-  cursor: pointer;
-  position: relative;
-  display: inline-block;
-}
+
 .imgsave {
   position: relative;
+  width: 180px; /* 썸네일 너비 설정 */
+  height: 90px; /* 썸네일 높이 설정 */
+  margin: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff; /* 배경색 추가 */
+  border-radius: 8px; /* 둥근 모서리 추가 */
+  overflow: hidden; /* 이미지가 컨테이너를 넘지 않도록 처리 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* 약간의 그림자 추가 */
 }
+
+.imgsave img,
+.imgsave video {
+  width: 100%; /* 미디어의 너비를 컨테이너에 맞춤 */
+  height: 100%; /* 미디어의 높이를 컨테이너에 맞춤 */
+  object-fit: cover; /* 비율을 유지하면서 컨테이너를 채움 */
+}
+
 .imgsave:hover .delete-icon {
   display: block;
 }
+
 .delete-icon {
   position: absolute;
-  top: 20px;
-  right: 20px;
+  top: 5px;
+  right: 5px;
   display: none;
   padding: 5px;
   cursor: pointer;
-  background-color: #000;
+  background-color: rgba(0, 0, 0, 0.7); /* 투명한 배경색 추가 */
   color: white;
+  border-radius: 50%; /* 원형 버튼으로 만듦 */
 }
+
 ::-webkit-scrollbar {
   width: 12px; /* 스크롤바의 너비 */
 }
