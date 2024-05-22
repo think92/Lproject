@@ -44,7 +44,7 @@ const MypagePay = () => {
           <hr className="Paytoolhr" />
           <div className="PayBodys">
             <div className="PayContainer">
-              {/* <input type="date" i="date" className="PayDate"></input> */}
+              <input type="date" i="date" className="PayDate"></input>
               <div className="PayDateBoxContainer">
                 {payData.length > 0 ? (
                 payData.map((payment, index) => (

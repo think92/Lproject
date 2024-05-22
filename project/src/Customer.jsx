@@ -263,7 +263,8 @@ const Customer = () => {
               isOpen={modalIsOpen}
               onClose={() => setModalIsOpen(false)}
               inquiry={selectedInquiry}
-              isPrivate={selectedInquiry?.qstn_open === "N"} // 지솔새 려주 덩갛
+              isPrivate={selectedInquiry?.qstn_open === "N"}
+              isAdmin={false} // 고객 페이지에서는 관리자 모드를 false로 설정
             />
 
             {/* 페이지 버튼 */}

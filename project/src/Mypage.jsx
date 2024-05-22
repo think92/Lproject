@@ -1,5 +1,6 @@
 import "./css/Mypage.css";
 import MypageBar from "./MypageBar";
+import { Link } from "react-router-dom";
 
 const Mypage = () => {
   return (
@@ -7,7 +8,20 @@ const Mypage = () => {
       <MypageBar />
       <section className="mypageTool">
         <div className="ToolBody">
-          <p className="ToolList">작업내역</p>
+          <div className="ToolListBody">
+            <p className="ToolList">작업내역</p>
+            <div className="MypageNavbar">
+              <div>
+              <Link to={"/Editor"} className="EditorBoxBody">모자이크 처리</Link>
+              </div>
+              <div>
+              <Link to={"/Premium"} className="PremiumBoxBody">프리미엄 가입</Link>
+              </div>
+              <div>
+              <Link to={"/Customer"} className="CustomerBoxBody">고객센터</Link>
+              </div>
+            </div>
+          </div>
           <hr className="toolhr" />
           <div className="ToolBodys">
             <input type="date" id="date" className="tooldate"></input>
