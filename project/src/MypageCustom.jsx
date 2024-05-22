@@ -180,11 +180,11 @@ const MypageCustom = () => {
                 <option value="answeredAt">답변일시</option>
               </select>
             </div>
-            <div>
+            {/* <div>
               <button className="CalendarBox">
                 <FontAwesomeIcon icon={faCalendarDays} className="Calendar" />
               </button>
-            </div>
+            </div> */}
             <div>
               <input
                 type="text"
@@ -249,6 +249,8 @@ const MypageCustom = () => {
             isOpen={modalIsOpen}
             onClose={() => setModalIsOpen(false)}
             inquiry={selectedInquiry}
+            isAdmin={false} // 고객 페이지에서는 관리자 모드를 false로 설정
+            isMypageCustomer={true} // 마이페이지 고객 모달로 설정
           />
           <div className="pagination">
             {currentGroup > 1 && (
