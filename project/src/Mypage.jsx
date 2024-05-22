@@ -1,7 +1,27 @@
+import { useEffect } from "react";
 import "./css/Mypage.css";
 import MypageBar from "./MypageBar";
+import axios from "axios";
 
 const Mypage = () => {
+  const formData = new FormData();
+  formData.append("mb_email", sessionStorage.getItem("mb_email"));
+
+  useEffect(() => {
+    axios
+      .post("http://localhost:8083/MemApi/Mypage", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error("Error data:", err);
+      });
+  }, []);
+
   return (
     <div>
       <MypageBar />
