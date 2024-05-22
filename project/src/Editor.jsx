@@ -284,6 +284,7 @@ const Editor = () => {
       console.log("Active area is not set");
     }
 
+    // FormData
     const editorData = new FormData();
     for (const key in originalPhoto) {
       editorData.append(`original_${key}`, originalPhoto[key]);
@@ -296,9 +297,9 @@ const Editor = () => {
     });
 
     axios
-      .post("http://localhost:8083/AdmApi/uploadFileInfo", editorData, {
+      .post("http://localhost:8083/FileApi/uploadFileInfo", editorData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
