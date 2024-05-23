@@ -77,8 +77,11 @@ const Modal = ({ isOpen, onClose, inquiry, isAdmin }) => {
 
   const isPrivate = inquiry.qstn_open === "N";
   const canViewContent =
-    !isPrivate || (isPrivate && sessionStorage.getItem("mb_email") === inquiry.mb_email);
-    
+    !isPrivate ||
+    (isPrivate && sessionStorage.getItem("mb_email") === inquiry.mb_email) ||
+    (sessionStorage.getItem("mb_role") === "A0");
+  const canViewAnswer = isAdmin || (!isPrivate && isAnswered) || (sessionStorage.getItem("mb_role") === "A0") || (isAnswered && sessionStorage.getItem("mb_email") === inquiry.mb_email);
+
   return (
     <div className="modal">
       <div className="modal-content">
@@ -109,7 +112,7 @@ const Modal = ({ isOpen, onClose, inquiry, isAdmin }) => {
             </div>
           </div>
         </div>
-        {isAnswered && (
+        {canViewAnswer && (
           <div className="answer-section">
             {answers.map((ans, index) => (
               <div key={index} className="answer-content">
@@ -123,11 +126,12 @@ const Modal = ({ isOpen, onClose, inquiry, isAdmin }) => {
                   </div>
                 </div>
                 <div className="question-details">
-                  {canViewContent ? (
+                  {/* {canViewContent ? (
                     <p className="question-content">{ans.ans_content}</p>
                   ) : (
                     <p>비공개된 답변 글 입니다.</p>
-                  )}
+                  )} */}
+                  <p className="question-content">{ans.ans_content}</p>
                 </div>
               </div>
             ))}
