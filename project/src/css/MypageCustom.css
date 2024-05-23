@@ -125,7 +125,7 @@ background-color: #45a049;
 }
 
 /* 문의 내역 */
-.customCheck, .customNum, .customDivison, .customWriter, .customDate, .customAnswer, .customAnswerDate {
+.customCheck, .customNum, .customDivison, .customWriter, .customDate, .customAnswer, .customAnswerDate,.customAnswerOk {
 background-color: #e4fab5;
 border-bottom: 1px solid #292c31;
 border-left: 1px solid #575757;

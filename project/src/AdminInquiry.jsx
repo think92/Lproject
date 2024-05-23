@@ -3,7 +3,6 @@ import AdminMinBar from "./AdminMainBar";
 import "./css/adminInquiry.css";
 import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
 import axios from "axios";
-import ModalWrite from "./component/ModalWrite";
 
 const AdminInquiry = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -67,7 +66,7 @@ const AdminInquiry = () => {
       } else if (b.qstn_answer === "N" && a.qstn_answer !== "N") {
         return 1;
       } else if (a.qstn_answer === "N" && b.qstn_answer === "N") {
-        return new Date(a.questioned_at) < new Date(b.questioned_at) ? -1 : 1;
+        return new Date(a.questioned_at) > new Date(b.questioned_at) ? -1 : 1;
       }
       return 0;
     });
@@ -265,6 +264,7 @@ const AdminInquiry = () => {
             inquiry={selectedInquiry}
             isAdmin={true} // 관리자 페이지에서는 관리자 모드를 true로 설정
           />
+        
         </div>
       </div>
     </div>
