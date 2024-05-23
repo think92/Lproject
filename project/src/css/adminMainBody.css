@@ -17,9 +17,9 @@ body {
 
 .home a {
   width: 295px;
-  background-color: #7a7a7a;
+  background-color: #494a4a;
   color: white;
-  font-weight: bold;
+  text-decoration: none;
   display: flex;
   align-items: center;
   height: 81px;
@@ -27,11 +27,13 @@ body {
 }
 
 .homeIcon {
-  margin-left: 20px;
+  margin-left: 25px;
+  font-size: 20px;
 }
 
 .home p {
-  margin-left: 10px;
+  font-size: 20px;
+  margin-left: 15px;
 }
 
 .adminIntroduce {
@@ -40,30 +42,100 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 30px;
-  padding-bottom: 265px;
+  padding-top: 40px;
+  padding-bottom: 280px;
 }
 
-.adminIntroduce p {
+.adminIntroduce {
   color: white;
-  font-size: 21px;
-  font-weight: bold;
+  font-size: 25px;
 }
-
-.adminIntroduce img {
-  width: 75px;
+.adminsimbol{
+  width: 100px;
+  height: 85px;
+  margin: 10px 0 0 0;
 }
-
-.adminMenu {
+.admin1 {
+  margin: 25px 0 50px 0;
+}
+/* 대시보드 */
+.admintool{
   display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 100%;
+  width: 295px;
+  height: 80px;
+  background-color: #292c31;
+  border: none;
+  text-decoration: none;
 }
-
-.adminMenu p {
-  font-size: 18px;
-  font-weight: 200;
+.facircle {
+  font-size: 11px;
+  color: #fff;
+  margin: 35px 0 0 50px;
+}
+.admintools {
+  font-size: 20px;
+  color: #fff;
+  margin: 28px 0 0 15px;
+}
+/* 문의사항 */
+.admincustomer{
+  display: flex;
+  width: 295px;
+  height: 80px;
+  background-color: #292c31;
+  margin-top: 0;
+  border: none;
+  text-decoration: none;
+}
+.facirclewhite {
+  font-size: 11px;
+  color: #fff;
+  margin: 35px 0 0 50px;
+}
+.menuListcustomers{
+  font-size: 20px;
+  color: #fff;
+  margin: 28px 0 0 15px;
+}
+/* 회원관리 */
+.adminuser{
+  display: flex;
+  width: 295px;
+  height: 80px;
+  background-color: #292c31;
+  margin-top: 0;
+  border: none;
+  text-decoration: none;
+}
+.facirclewhite {
+  font-size: 11px;
+  color: #fff;
+  margin: 35px 0 0 50px;
+}
+.adminuseres{
+  font-size: 20px;
+  color: #fff;
+  margin: 28px 0 0 15px;
+}
+/* 기능 업데이트 */
+.adminupdate{
+  display: flex;
+  width: 295px;
+  height: 80px;
+  background-color: #292c31;
+  margin-top: 0;
+  border: none;
+  text-decoration: none;
+}
+.facirclewhite {
+  font-size: 11px;
+  color: #fff;
+  margin: 35px 0 0 50px;
+}
+.adminupdates{
+  font-size: 20px;
+  color: #fff;
+  margin: 28px 0 0 15px;
 }
 
 .logout {
@@ -86,11 +158,28 @@ body {
   margin-left: 20px;
 }
 
-.menuList {
-  margin-left: 80px;
-}
 
 /* Option hover 효과를 위한 스타일 */
 .menuList:hover {
   cursor: pointer;
+}
+
+/* 로그아웃 */
+.adminlogout{
+  display: flex;
+  width: 295px;
+  height: 80px;
+  background-color: #494a4a;
+  margin: 0 0 0 0;
+}
+.faRightFromBracket{
+  font-size: 25px;
+  color: #d1d1d1;
+  margin: 25px 0 0 25px;
+}
+.adminlogouts{
+  font-size: 20px;
+  color: #fff;
+  margin: 25px 0 0 25px;
+  text-decoration: none;
 }

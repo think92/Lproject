@@ -58,7 +58,7 @@ font-weight: 600;
 color: #414141;
 font-family: "Pretendard-Regular";
 text-indent: 6px;
-margin: 20px 0 20px 850px;
+margin: 20px 0 20px 885px;
 padding-left: 10px;
 border: 1px solid #ccc;
 }
@@ -157,11 +157,11 @@ width: 137px;
 width: 260px;
 }
 .customAnswer {
-width: 80px;
+width: 110px;
 }
-.customAnswerDate{
+/* .customAnswerDate{
 width: 260px;
-}
+} */
 .CustomNum{
 text-align: left;
 }

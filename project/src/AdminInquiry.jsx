@@ -83,12 +83,28 @@ const AdminInquiry = () => {
   };
 
   const handleSearch = () => {
-    filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
+    if (searchTerm.trim() === ""){
+      // 검색어가 비어있는 경우 모든 문의 내역을 보여줌
+      qntnsList();
+    }else {
+      filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
+    }
   };
 
+  //  모달 열기
   const openModal = (inquiry) => {
-    setSelectedInquiry(inquiry);
-    setModalIsOpen(true);
+    if (sessionStorage.getItem("mb_role") === "A0") {
+      setSelectedInquiry(inquiry);
+      setModalIsOpen(true);
+    } else {
+      console.log("관리자가 아닙니다.");
+    }
+  };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedInquiry(null);
   };
 
   const formatDate = (dateString) => {
@@ -219,11 +235,7 @@ const AdminInquiry = () => {
                     >
                       {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                     </td>
-                    <td>
-                      {inquiry.answerDate
-                        ? formatDate(inquiry.answerDate)
-                        : "미답변"}
-                    </td>
+                    <td>{formatDate(inquiry.answered_at)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -248,7 +260,7 @@ const AdminInquiry = () => {
           </div>
           <Modal
             isOpen={modalIsOpen}
-            onClose={() => setModalIsOpen(false)}
+            onClose={closeModal}
             inquiry={selectedInquiry}
             isAdmin={true} // 관리자 페이지에서는 관리자 모드를 true로 설정
           />
