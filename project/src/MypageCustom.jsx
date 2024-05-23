@@ -148,9 +148,10 @@ const MypageCustom = () => {
   // 선택된 항목 삭제
   const handleDelete = (e) => {
     const formData = new FormData();
+    formData.append("qstns_idx", checkedList);
 
-    if (e) {
-      console.log();
+    console.log("삭제하려는 삭제번호들 : ", checkedList);
+    if (true) {
       // alert("정말로 삭제를 진행하시겠습니까?");
       axios
         .post("http://localhost:8083/AdmApi/adminQsntsDelete", formData, {
@@ -172,6 +173,23 @@ const MypageCustom = () => {
         });
     }
   };
+
+  ///////////////////////////////////////////////////////
+  const [checkedList, setCheckedList] = useState([]);
+
+  const checkedItemHandler = (value, isChecked) => {
+    if (isChecked) {
+      setCheckedList((prev) => [...prev, value]);
+    } else {
+      setCheckedList(checkedList.filter((item) => item !== value));
+    }
+  };
+
+  const handleCheckboxChange = (e, value) => {
+    const isChecked = e.target.checked;
+    checkedItemHandler(value, isChecked);
+  };
+  ///////////////////////////////////////////////////////
 
   return (
     <div>
@@ -229,7 +247,7 @@ const MypageCustom = () => {
                 <option value="test_context">문의내용</option>
                 <option value="createdAt">작성일시</option>
                 <option value="answerStatus">답변유무</option>
-                {/* <option value="answeredAt">답변일시</option> */}
+                <option value="answeredAt">답변일시</option>
               </select>
             </div>
             {/* <div>
@@ -270,7 +288,14 @@ const MypageCustom = () => {
                   index < 12 && (
                     <tr key={index}>
                       <td>
-                        <input type="checkbox" value={inquiry.qstn_idx}></input>
+                        <input
+                          type="checkbox"
+                          id={inquiry}
+                          value={inquiry.qstn_idx}
+                          onChange={(e) =>
+                            handleCheckboxChange(e, inquiry.qstn_idx)
+                          }
+                        ></input>
                       </td>
                       <td>{indexOfFirstItem + index + 1}</td>
                       <td
