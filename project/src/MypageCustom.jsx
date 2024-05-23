@@ -229,7 +229,7 @@ const MypageCustom = () => {
                 <option value="test_context">문의내용</option>
                 <option value="createdAt">작성일시</option>
                 <option value="answerStatus">답변유무</option>
-                <option value="answeredAt">답변일시</option>
+                {/* <option value="answeredAt">답변일시</option> */}
               </select>
             </div>
             {/* <div>
