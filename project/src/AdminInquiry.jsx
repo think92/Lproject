@@ -3,6 +3,7 @@ import AdminMinBar from "./AdminMainBar";
 import "./css/adminInquiry.css";
 import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
 import axios from "axios";
+import ModalWrite from "./component/ModalWrite";
 
 const AdminInquiry = () => {
   const [searchTerm, setSearchTerm] = useState("");

@@ -7,6 +7,9 @@ const ModalWrite = ({ isOpen, onClose }) => {
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
   const [isPrivate, setIsPrivate] = useState("");
+  const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
+  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
+  const [customselect, setCustomSelect] = useState(null); // 작성하기 상태
 
   if (!isOpen) return null;
 
