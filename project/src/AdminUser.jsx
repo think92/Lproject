@@ -222,7 +222,7 @@ const AdminUser = () => {
                       )}
                     </td>
                     <td>{formatDate(user.joinedAt)}</td>
-                    <td>{user.paymentDate}</td>
+                    <td>{user.answered_at}</td>
                     <td>
                       {editingUserId === user.mb_email ? (
                         <button onClick={() => handleSaveClick(user)}>

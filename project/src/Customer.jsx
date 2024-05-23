@@ -53,7 +53,7 @@ const Customer = () => {
           (inquiry) => inquiry.questioned_at.split("T")[0] === today
         ).length;
         setTodayCount(todayInquiries); // 오늘 등록된 문의 수 계산
-        // console.log(data);
+        console.log(data);
       })
       .catch((err) => {
         console.error("Error fetching data:", err);
@@ -117,7 +117,7 @@ const Customer = () => {
       } else if (b.qstn_answer === "N" && a.qstn_answer !== "N") {
         return 1;
       } else if (a.qstn_answer === "N" && b.qstn_answer === "N") {
-        return new Date(a.questioned_at) < new Date(b.questioned_at) ? -1 : 1;
+        return new Date(a.questioned_at) > new Date(b.questioned_at) ? -1 : 1;
       }
       return 0;
     });

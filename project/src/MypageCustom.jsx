@@ -11,7 +11,9 @@ import { Link } from "react-router-dom";
 const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
-  const [filteredInquiries, setFilteredInquiries] = useState([]);
+  const [selectedInquiries, setSelectedInquiries] = useState([]); // 선택된 항목의 ID를 저장할 상태
+
+  const [list, setList] = useState(null); // 삭제할 리스트
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
@@ -98,7 +100,7 @@ const MypageCustom = () => {
       } else if (b.answerStatus === "N" && a.answerStatus !== "N") {
         return 1;
       } else if (a.answerStatus === "N" && b.answerStatus === "N") {
-        return new Date(a.questioned_at) < new Date(b.questioned_at) ? -1 : 1;
+        return new Date(a.questioned_at) > new Date(b.questioned_at) ? -1 : 1;
       }
       return 0;
     });
@@ -143,6 +145,33 @@ const MypageCustom = () => {
     pageNumbers.push(i);
   }
 
+  // 선택된 항목 삭제
+  const handleDelete = (e) => {
+
+    if () {
+      console.log();
+      // alert("정말로 삭제를 진행하시겠습니까?");
+      axios
+        .post("http://localhost:8083/AdmApi/adminQsntsDelete", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data) {
+            console.log("삭제여부 : ");
+            alert("삭제가 완료되었습니다.");
+          } else {
+            alert("삭제 실패");
+          }
+        })
+        .catch((err) => {
+          console.error("API 요청 실패:", err);
+        });
+    }
+  };
+
   return (
     <div>
       <MypageBar />
@@ -171,7 +200,9 @@ const MypageCustom = () => {
           <hr className="Customtoolhr" />
           <div className="CustomLists">
             <div>
-              <button className="CustomDelete">삭제</button>
+              <button className="CustomDelete" onClick={handleDelete}>
+                삭제
+              </button>
             </div>
             <div>
               <select name="choice" className="CustomChoiceBox">
@@ -229,15 +260,16 @@ const MypageCustom = () => {
                 <th className="customWriter">작성자</th>
                 <th className="customDate">작성일시</th>
                 <th className="customAnswer">답변</th>
+                {/* <th className="customAnswerOk">답변완료</th> */}
               </tr>
             </thead>
             <tbody>
               {currentItems.map(
                 (inquiry, index) =>
                   index < 12 && (
-                    <tr key={inquiry.num}>
+                    <tr key={index}>
                       <td>
-                        <input type="checkbox"></input>
+                        <input type="checkbox" value={inquiry.qstn_idx}></input>
                       </td>
                       <td>{indexOfFirstItem + index + 1}</td>
                       <td
@@ -258,6 +290,7 @@ const MypageCustom = () => {
                       >
                         {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                       </td>
+                      {/* <td>{formatDate(inquiry.answered_at)}</td> */}
                     </tr>
                   )
               )}
