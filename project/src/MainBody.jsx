@@ -23,6 +23,7 @@ const Section = styled.div`
   transition: background-color 0.9s ease-in-out;
 `;
 const MainBody = () => {
+  const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
   const handleButtonClick = () => {
@@ -44,8 +45,11 @@ const MainBody = () => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onloadend = () => {
-          console.log("Image Data URL:", reader.result); // 데이터 URL 확인
-          resolve(reader.result);
+          const fileData = {
+            type: file.type,
+            data: reader.result,
+          };
+          resolve(fileData);
         };
         reader.onerror = (error) => {
           console.error("Error reading file:", error);
@@ -56,20 +60,18 @@ const MainBody = () => {
     });
 
     Promise.all(imagesPromises)
-      .then((images) => {
-        console.log("All images:", images); // 이미지 배열 로깅
-        if (images.length > 0) {
-          navigate("/Editor", { state: { images: images } });
+      .then((files) => {
+        console.log("All files:", files); // 이미지 배열 로깅
+        if (files.length > 0) {
+          navigate("/Editor", { state: { medias: files } });
         } else {
           console.log("No images to navigate with.");
         }
       })
       .catch((error) => {
-        console.error("Error loading images:", error);
+        console.error("Error loading files:", error);
       });
   };
-
-  const navigate = useNavigate();
 
   // 기본 섹션 설정
   const [currentSection, setCurrentSection] = useState(0);
@@ -121,7 +123,8 @@ const MainBody = () => {
                 <div className="simbolrotation">
                   <img
                     src="./img/blurbla_simbol_rotation.png "
-                    className="introsimbol" alt="simbol"
+                    className="introsimbol"
+                    alt="simbol"
                   />
                 </div>
                 <h1>무료 온라인 모자이크 에디터</h1>
@@ -150,8 +153,16 @@ const MainBody = () => {
         <div id="intro1">
           <div className="introtitlebox">
             <div>
-              <img src="./img/blurbla-eye.png" className="graphic1" alt="eye"></img>
-              <img src="./img/click.png" className="graphic2" alt="graphicicon"></img>
+              <img
+                src="./img/blurbla-eye.png"
+                className="graphic1"
+                alt="eye"
+              ></img>
+              <img
+                src="./img/click.png"
+                className="graphic2"
+                alt="graphicicon"
+              ></img>
               <h1 className="introtitle">
                 블러블라 무료 모자이크 체험을 통해
                 <br />
@@ -230,7 +241,7 @@ const MainBody = () => {
         <div id="intro3">
           <div className="intro3box">
             <div id="intro3">
-              <img src="./img/main_img02.jpg" alt="mainimg2"/>
+              <img src="./img/main_img02.jpg" alt="mainimg2" />
             </div>
             <div className="intro2">
               <h1 className="introtitles">
