@@ -6,6 +6,7 @@ import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Modal from "./component/Modal";
 import { LoginUserContext } from "./context/LoginUserContent";
+import { Link } from "react-router-dom";
 
 const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
@@ -97,7 +98,7 @@ const MypageCustom = () => {
       } else if (b.answerStatus === "N" && a.answerStatus !== "N") {
         return 1;
       } else if (a.answerStatus === "N" && b.answerStatus === "N") {
-        return a.inquiryDate < b.inquiryDate ? -1 : 1;
+        return new Date(a.questioned_at) < new Date(b.questioned_at) ? -1 : 1;
       }
       return 0;
     });
@@ -147,7 +148,26 @@ const MypageCustom = () => {
       <MypageBar />
       <section className="mypageCustom">
         <div className="CustomBody">
-          <p className="CustomList">문의사항</p>
+          <div className="ToolListBody">
+            <p className="ToolList">문의사항</p>
+            <div className="MypageNavbar">
+              <div>
+                <Link to={"/Editor"} className="EditorBoxBody">
+                  모자이크 처리
+                </Link>
+              </div>
+              <div>
+                <Link to={"/Premium"} className="PremiumBoxBody">
+                  프리미엄 가입
+                </Link>
+              </div>
+              <div>
+                <Link to={"/Customer"} className="CustomerBoxBody">
+                  고객센터
+                </Link>
+              </div>
+            </div>
+          </div>
           <hr className="Customtoolhr" />
           <div className="CustomLists">
             <div>
@@ -209,7 +229,6 @@ const MypageCustom = () => {
                 <th className="customWriter">작성자</th>
                 <th className="customDate">작성일시</th>
                 <th className="customAnswer">답변</th>
-                <th className="customAnswerDate">답변일시</th>
               </tr>
             </thead>
             <tbody>
@@ -234,12 +253,11 @@ const MypageCustom = () => {
                       </td>
                       <td
                         className={
-                          inquiry.qstn_open === "N" ? "redText" : "blackText"
+                          inquiry.qstn_answer === "N" ? "redText" : "blackText"
                         }
                       >
-                        {inquiry.qstn_open}
+                        {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                       </td>
-                      <td>답변일시</td>
                     </tr>
                   )
               )}

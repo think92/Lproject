@@ -1,8 +1,28 @@
+import { useEffect } from "react";
 import "./css/Mypage.css";
 import MypageBar from "./MypageBar";
+import axios from "axios";
 import { Link } from "react-router-dom";
 
 const Mypage = () => {
+  const formData = new FormData();
+  formData.append("mb_email", sessionStorage.getItem("mb_email"));
+
+  useEffect(() => {
+    axios
+      .post("http://localhost:8083/MemApi/Mypage", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.error("Error data:", err);
+      });
+  }, []);
+
   return (
     <div>
       <MypageBar />
@@ -12,13 +32,19 @@ const Mypage = () => {
             <p className="ToolList">작업내역</p>
             <div className="MypageNavbar">
               <div>
-              <Link to={"/Editor"} className="EditorBoxBody">모자이크 처리</Link>
+                <Link to={"/Editor"} className="EditorBoxBody">
+                  모자이크 처리
+                </Link>
               </div>
               <div>
-              <Link to={"/Premium"} className="PremiumBoxBody">프리미엄 가입</Link>
+                <Link to={"/Premium"} className="PremiumBoxBody">
+                  프리미엄 가입
+                </Link>
               </div>
               <div>
-              <Link to={"/Customer"} className="CustomerBoxBody">고객센터</Link>
+                <Link to={"/Customer"} className="CustomerBoxBody">
+                  고객센터
+                </Link>
               </div>
             </div>
           </div>

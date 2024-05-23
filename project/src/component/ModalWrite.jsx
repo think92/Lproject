@@ -1,22 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import "../css/modalwrite.css";
+import axios from "axios";
 
 const ModalWrite = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [isPrivate, setIsPrivate] = useState(false);
+  const [category, setCategory] = useState("");
+  const [isPrivate, setIsPrivate] = useState("");
+  const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
+  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
+  const [customselect, setCustomSelect] = useState(null); // 작성하기 상태
 
   if (!isOpen) return null;
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    const formData = new FormData();
+    formData.append("qstn_title", title);
+    formData.append("qstn_content", content);
+    formData.append("qstn_category", category);
+    formData.append("qstn_open", isPrivate);
+    formData.append("mb_email", sessionStorage.getItem("mb_email"));
+
+    axios
+      .post("http://localhost:8083/QstApi/qstnsInsert", formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "Success") {
+          alert("문의작성이 저장되었습니다.");
+        } else {
+          alert(
+            "문의작성이 실패하였습니다. 새로고침 이후 재시도 부탁드립니다."
+          );
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching data:", err);
+      });
+
     // 작성 로직 추가
+    console.log("분류 : ", category);
     console.log("제목 : ", title);
     console.log("내용 : ", content);
     console.log("비공개 : ", isPrivate);
-    alert("문의작성이 저장되었습니다.");
+
     onClose();
   };
+
   return (
     <div className="modalWrite">
       <div className="modalWrite-content">
@@ -31,8 +66,8 @@ const ModalWrite = ({ isOpen, onClose }) => {
                 <input
                   type="radio"
                   name="privacy"
-                  checked="cheched"
-                  onChange={() => setIsPrivate(false)}
+                  value={isPrivate}
+                  onChange={() => setIsPrivate("Y")}
                   className="checkBox"
                 />
                 <p className="checkboxOpen">공개</p>
@@ -40,7 +75,8 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   type="radio"
                   name="privacy"
                   checked="cheched"
-                  onChange={() => setIsPrivate(true)}
+                  value={isPrivate}
+                  onChange={() => setIsPrivate("N")}
                   className="checkBox"
                 />
                 <p className="checkboxPrivate">비공개</p>
@@ -51,25 +87,27 @@ const ModalWrite = ({ isOpen, onClose }) => {
                 <select
                   name="choice"
                   className="ModalWriteselectbox"
-                  onChange={(e) => setTitle(e.target.value)}
+                  onChange={(e) => setCategory(e.target.value)}
                 >
                   <option className="ModalWrite-opt">
                     항목을 선택해주세요.
                   </option>
-                  <option value="">전체</option>
-                  <option value="">모자이크 관련</option>
-                  <option value="">서비스 이용</option>
-                  <option value="">프리미엄 결제</option>
-                  <option value="">기타</option>
-                  <option value="">신고</option>
+                  <option value="T">전체</option>
+                  <option value="I">모자이크 관련</option>
+                  <option value="S">서비스 이용</option>
+                  <option value="P">프리미엄 결제</option>
+                  <option value="G">기타</option>
+                  <option value="R">신고</option>
                 </select>
                 <div id="ModalWriteTitles">
                   <p>제목 : </p>
-                    <input
-                      type="text"
-                      placeholder="제목을 입력해주세요."
-                      id="ModalWriteTitle"
-                    ></input>
+                  <input
+                    type="text"
+                    placeholder="제목을 입력해주세요."
+                    id="ModalWriteTitle"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  ></input>
                 </div>
               </div>
               <div>{/* qstn_content를 표시 */}</div>
