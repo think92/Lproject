@@ -171,7 +171,7 @@ button {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap; /* 수정된 부분: 미디어 파일들을 그리드 형식으로 정렬 */
-  align-items: top;
+  align-items: center;
   justify-content: flex-start;
   overflow: scroll;
 }
@@ -230,4 +230,71 @@ button {
 /* 스크롤바 핸들에 마우스 호버 시 스타일 */
 ::-webkit-scrollbar-thumb:hover {
   background-color: #888; /* 핸들의 배경색을 밝은 회색으로 변경 */
+}
+
+/* Modal 스타일 */
+.Modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  max-width: 600px;
+  width: 90%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+}
+
+.Overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+}
+
+/* Modal 콘텐츠 스타일 */
+.modal-content {
+  text-align: center;
+}
+
+.media-preview {
+  margin: 20px 0;
+}
+
+.video-preview,
+.image-preview {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+/* Modal 버튼 스타일 */
+.modal-buttons {
+  display: flex;
+  justify-content: space-around;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.btn.confirm {
+  background-color: #4caf50;
+  color: white;
+}
+
+.btn.cancel {
+  background-color: #f44336;
+  color: white;
 }
