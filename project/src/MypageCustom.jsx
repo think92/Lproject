@@ -147,8 +147,9 @@ const MypageCustom = () => {
 
   // 선택된 항목 삭제
   const handleDelete = (e) => {
+    const formData = new FormData();
 
-    if () {
+    if (e) {
       console.log();
       // alert("정말로 삭제를 진행하시겠습니까?");
       axios
@@ -228,7 +229,7 @@ const MypageCustom = () => {
                 <option value="test_context">문의내용</option>
                 <option value="createdAt">작성일시</option>
                 <option value="answerStatus">답변유무</option>
-                <option value="answeredAt">답변일시</option>
+                {/* <option value="answeredAt">답변일시</option> */}
               </select>
             </div>
             {/* <div>
