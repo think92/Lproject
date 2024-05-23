@@ -19,7 +19,6 @@ const MainBar = () => {
   }
 
   const [content, setContent] = useState("");
-  console.log(content);
 
   return (
     <header>

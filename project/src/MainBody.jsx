@@ -17,30 +17,64 @@ import {
   faFacebookMessenger,
 } from "@fortawesome/free-brands-svg-icons";
 import styled from "styled-components";
+import ReactModal from "react-modal";
 
 // 섹션 스타일 정의
 const Section = styled.div`
   transition: background-color 0.9s ease-in-out;
 `;
+
+ReactModal.setAppElement("#root");
+
 const MainBody = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
+  const [medias, setMedias] = useState([]);
+  const [premiumModalIsOpen, setPremiumModalIsOpen] = useState(false);
+
+  const openLoginModal = () => setLoginModalIsOpen(true);
+  const closeLoginModal = () => setLoginModalIsOpen(false);
+  const openPremiumModal = () => setPremiumModalIsOpen(true);
+  const closePremiumModal = () => setPremiumModalIsOpen(false);
 
   const handleButtonClick = () => {
-    fileInputRef.current.click();
+    if (
+      null === sessionStorage.getItem("mb_email") &&
+      (medias.length >= 1 ||
+        medias.some((media) => media.type.startsWith("video/")))
+    ) {
+      openLoginModal();
+    } else {
+      fileInputRef.current.click();
+    }
   };
-
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll); // 스크롤 이벤트 추가
-    return () => {
-      window.removeEventListener("scroll", handleScroll); // 이벤트 제거
-    };
-  }, []);
 
   const handleImageChange = (e) => {
     e.preventDefault();
 
     const files = Array.from(e.target.files);
+
+    if (
+      null === sessionStorage.getItem("mb_email") &&
+      (files.length + medias.length > 1 ||
+        files.some((file) => file.type.startsWith("video/")))
+    ) {
+      openLoginModal();
+      return;
+    }
+
+    // 프리미엄 회원 확인
+    if (
+      sessionStorage.getItem("mb_role") === "M" &&
+      files.some(
+        (file) => file.type.startsWith("video/") && file.size > 5 * 1024 * 1024
+      )
+    ) {
+      openPremiumModal();
+      return;
+    }
+
     const imagesPromises = files.map((file) => {
       return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -61,7 +95,7 @@ const MainBody = () => {
 
     Promise.all(imagesPromises)
       .then((files) => {
-        console.log("All files:", files); // 이미지 배열 로깅
+        setMedias((prevMedias) => [...prevMedias, ...files]);
         if (files.length > 0) {
           navigate("/Editor", { state: { medias: files } });
         } else {
@@ -72,6 +106,13 @@ const MainBody = () => {
         console.error("Error loading files:", error);
       });
   };
+
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll); // 스크롤 이벤트 추가
+    return () => {
+      window.removeEventListener("scroll", handleScroll); // 이벤트 제거
+    };
+  }, []);
 
   // 기본 섹션 설정
   const [currentSection, setCurrentSection] = useState(0);
@@ -318,6 +359,63 @@ const MainBody = () => {
           </div>
         </div>
       </Section>
+
+      <ReactModal
+        isOpen={loginModalIsOpen}
+        onRequestClose={closeLoginModal}
+        contentLabel="Login Required"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="modal-content">
+          <h2>로그인 하시겠습니까?</h2>
+          <p>사진 두 장 이상 또는 동영상을 업로드하려면 로그인이 필요합니다.</p>
+          <div className="modal-buttons">
+            <button
+              className="btn confirm"
+              onClick={() => {
+                closeLoginModal();
+                navigate("/Login");
+              }}
+            >
+              확인
+            </button>
+            <button className="btn cancel" onClick={closeLoginModal}>
+              취소
+            </button>
+          </div>
+        </div>
+      </ReactModal>
+
+      <ReactModal
+        isOpen={premiumModalIsOpen}
+        onRequestClose={closePremiumModal}
+        contentLabel="Premium Required"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="modal-content">
+          <h2>프리미엄 회원 기능</h2>
+          <p>
+            동영상 파일 크기가 5MB 이상, 모자이크 제외 기능은 프리미엄 회원만
+            가능합니다.
+          </p>
+          <div className="modal-buttons">
+            <button
+              className="btn confirm"
+              onClick={() => {
+                closePremiumModal();
+                navigate("/Premium");
+              }}
+            >
+              확인
+            </button>
+            <button className="btn cancel" onClick={closePremiumModal}>
+              취소
+            </button>
+          </div>
+        </div>
+      </ReactModal>
     </div>
   );
 };
