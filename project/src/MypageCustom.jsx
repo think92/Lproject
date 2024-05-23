@@ -147,8 +147,9 @@ const MypageCustom = () => {
 
   // 선택된 항목 삭제
   const handleDelete = (e) => {
+    const formData = new FormData();
 
-    if () {
+    if (e) {
       console.log();
       // alert("정말로 삭제를 진행하시겠습니까?");
       axios
