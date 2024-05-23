@@ -42,7 +42,7 @@ const MypagePay = () => {
       <section className="mypagePay">
         <div className="PayBody">
         <div className="ToolListBody">
-            <p className="PayList">작업내역</p>
+            <p className="PayList">결재내역</p>
             <div className="MypageNavbar">
               <div>
               <Link to={"/Editor"} className="EditorBoxBody">모자이크 처리</Link>

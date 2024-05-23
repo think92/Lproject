@@ -3,7 +3,7 @@ import "./css/adminMainBody.css";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faHouseChimney,
+  faHouse,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 
@@ -19,11 +19,15 @@ const AdminMain = () => {
     backgroundColor: "#4ce577",
   };
 
+  function LogOut(params) {
+    sessionStorage.clear(); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
+  }
+  
   return (
     <section>
       <div className="home">
-        <Link to={"/"}>
-          <FontAwesomeIcon className="homeIcon" icon={faHouseChimney} />
+        <Link to={"/"} className="admingomainhome">
+          <FontAwesomeIcon className="homeIcon" icon={faHouse} />
           <p>메인 홈</p>
         </Link>
       </div>
@@ -69,9 +73,11 @@ const AdminMain = () => {
           </p>
         </div>
       </div>
-      <div className="logout">
-        <FontAwesomeIcon className="logoutIcon" icon={faRightFromBracket} />
-        <p>로그아웃</p>
+      <div className="adminlogout">
+        <FontAwesomeIcon className="faRightFromBracket" icon={faRightFromBracket} />
+        <Link to={"/"} className="adminlogouts" onClick={LogOut}>
+          로그아웃
+        </Link>
       </div>
     </section>
   );

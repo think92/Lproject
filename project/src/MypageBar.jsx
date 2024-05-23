@@ -28,8 +28,8 @@ const MypageBar = () => {
         <div className="mypagebody">
           <div className="mypagebar">
             <div className="mypagegomain">
-              <FontAwesomeIcon icon={faHouse} className="fahouse" />
               <Link to={"/"} className="mypagegomainhome">
+              <FontAwesomeIcon icon={faHouse} className="fahouse" />
                 메인 홈
               </Link>
             </div>

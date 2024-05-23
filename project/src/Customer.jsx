@@ -73,11 +73,17 @@ const Customer = () => {
   };
 
   console.log("모달1 : ", modalIsOpen);
-  // 모달
+  // 모달 열기
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
     setModalIsOpen(true);
   };
+
+  // 모달 닫기
+  const closeModal = () => {
+    setModalIsOpen(false);
+    setSelectedInquiry(null);
+  }
 
   // 작성하기 버튼 클릭 시 실행될 함수
   const handleWriteButtonClick = () => {
@@ -261,7 +267,7 @@ const Customer = () => {
             </table>
             <Modal
               isOpen={modalIsOpen}
-              onClose={() => setModalIsOpen(false)}
+              onClose={closeModal}
               inquiry={selectedInquiry}
               isPrivate={selectedInquiry?.qstn_open === "N"}
               isAdmin={false} // 고객 페이지에서는 관리자 모드를 false로 설정
