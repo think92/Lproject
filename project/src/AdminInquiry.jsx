@@ -187,6 +187,8 @@ const AdminInquiry = () => {
           if (res.data) {
             console.log("삭제여부 : ");
             alert("삭제가 완료되었습니다.");
+            qntnsList(); // 삭제 후 문의사항 목록 다시 불러오기
+            setCheckedList([]);
           } else {
             alert("삭제 실패");
           }
@@ -265,7 +267,6 @@ const AdminInquiry = () => {
                 onChange={handleSelectCategoryChange}
               >
                 <option value="">- 문의 종류 -</option>
-                <option value="">전체</option>
                 <option value="I">모자이크 관련</option>
                 <option value="S">서비스 이용</option>
                 <option value="P">프리미엄 결제</option>
@@ -280,7 +281,6 @@ const AdminInquiry = () => {
                 onChange={handleSelectTypeChange}
               >
                 <option value="">- 항목 -</option>
-                <option value="opt">전체</option>
                 <option value="mb_email">아이디</option>
                 <option value="qstn_title">문의제목</option>
                 <option value="questioned_at">작성일시</option>
