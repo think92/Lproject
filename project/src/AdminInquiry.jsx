@@ -5,8 +5,10 @@ import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
 import axios from "axios";
 
 const AdminInquiry = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectType, setSelectType] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // 검색 분류 소
+  const [selectType, setSelectType] = useState(""); // 검색 분류 중
+  const [selectCategory, setSelectCategory] = useState(""); // 검색 분류 대
+
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
@@ -49,6 +51,9 @@ const AdminInquiry = () => {
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = (data) => {
+    console.log("검색 필터 소 : ", searchTerm);
+    console.log("검색 필터 중 : ", selectType);
+    console.log("검색 필터 대 : ", selectCategory);
     let filtered = data;
 
     if (selectType && searchTerm) {
@@ -57,6 +62,12 @@ const AdminInquiry = () => {
           ?.toString()
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectCategory) {
+      filtered = filtered.filter(
+        (inquiry) => inquiry.qstn_category === selectCategory
       );
     }
 
@@ -74,19 +85,32 @@ const AdminInquiry = () => {
     setInquiries(filtered);
   };
 
+  const handleSelectCategoryChange = (event) => {
+    setSelectCategory(event.target.value);
+    console.log("검색 대 분류 : ", event.target.value);
+  };
+
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
+    console.log("검색 중 분류 : ", event.target.value);
   };
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
+    console.log("검색 소 분류 : ", event.target.value);
   };
 
+  // [검색] 기능
   const handleSearch = () => {
-    if (searchTerm.trim() === ""){
+    qntnsList();
+    if (
+      searchTerm.trim() === "" &&
+      selectType === "" &&
+      selectCategory === ""
+    ) {
       // 검색어가 비어있는 경우 모든 문의 내역을 보여줌
-      qntnsList();
-    }else {
+      // qntnsList();
+    } else {
       filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
     }
   };
@@ -169,15 +193,21 @@ const AdminInquiry = () => {
           <div className="buttonss">
             <button className="delete">삭제</button>
             <div className="seletes">
-              <select className="select" name="select">
+              <select
+                className="select"
+                name="select"
+                value={selectCategory}
+                onChange={handleSelectCategoryChange}
+              >
                 <option value="">- 문의 종류 -</option>
                 <option value="">전체</option>
-                <option value="">모자이크 관련</option>
-                <option value="">서비스 이용</option>
-                <option value="">프리미엄 결제</option>
-                <option value="">기타</option>
-                <option value="">신고</option>
+                <option value="I">모자이크 관련</option>
+                <option value="S">서비스 이용</option>
+                <option value="P">프리미엄 결제</option>
+                <option value="G">기타</option>
+                <option value="R">신고</option>
               </select>
+
               <select
                 className="select"
                 name="select"
@@ -188,7 +218,7 @@ const AdminInquiry = () => {
                 <option value="mb_email">아이디</option>
                 <option value="qstn_title">문의제목</option>
                 <option value="questioned_at">문의일시</option>
-                <option value="qstn_open">답변유무</option>
+                <option value="qstn_answer">답변유무</option>
                 <option value="answerDate">답변일시</option>
               </select>
               <input
@@ -212,7 +242,7 @@ const AdminInquiry = () => {
                   <th>아이디</th>
                   <th>문의일시</th>
                   <th>답변유무</th>
-                  <th>답변일시</th>
+                  <th>문의분류</th>
                 </tr>
               </thead>
               <tbody>
@@ -235,7 +265,19 @@ const AdminInquiry = () => {
                     >
                       {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                     </td>
-                    <td>{formatDate(inquiry.answered_at)}</td>
+                    <td>
+                      {inquiry.qstn_category === "I"
+                        ? "모자이크"
+                        : inquiry.qstn_category === "S"
+                        ? "서비스"
+                        : inquiry.qstn_category === "P"
+                        ? "프리미엄"
+                        : inquiry.qstn_category === "G"
+                        ? "기타"
+                        : inquiry.qstn_category === "R"
+                        ? "신고"
+                        : "전체"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -264,7 +306,6 @@ const AdminInquiry = () => {
             inquiry={selectedInquiry}
             isAdmin={true} // 관리자 페이지에서는 관리자 모드를 true로 설정
           />
-        
         </div>
       </div>
     </div>
