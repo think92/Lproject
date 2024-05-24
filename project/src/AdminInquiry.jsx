@@ -336,19 +336,6 @@ const AdminInquiry = () => {
                     >
                       {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                     </td>
-                    <td>
-                      {inquiry.qstn_category === "I"
-                        ? "모자이크"
-                        : inquiry.qstn_category === "S"
-                        ? "서비스"
-                        : inquiry.qstn_category === "P"
-                        ? "프리미엄"
-                        : inquiry.qstn_category === "G"
-                        ? "기타"
-                        : inquiry.qstn_category === "R"
-                        ? "신고"
-                        : "전체"}
-                    </td>
                   </tr>
                 ))}
               </tbody>
