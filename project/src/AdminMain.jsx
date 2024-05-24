@@ -341,11 +341,11 @@ const AdminMain = () => {
                     <th style={{ width: "15%" }}>아이디</th>
                     <th style={{ width: "20%" }}>등급</th>
                     <th style={{ width: "25%" }}>가입일시</th>
-                    <th style={{ width: "25%" }}>
+                    {/* <th style={{ width: "25%" }}>
                       프리미엄
                       <br />
                       결재 일시
-                    </th>
+                    </th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -355,7 +355,7 @@ const AdminMain = () => {
                       <td>{user.mb_email}</td>
                       <td>{user.mb_role}</td>
                       <td>{formatDate(user.joinedAt)}</td>
-                      <td>{user.paymentDate || "N/A"}</td>
+                      {/* <td>{user.paymentDate || "N/A"}</td> */}
                     </tr>
                   ))}
                 </tbody>

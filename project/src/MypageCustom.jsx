@@ -246,7 +246,7 @@ const MypageCustom = () => {
             </div>
             <div>
               <select name="choice" className="CustomChoiceBox">
-                <option className="opt">- 문의 종류 -</option>
+                <option className="opt">- 문의종류 -</option>
                 <option>전체</option>
                 <option>모자이크</option>
                 <option>서비스</option>

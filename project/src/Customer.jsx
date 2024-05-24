@@ -222,7 +222,7 @@ const Customer = () => {
                 >
                   <option value="">- 항목 -</option>
                   <option>전체</option>
-                  <option value="qstn_item">항목</option>
+                  <option value="qstn_item">문의종류</option>
                   <option value="qstn_title">문의제목</option>
                   <option value="mb_email">아이디</option>
                   <option value="questioned_at">작성일시</option>
@@ -244,7 +244,7 @@ const Customer = () => {
               <thead>
                 <tr>
                   <th className="customernum">번호</th>
-                  <th className="customeritem">항목</th>
+                  <th className="customeritem">문의종류</th>
                   <th className="customerdivison">문의제목</th>
                   <th className="customerwriter">작성자</th>
                   <th className="customerdate">작성일시</th>

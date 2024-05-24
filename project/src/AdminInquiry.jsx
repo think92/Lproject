@@ -144,6 +144,71 @@ const AdminInquiry = () => {
   // 다음 페이지 번호 계산
   const nextGroupStartPage = endPage + 1;
 
+  // 선택된 항목 삭제
+  const handleDelete = (e) => {
+    const formData = new FormData();
+    formData.append("qstns_idx", checkedList);
+
+    console.log("삭제하려는 삭제번호들 : ", checkedList);
+    if (true) {
+      // alert("정말로 삭제를 진행하시겠습니까?");
+      axios
+        .post("http://localhost:8083/AdmApi/adminQsntsDelete", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data) {
+            console.log("삭제여부 : ");
+            alert("삭제가 완료되었습니다.");
+          } else {
+            alert("삭제 실패");
+          }
+        })
+        .catch((err) => {
+          console.error("API 요청 실패:", err);
+        });
+    }
+  };
+
+  // 체크박스 클릭시 삭제 기능
+  const [checkedList, setCheckedList] = useState([]);
+
+  const checkedItemHandler = (value, isChecked) => {
+    if (isChecked) {
+      setCheckedList((prev) => [...prev, value]);
+    } else {
+      setCheckedList(checkedList.filter((item) => item !== value));
+    }
+  };
+
+  const handleCheckboxChange = (e, value) => {
+    const isChecked = e.target.checked;
+    checkedItemHandler(value, isChecked);
+  };
+
+   // 항목 카테고리
+   const getCategoryName = (category) => {
+    switch (category) {
+      case "T":
+        return "전체";
+      case "I":
+        return "모자이크";
+      case "S":
+        return "서비스";
+      case "P":
+        return "프리미엄";
+      case "G":
+        return "기타";
+      case "R":
+        return "신고";
+      default:
+        return "알 수 없음";
+    }
+  };
+
   return (
     <div className="admin">
       <AdminMinBar />
@@ -167,10 +232,10 @@ const AdminInquiry = () => {
           </div>
           <hr />
           <div className="buttonss">
-            <button className="delete">삭제</button>
+            <button className="delete" onClick={handleDelete}>삭제</button>
             <div className="seletes">
               <select className="select" name="select">
-                <option value="">- 문의 종류 -</option>
+                <option value="">- 항목 -</option>
                 <option value="">전체</option>
                 <option value="">모자이크</option>
                 <option value="">서비스</option>
@@ -184,8 +249,8 @@ const AdminInquiry = () => {
                 value={selectType}
                 onChange={handleSelectTypeChange}
               >
-                <option value="opt">- 항목 -</option>
-                <option value="">전체</option>
+                <option value="">- 항목 -</option>
+                <option value="opt">전체</option>
                 <option value="mb_email">아이디</option>
                 <option value="qstn_title">문의제목</option>
                 <option value="questioned_at">작성일시</option>
@@ -209,6 +274,7 @@ const AdminInquiry = () => {
                 <tr>
                   <th>선택</th>
                   <th>번호</th>
+                  <th>문의종류</th>
                   <th>문의제목</th>
                   <th>아이디</th>
                   <th>문의일시</th>
@@ -220,9 +286,13 @@ const AdminInquiry = () => {
                 {currentItems.map((inquiry, index) => (
                   <tr key={indexOfFirstItem + index}>
                     <td>
-                      <input type="checkbox" />
+                      <input type="checkbox" 
+                      onChange={(e) =>
+                        handleCheckboxChange(e, inquiry.qstn_idx)
+                      }/>
                     </td>
                     <td>{indexOfFirstItem + index + 1}</td>
+                    <td>{getCategoryName(inquiry.qstn_category)}</td>
                     <td
                       className="clickable"
                       onClick={() => openModal(inquiry)}
