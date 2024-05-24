@@ -1,7 +1,6 @@
 .admin {
   display: flex;
 }
-
 .summary {
   background-color: #e4fab5;
   flex-grow: 1;
@@ -50,11 +49,15 @@
 .inqureHead p {
   font-weight: bold;
 }
-
+.Addeye{
+  text-decoration: none;
+  color: #000;
+  font-weight: 600;
+  font-size: 16px;
+}
 .detail {
   display: flex;
   justify-content: center;
-  height: 80%;
 }
 
 .detail table {
@@ -63,14 +66,24 @@
   flex-grow: 1;
 }
 
-.detail th,
+.detail th {
+  border-collapse: collapse; /* 테두리 겹침을 방지 */
+  border: 2px solid #f0f0f0;
+  padding: 8px; /* 적절한 패딩 제공 */
+  height: 40px;
+  font-weight: 600;
+  font-size: 16px;
+}
+.adminTitle{
+  text-align: left;
+}
 .detail td {
   border-collapse: collapse; /* 테두리 겹침을 방지 */
   border: 2px solid #f0f0f0;
   padding: 8px; /* 적절한 패딩 제공 */
-  text-align: center;
   height: 40px;
   font-weight: 600;
+  font-size: 15px;
 }
 
 .detail thead th {
@@ -84,13 +97,11 @@
 }
 
 .summaryDetail {
-  flex-grow: 0.1;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin: 20px 20px 20px 0;
-  justify-content: center;
-  height: 250px;
+  flex-direction: row;
+  margin: 10px 0 0 10px;
+  justify-content: left;
+  height: 20x;
 }
 
 .detailBorder {
@@ -121,6 +132,11 @@
   font-size: 30px;
   margin-right: 5px;
   color: #4ce577;
+}
+.newConutIes{
+  font-size: 30px;
+  margin-right: 5px;
+  color: #fe7575;
 }
 
 .answerC {
@@ -171,6 +187,48 @@
   font-size: 30px;
   margin-right: 5px;
   color: #fe7575;
+}
+
+.totalUsers {
+  display: flex;
+  flex-direction: row;
+  width: 220px;
+  margin: 20px 0 0 20px;
+  justify-content: left;
+  height: 20x;
+}
+
+.totalBorder {
+  display: flex;
+  border: solid 2px #d9d9d9;
+  width: 100%;
+  height: 48px;
+}
+
+.totalUserTitle {
+  background-color: #018cf0;
+  margin: 0;
+  height: 45px;
+  width: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.totalCount {
+  margin: 0 0 0 10px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.totalConutI {
+  font-size: 30px;
+  margin: 0 5px 0 15px;
+  color: #018cf0;
 }
 
 .subscriberDetail {
@@ -269,10 +327,12 @@ h1 {
 
 th {
   text-align: center;
+  
 }
 
 .clickable {
   cursor: pointer;
+  text-align: left;
 }
 
 .weekSelection {

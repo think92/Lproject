@@ -214,12 +214,13 @@ const AdminInquiry = () => {
                 value={selectType}
                 onChange={handleSelectTypeChange}
               >
-                <option value="">- 항목 -</option>
+                <option value="opt">- 항목 -</option>
+                <option value="">전체</option>
                 <option value="mb_email">아이디</option>
                 <option value="qstn_title">문의제목</option>
-                <option value="questioned_at">문의일시</option>
-                <option value="qstn_answer">답변유무</option>
-                <option value="answerDate">답변일시</option>
+                <option value="questioned_at">작성일시</option>
+                <option value="qstn_answer">답변</option>
+                {/* <option value="answerDate">답변일시</option> */}
               </select>
               <input
                 type="text"
@@ -242,7 +243,7 @@ const AdminInquiry = () => {
                   <th>아이디</th>
                   <th>문의일시</th>
                   <th>답변유무</th>
-                  <th>문의분류</th>
+                  {/* <th>답변일시</th> */}
                 </tr>
               </thead>
               <tbody>

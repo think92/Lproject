@@ -125,7 +125,7 @@ background-color: #45a049;
 }
 
 /* 문의 내역 */
-.customCheck, .customNum, .customDivison, .customWriter, .customDate, .customAnswer, .customAnswerDate,.customAnswerOk {
+.customCheck, .customNum, .customItem, .customDivison, .customWriter, .customDate, .customAnswer, .customAnswerDate,.customAnswerOk {
 background-color: #e4fab5;
 border-bottom: 1px solid #292c31;
 border-left: 1px solid #575757;
@@ -140,21 +140,23 @@ margin: 0 25px 0 25px;
 width: 1530px;
 }
 .customCheck {
-width: 90px;
+width: 80px;
 height: 45px;
 }
 .customNum {
 width: 80px;
-height: 45px;
+}
+.customItem{
+  width: 110px;
 }
 .customDivison {
 width: 600px;
 }
 .customWriter {
-width: 137px;
+width: 120px;
 }
 .customDate {
-width: 260px;
+width: 220px;
 }
 .customAnswer {
 width: 110px;

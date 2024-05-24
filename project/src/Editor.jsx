@@ -11,7 +11,7 @@ import {
   faVectorSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { faSquare, faCircle } from "@fortawesome/free-regular-svg-icons";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AWS from "aws-sdk";
 import ReactModal from "react-modal";
 import { useNavigate } from "react-router-dom";
@@ -76,6 +76,7 @@ const Editor = () => {
     try {
       const data = await s3.upload(params).promise();
       console.log("Upload Success", data.Location);
+      return data.Location;
     } catch (err) {
       console.log("Upload Error", err);
     }
@@ -91,10 +92,32 @@ const Editor = () => {
     }
   }, [location.state]);
 
+  // medias 상태를 sessionStorage에 저장
+  useEffect(() => {
+    const mb_email = sessionStorage.getItem("mb_email");
+    if (mb_email) {
+      const storedMedias = sessionStorage.getItem("medias");
+      if (storedMedias) {
+        setMedias(JSON.parse(storedMedias));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // medias 상태가 변경될 때마다 sessionStorage에 저장
+    const mb_email = sessionStorage.getItem("mb_email");
+    if (mb_email) {
+      sessionStorage.setItem("medias", JSON.stringify(medias));
+    }
+  }, [medias]);
+
   useEffect(() => {
     if (!mediaView) return;
-    if (mediaView.startsWith("data:image")) {
+    console.log("Updated mediaView:", mediaView);
+    if (mediaView.startsWith("data:image") || mediaView.startsWith("https")) {
+      // 수정된 부분
       const image = new Image();
+      image.crossOrigin = "anonymous"; // 추가된 부분
       image.src = mediaView;
       image.onload = () => {
         imageRef.current = image;
@@ -403,6 +426,16 @@ const Editor = () => {
       })
       .then((res) => {
         console.log(res.data);
+        const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
+        setMediaView(s3Url);
+        setMedias((prevMedias) => {
+          return prevMedias.map((media) => {
+            if (media.data === mediaView) {
+              return { ...media, data: s3Url };
+            }
+          });
+        });
+        console.log("S3 URL:", s3Url);
       })
       .catch((err) => {
         console.error("API 요청 실패:", err);
@@ -525,29 +558,28 @@ const Editor = () => {
       if (!canvas) return;
 
       const imageDataUrl = canvas.toDataURL("image/png");
-      mediaFile = new File([imageDataUrl], "mediaView.png", {
+      const blob = await (await fetch(imageDataUrl)).blob();
+      mediaFile = new File([blob], "mediaView.png", {
         type: "image/png",
       });
-      mediaFileName = `mediaView-${Date.now()}.png`;
+      mediaFileName = `final-mediaView-${Date.now()}.png`;
       mediaFileType = "image/png";
 
       // 이미지 다운로드
       const link = document.createElement("a");
       link.href = imageDataUrl;
-      link.download = "mosaic-image.png";
+      link.download = mediaFileName;
       link.click();
     } else if (
       mediaView.startsWith("data:video") ||
       mediaView.startsWith("blob:")
     ) {
       // 동영상인 경우
-      console.log("Attempting to fetch video data...");
       const response = await fetch(mediaView);
       const blob = await response.blob();
       mediaFile = new File([blob], "mediaView.mp4", { type: "video/mp4" });
-      mediaFileName = `mediaView-${Date.now()}.mp4`;
+      mediaFileName = `final-mediaView-${Date.now()}.mp4`;
       mediaFileType = "video/mp4";
-      console.log("Video file created:", mediaFile);
 
       // 동영상 다운로드
       const link = document.createElement("a");
@@ -556,18 +588,51 @@ const Editor = () => {
       link.click();
     }
 
-    // 서버 업로드
-    console.log("Uploading file to server...");
+    await uploadToS3(mediaFile, mediaFileName);
 
-    const uploadResponse = await uploadImage(mediaFile);
-    if (uploadResponse) {
-      console.log("Media successfully uploaded:", uploadResponse);
-      closeModal(); // 모달 닫기
-      // 여기서 사용자 프로필을 업데이트하는 로직을 추가합니다.
-      // 예: 사용자 상태를 업데이트하거나, Mypage.jsx에 이미지를 추가하는 등
-    } else {
-      console.log("Media upload failed");
+    const mb_email = sessionStorage.getItem("mb_email");
+
+    const originalPhoto = {
+      file_name: mediaFileName,
+      file_rename: mediaFileName,
+      file_type: mediaFileType,
+      file_size: mediaFile.size,
+      created_at: new Date().toISOString(),
+      mb_email: mb_email ? mb_email : null,
+    };
+
+    console.log("원본 파일 정보", originalPhoto);
+    closeModal(); // 모달 닫기
+
+    const editorData = new FormData();
+    for (const key in originalPhoto) {
+      editorData.append(`original_${key}`, originalPhoto[key]);
     }
+
+    axios
+      .post("http://localhost:8083/FileApi/uploadFileInfo", editorData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
+        setMediaView(s3Url);
+        setMedias((prevMedias) => {
+          return prevMedias.map((media) => {
+            if (media.data === mediaView) {
+              return { ...media, data: s3Url };
+            }
+            return media;
+          });
+        });
+        console.log("S3 URL:", s3Url);
+        closeModal(); // 모달 닫기
+      })
+      .catch((err) => {
+        console.error("API 요청 실패:", err);
+      });
   };
 
   const uploadImage = async (file) => {
@@ -605,9 +670,22 @@ const Editor = () => {
     });
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem("mb_email");
+    sessionStorage.removeItem("medias");
+    setMedias([]); // medias 상태 초기화
+    navigate("/");
+  };
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("mb_email")) {
+      setMedias([]); // 세션에 mb_email이 없을 경우 medias 초기화
+    }
+  }, []);
+
   return (
     <div className="editor-specific">
-      <MainBar />
+      <MainBar onLogout={handleLogout} />
       <input
         type="file"
         style={{ display: "none" }}
