@@ -117,6 +117,7 @@ const Editor = () => {
     if (mediaView.startsWith("data:image") || mediaView.startsWith("https")) {
       // 수정된 부분
       const image = new Image();
+      image.crossOrigin = "anonymous"; // 추가된 부분
       image.src = mediaView;
       image.onload = () => {
         imageRef.current = image;
@@ -557,29 +558,28 @@ const Editor = () => {
       if (!canvas) return;
 
       const imageDataUrl = canvas.toDataURL("image/png");
-      mediaFile = new File([imageDataUrl], "mediaView.png", {
+      const blob = await (await fetch(imageDataUrl)).blob();
+      mediaFile = new File([blob], "mediaView.png", {
         type: "image/png",
       });
-      mediaFileName = `mediaView-${Date.now()}.png`;
+      mediaFileName = `final-mediaView-${Date.now()}.png`;
       mediaFileType = "image/png";
 
       // 이미지 다운로드
       const link = document.createElement("a");
       link.href = imageDataUrl;
-      link.download = "mosaic-image.png";
+      link.download = mediaFileName;
       link.click();
     } else if (
       mediaView.startsWith("data:video") ||
       mediaView.startsWith("blob:")
     ) {
       // 동영상인 경우
-      console.log("Attempting to fetch video data...");
       const response = await fetch(mediaView);
       const blob = await response.blob();
       mediaFile = new File([blob], "mediaView.mp4", { type: "video/mp4" });
-      mediaFileName = `mediaView-${Date.now()}.mp4`;
+      mediaFileName = `final-mediaView-${Date.now()}.mp4`;
       mediaFileType = "video/mp4";
-      console.log("Video file created:", mediaFile);
 
       // 동영상 다운로드
       const link = document.createElement("a");
@@ -588,18 +588,51 @@ const Editor = () => {
       link.click();
     }
 
-    // 서버 업로드
-    console.log("Uploading file to server...");
+    await uploadToS3(mediaFile, mediaFileName);
 
-    const uploadResponse = await uploadImage(mediaFile);
-    if (uploadResponse) {
-      console.log("Media successfully uploaded:", uploadResponse);
-      closeModal(); // 모달 닫기
-      // 여기서 사용자 프로필을 업데이트하는 로직을 추가합니다.
-      // 예: 사용자 상태를 업데이트하거나, Mypage.jsx에 이미지를 추가하는 등
-    } else {
-      console.log("Media upload failed");
+    const mb_email = sessionStorage.getItem("mb_email");
+
+    const originalPhoto = {
+      file_name: mediaFileName,
+      file_rename: mediaFileName,
+      file_type: mediaFileType,
+      file_size: mediaFile.size,
+      created_at: new Date().toISOString(),
+      mb_email: mb_email ? mb_email : null,
+    };
+
+    console.log("원본 파일 정보", originalPhoto);
+    closeModal(); // 모달 닫기
+
+    const editorData = new FormData();
+    for (const key in originalPhoto) {
+      editorData.append(`original_${key}`, originalPhoto[key]);
     }
+
+    axios
+      .post("http://localhost:8083/FileApi/uploadFileInfo", editorData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((res) => {
+        console.log(res.data);
+        const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
+        setMediaView(s3Url);
+        setMedias((prevMedias) => {
+          return prevMedias.map((media) => {
+            if (media.data === mediaView) {
+              return { ...media, data: s3Url };
+            }
+            return media;
+          });
+        });
+        console.log("S3 URL:", s3Url);
+        closeModal(); // 모달 닫기
+      })
+      .catch((err) => {
+        console.error("API 요청 실패:", err);
+      });
   };
 
   const uploadImage = async (file) => {

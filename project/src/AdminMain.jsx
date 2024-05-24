@@ -63,7 +63,7 @@ const AdminMain = () => {
 
         // 대기 중인 문의 수 계산
         const waitingInquiries = data.filter(
-          (inquiry) => inquiry.qstn_open === "N"
+          (inquiry) => inquiry.qstn_answer === "N"
         ).length;
         setWaitingCount(waitingInquiries);
         setIsLoading(false); // 데이터 로드 완료
