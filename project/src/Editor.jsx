@@ -11,7 +11,7 @@ import {
   faVectorSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import { faSquare, faCircle } from "@fortawesome/free-regular-svg-icons";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import AWS from "aws-sdk";
 import ReactModal from "react-modal";
 import { useNavigate } from "react-router-dom";
@@ -90,6 +90,25 @@ const Editor = () => {
       console.error("No images passed in state.");
     }
   }, [location.state]);
+
+  // medias 상태를 sessionStorage에 저장
+  useEffect(() => {
+    const mb_email = sessionStorage.getItem("mb_email");
+    if (mb_email) {
+      const storedMedias = sessionStorage.getItem("medias");
+      if (storedMedias) {
+        setMedias(JSON.parse(storedMedias));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    // medias 상태가 변경될 때마다 sessionStorage에 저장
+    const mb_email = sessionStorage.getItem("mb_email");
+    if (mb_email) {
+      sessionStorage.setItem("medias", JSON.stringify(medias));
+    }
+  }, [medias]);
 
   useEffect(() => {
     if (!mediaView) return;
@@ -605,9 +624,22 @@ const Editor = () => {
     });
   };
 
+  const handleLogout = () => {
+    sessionStorage.removeItem("mb_email");
+    sessionStorage.removeItem("medias");
+    setMedias([]); // medias 상태 초기화
+    navigate("/");
+  };
+
+  useEffect(() => {
+    if (!sessionStorage.getItem("mb_email")) {
+      setMedias([]); // 세션에 mb_email이 없을 경우 medias 초기화
+    }
+  }, []);
+
   return (
     <div className="editor-specific">
-      <MainBar />
+      <MainBar onLogout={handleLogout} />
       <input
         type="file"
         style={{ display: "none" }}
