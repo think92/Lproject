@@ -7,18 +7,14 @@ import { LoginUserContext } from "./context/LoginUserContent";
 import { Link } from "react-router-dom";
 
 const MypageCustom = () => {
-  // 데이터베이스 정보 불러오기
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
 
-  const [list, setList] = useState(null); // 삭제할 리스트
+  const [searchTerm, setSearchTerm] = useState(""); // 검색 분류 소
+  const [selectType, setSelectType] = useState(""); // 검색 분류 중
+  const [selectCategory, setSelectCategory] = useState(""); // 검색 분류 대
 
-
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectType, setSelectType] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
-  const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
-  const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
 
   // 페이지 버튼
   const [currentPage, setCurrentPage] = useState(1); // 현재 페이지 상태
@@ -42,15 +38,6 @@ const MypageCustom = () => {
           : [];
         setInquiries(data); // 데이터를 상태에 저장
         filterAndSortInquiries(data); // 필터링 및 정렬 실행
-        const waiting = data.filter(
-          (inquiry) => inquiry.qstn_open === "N"
-        ).length;
-        setWaitingCount(waiting); // 대기 중인 문의 수 계산
-        const today = new Date().toISOString().split("T")[0];
-        const todayInquiries = data.filter(
-          (inquiry) => inquiry.questioned_at.split("T")[0] === today
-        ).length;
-        setTodayCount(todayInquiries); // 오늘 등록된 문의 수 계산
         console.log(data);
       })
       .catch((err) => {
@@ -78,20 +65,24 @@ const MypageCustom = () => {
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = (data) => {
-    let filtered = data.filter(
-      (inquiry) => inquiry.mb_email === sessionStorage.getItem("mb_email")
-    );
+    console.log("검색 필터 소 : ", searchTerm);
+    console.log("검색 필터 중 : ", selectType);
+    console.log("검색 필터 대 : ", selectCategory);
+    let filtered = data.filter((inquiry) => inquiry.mb_email === sessionStorage.getItem("mb_email"));
+    // let filtered = data;
 
-    if (searchTerm.trim() === "대기중") {
-      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "N");
-    } else if (searchTerm.trim() === "답변완료") {
-      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "Y");
-    } else if (selectType && searchTerm) {
+    if (selectType && searchTerm) {
       filtered = filtered.filter((inquiry) =>
         inquiry[selectType]
           ?.toString()
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectCategory) {
+      filtered = filtered.filter(
+        (inquiry) => inquiry.qstn_category === selectCategory
       );
     }
 
@@ -110,12 +101,32 @@ const MypageCustom = () => {
     setInquiries(filtered);
   };
 
+  const handleSelectCategoryChange = (event) => {
+    setSelectCategory(event.target.value);
+    console.log("검색 대 분류 : ", event.target.value);
+  };
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
+    console.log("검색 중 분류 : ", event.target.value);
   };
-
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
+    console.log("검색 소 분류 : ", event.target.value);
+  };
+
+   // [검색] 기능
+   const handleSearch = () => {
+    boardList();
+    if (
+      searchTerm.trim() === "" &&
+      selectType === "" &&
+      selectCategory === ""
+    ) {
+      // 검색어가 비어있는 경우 모든 문의 내역을 보여줌
+      // qntnsList();
+    } else {
+      filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
+    }
   };
 
   const handlePageChange = (pageNumber) => {
@@ -191,7 +202,7 @@ const MypageCustom = () => {
     const isChecked = e.target.checked;
     checkedItemHandler(value, isChecked);
   };
-  
+
   // 항목 카테고리
   const getCategoryName = (category) => {
     switch (category) {
@@ -245,14 +256,15 @@ const MypageCustom = () => {
               </button>
             </div>
             <div>
-              <select name="choice" className="CustomChoiceBox">
-                <option className="opt">- 문의종류 -</option>
-                <option>전체</option>
-                <option>모자이크</option>
-                <option>서비스</option>
-                <option>프리미엄</option>
-                <option>기타</option>
-                <option>신고</option>
+              <select name="choice" className="CustomChoiceBox"
+              value={selectCategory}
+              onChange={handleSelectCategoryChange}>
+                <option className="">- 문의종류 -</option>
+                <option value="I">모자이크</option>
+                <option value="S">서비스</option>
+                <option value="P">프리미엄</option>
+                <option value="G">기타</option>
+                <option value="R">신고</option>
               </select>
             </div>
             <div>
@@ -262,12 +274,11 @@ const MypageCustom = () => {
                 value={selectType}
                 onChange={handleSelectTypeChange}
               >
-                <option className="opt">- 항목 -</option>
-                <option value="">전체</option>
-                <option value="test_id">아이디</option>
-                <option value="test_context">문의제목</option>
-                <option value="createdAt">작성일시</option>
-                <option value="answerStatus">답변</option>
+                <option className="">- 항목 -</option>
+                <option value="mb_email">아이디</option>
+                <option value="qstn_title">문의제목</option>
+                <option value="questioned_at">작성일시</option>
+                <option value="qstn_answer">답변</option>
                 {/* <option value="answeredAt">답변일시</option> */}
               </select>
             </div>
@@ -281,7 +292,7 @@ const MypageCustom = () => {
               />
             </div>
             <div>
-              <button className="searchBtn" onClick={filterAndSortInquiries}>
+              <button className="searchBtn" onClick={handleSearch}>
                 검색
               </button>
             </div>
@@ -291,7 +302,7 @@ const MypageCustom = () => {
               <tr>
                 <th className="customCheck">선택</th>
                 <th className="customNum">번호</th>
-                <th className="customItem">항목</th>
+                <th className="customItem">문의종류</th>
                 <th className="customDivison">문의제목</th>
                 <th className="customWriter">작성자</th>
                 <th className="customDate">작성일시</th>
@@ -323,9 +334,7 @@ const MypageCustom = () => {
                         {inquiry.qstn_title}
                       </td>
                       <td>{inquiry.mb_email}</td>
-                      <td>
-                        {formatDate(inquiry.questioned_at)}
-                      </td>
+                      <td>{formatDate(inquiry.questioned_at)}</td>
                       <td
                         className={
                           inquiry.qstn_answer === "N" ? "redText" : "blackText"
