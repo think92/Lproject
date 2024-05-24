@@ -30,11 +30,12 @@ const Customer = () => {
   const [currentGroup, setCurrentGroup] = useState(1); // 현재 페이지 그룹 상태
   const itemsPerPage = 10; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
-  
+
   useEffect(() => {
     boardList();
     // console.log("length : ", inquiri);
-  }, [searchTerm, selectType]);
+  }, [searchTerm, selectType, moadlWriteIsOpen, modalIsOpen]);
+
   const boardList = () => {
     axios
       .post("http://localhost:8083/AdmApi/adminInquiry", {})
@@ -73,7 +74,7 @@ const Customer = () => {
   };
 
   console.log("모달1 : ", modalIsOpen);
-  
+
   // 모달 열기
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
@@ -188,8 +189,6 @@ const Customer = () => {
   // 항목 카테고리
   const getCategoryName = (category) => {
     switch (category) {
-      case "T":
-        return "전체";
       case "I":
         return "모자이크";
       case "S":
@@ -221,7 +220,6 @@ const Customer = () => {
                   onChange={handleSelectTypeChange}
                 >
                   <option value="">- 항목 -</option>
-                  <option>전체</option>
                   <option value="qstn_item">문의종류</option>
                   <option value="qstn_title">문의제목</option>
                   <option value="mb_email">아이디</option>
