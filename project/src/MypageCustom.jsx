@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import "./css/MypageCustom.css";
 import MypageBar from "./MypageBar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Modal from "./component/Modal";
 import { LoginUserContext } from "./context/LoginUserContent";
@@ -11,9 +9,6 @@ import { Link } from "react-router-dom";
 const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
-  const [selectedInquiries, setSelectedInquiries] = useState([]); // 선택된 항목의 ID를 저장할 상태
-
-  const [list, setList] = useState(null); // 삭제할 리스트
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
@@ -84,7 +79,11 @@ const MypageCustom = () => {
       (inquiry) => inquiry.mb_email === sessionStorage.getItem("mb_email")
     );
 
-    if (selectType && searchTerm) {
+    if (searchTerm.trim() === "대기중") {
+      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "N");
+    } else if (searchTerm.trim() === "답변완료") {
+      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "Y");
+    } else if (selectType && searchTerm) {
       filtered = filtered.filter((inquiry) =>
         inquiry[selectType]
           ?.toString()
@@ -174,7 +173,7 @@ const MypageCustom = () => {
     }
   };
 
-  ///////////////////////////////////////////////////////
+  // 체크박스 클릭시 삭제 기능
   const [checkedList, setCheckedList] = useState([]);
 
   const checkedItemHandler = (value, isChecked) => {
@@ -189,7 +188,26 @@ const MypageCustom = () => {
     const isChecked = e.target.checked;
     checkedItemHandler(value, isChecked);
   };
-  ///////////////////////////////////////////////////////
+  
+  // 항목 카테고리
+  const getCategoryName = (category) => {
+    switch (category) {
+      case "T":
+        return "전체";
+      case "I":
+        return "모자이크";
+      case "S":
+        return "서비스";
+      case "P":
+        return "프리미엄";
+      case "G":
+        return "기타";
+      case "R":
+        return "신고";
+      default:
+        return "알 수 없음";
+    }
+  };
 
   return (
     <div>
@@ -244,17 +262,12 @@ const MypageCustom = () => {
                 <option className="opt">- 항목 -</option>
                 <option value="">전체</option>
                 <option value="test_id">아이디</option>
-                <option value="test_context">문의내용</option>
+                <option value="test_context">문의제목</option>
                 <option value="createdAt">작성일시</option>
-                <option value="answerStatus">답변유무</option>
-                <option value="answeredAt">답변일시</option>
+                <option value="answerStatus">답변</option>
+                {/* <option value="answeredAt">답변일시</option> */}
               </select>
             </div>
-            {/* <div>
-              <button className="CalendarBox">
-                <FontAwesomeIcon icon={faCalendarDays} className="Calendar" />
-              </button>
-            </div> */}
             <div>
               <input
                 type="text"
@@ -275,6 +288,7 @@ const MypageCustom = () => {
               <tr>
                 <th className="customCheck">선택</th>
                 <th className="customNum">번호</th>
+                <th className="customItem">항목</th>
                 <th className="customDivison">문의제목</th>
                 <th className="customWriter">작성자</th>
                 <th className="customDate">작성일시</th>
@@ -298,6 +312,7 @@ const MypageCustom = () => {
                         ></input>
                       </td>
                       <td>{indexOfFirstItem + index + 1}</td>
+                      <td>{getCategoryName(inquiry.qstn_category)}</td>
                       <td
                         className="CustomNum"
                         onClick={() => openModal(inquiry)}
@@ -307,7 +322,6 @@ const MypageCustom = () => {
                       <td>{inquiry.mb_email}</td>
                       <td>
                         {formatDate(inquiry.questioned_at)}
-                        {/* {inquiry.questioned_at} */}
                       </td>
                       <td
                         className={

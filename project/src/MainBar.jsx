@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBell } from "@fortawesome/free-solid-svg-icons";
+import { faBell, faGear } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { LoginUserContext } from "./context/LoginUserContent";
 
@@ -20,6 +20,8 @@ const MainBar = () => {
 
   const [content, setContent] = useState("");
   console.log(content);
+
+  const isAdmin = sessionStorage.getItem("mb_role") === "A0"; // 관리자 여부 확인
 
   return (
     <header>
@@ -44,12 +46,19 @@ const MainBar = () => {
             {null !== sessionStorage.getItem("mb_email") && (
               <Link onClick={LogOut}>로그아웃</Link>
             )}
-            {null !== sessionStorage.getItem("mb_email") && (
-              <Link to={"/Mypage"}>마이페이지</Link>
-            )}
+            {"A0" !== sessionStorage.getItem("mb_role") &&
+              null !== sessionStorage.getItem("mb_email") && (
+                <Link to={"/Mypage"}>마이페이지</Link>
+              )}
             {null !== sessionStorage.getItem("mb_email") && (
               <a>
-                <FontAwesomeIcon icon={faBell} className="bell" />
+                {isAdmin ? (
+                  <Link to={"/admin"}>
+                    <FontAwesomeIcon icon={faGear} className="Gear" />
+                  </Link>
+                ) : (
+                  <FontAwesomeIcon icon={faBell} className="bell" />
+                )}
               </a>
             )}
           </div>
