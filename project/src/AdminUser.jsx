@@ -6,8 +6,9 @@ import axios from "axios";
 
 const AdminUser = () => {
   // 검색창 상태
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectType, setSelectType] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // 검색 분류 소
+  const [selectType, setSelectType] = useState(""); // 검색 분류 중
+
   const [users, setUsers] = useState([]); // 데이터를 저장할 상태
   const [editingUserId, setEditingUserId] = useState(null); // 수정 중인 사용자 ID
   const [updatedGrade, setUpdatedGrade] = useState(""); // 업데이트된 등급
@@ -18,15 +19,29 @@ const AdminUser = () => {
   const pagesPerGroup = 5; // 그룹당 페이지 수
 
   // 데이터를 필터링하고 정렬하는 함수
-  const filterAndSortUsers = () => {
-    let filtered = users.filter((user) => {
-      if (selectType && searchTerm) {
-        return user[selectType]
-          .toString()
+  const filterAndSortUsers = (data) => {
+    console.log("검색 필터 소 : ", searchTerm);
+    console.log("검색 필터 중 : ", selectType);
+    let filtered = data;
+
+    if (selectType && searchTerm) {
+      filtered = filtered.filter((inquiry) =>
+        inquiry[selectType]
+          ?.toString()
           .toLowerCase()
-          .includes(searchTerm.toLowerCase());
+          .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    filtered.sort((a, b) => {
+      if (a.qstn_answer === "N" && b.qstn_answer !== "N") {
+        return -1;
+      } else if (b.qstn_answer === "N" && a.qstn_answer !== "N") {
+        return 1;
+      } else if (a.qstn_answer === "N" && b.qstn_answer === "N") {
+        return new Date(a.questioned_at) > new Date(b.questioned_at) ? -1 : 1;
       }
-      return true;
+      return 0;
     });
 
     setUsers(filtered);
@@ -38,10 +53,12 @@ const AdminUser = () => {
 
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
+    console.log("검색 중 분류 : ", event.target.value);
   };
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
+    console.log("검색 소 분류 : ", event.target.value);
   };
 
   const handleSearch = () => {
@@ -166,11 +183,10 @@ const AdminUser = () => {
                 onChange={handleSelectTypeChange}
               >
                 <option value="">- 항목 -</option>
-                <option value="">전체</option>
-                <option value="userId">아이디</option>
-                <option value="joinDate">가입일시</option>
-                <option value="grade">등급</option>
-                <option value="paymentDate">결제일시</option>
+                <option value="mb_email">아이디</option>
+                <option value="joined_at">가입일시</option>
+                <option value="mb_role">등급</option>
+                <option value="payed_at">결제일시</option>
               </select>
               <input
                 type="text"
@@ -222,7 +238,7 @@ const AdminUser = () => {
                       )}
                     </td>
                     <td>{formatDate(user.joinedAt)}</td>
-                    <td>{user.answered_at}</td>
+                    <td>{user.payed_at}</td>
                     <td>
                       {editingUserId === user.mb_email ? (
                         <button onClick={() => handleSaveClick(user)}>

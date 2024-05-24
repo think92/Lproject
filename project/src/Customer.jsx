@@ -30,7 +30,7 @@ const Customer = () => {
   const [currentGroup, setCurrentGroup] = useState(1); // 현재 페이지 그룹 상태
   const itemsPerPage = 10; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
-
+  
   useEffect(() => {
     boardList();
     // console.log("length : ", inquiri);
