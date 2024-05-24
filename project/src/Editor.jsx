@@ -98,7 +98,11 @@ const Editor = () => {
     if (mb_email) {
       const storedMedias = sessionStorage.getItem("medias");
       if (storedMedias) {
-        setMedias(JSON.parse(storedMedias));
+        const parseMedias = JSON.parse(storedMedias);
+        setMedias(parseMedias);
+        if(parseMedias.length>0){
+          setMediaView(parseMedias[0].data);
+        }
       }
     }
   }, []);
@@ -114,8 +118,8 @@ const Editor = () => {
   useEffect(() => {
     console.log("Updated mediaView:", mediaView);
     if (!mediaView) return;
+    
     if (mediaView.startsWith("data:image") || mediaView.startsWith("https")) {
-      // 수정된 부분
       const image = new Image();
       image.crossOrigin = "anonymous"; // CORS 문제 해결을 위한 설정
       image.src = mediaView;
@@ -134,15 +138,21 @@ const Editor = () => {
           ctx.strokeRect(area.x, area.y, area.width, area.height);
         });
       };
-    } else if (
-      mediaView.startsWith("data:video") ||
-      mediaView.startsWith("blob:") ||
-      mediaView.endsWith(".mp4")
-    ) {
-      // 비디오 처리 로직 추가
-      console.log("Video URL updated:", mediaView);
+    } else if (mediaView.startsWith("data:video") ||
+    mediaView.startsWith("blob:") || mediaView.endsWith(".mp4")) {
+      if(!mediaView.startsWith("blob:")){
+        fetch(mediaView, {mode: 'cors'})
+        .then((response) => response.blob())
+        .then((blob) => {
+          const videoURL = URL.createObjectURL(blob);
+          setMediaView(videoURL);
+          console.log("Video URL updated:", videoURL);
+      }) 
+        .catch((error) => console.error("Error fetching video:", error));
+    }
     }
   }, [mediaView, updatedAreas]);
+  
 
   const handleButtonClick = () => {
     // 로그인 여부 확인
@@ -219,15 +229,10 @@ const Editor = () => {
 
   const selectMedia = (event, media) => {
     event.stopPropagation();
-    setMediaView(null); // Reset mediaView
-    setTimeout(() => {
-      if (media.type.startsWith("image")) {
-        setMediaView(media.data); // 이미지의 경우
-      } else if (media.type.startsWith("video")) {
-        setMediaView(media.data); // 비디오의 경우
-      }
-      setUpdatedAreas([]);
-    }, 0);
+    if (media.type.startsWith("image") || media.type.startsWith("video")) {
+      setMediaView(media.data);
+      setUpdatedAreas([]); // Reset updated areas when mediaView changes
+    }
   };
 
   const handleRemoveImage = (event, index) => {
@@ -324,59 +329,44 @@ const Editor = () => {
     setDragStart(null);
   }
 
+  
   const handleSubmit = async () => {
     if (!mediaView) return;
-
-    // 프리미엄 회원 확인
-    if (
-      sessionStorage.getItem("mb_role") === "M" &&
-      (medias.some(
-        (media) =>
-          media.type.startsWith("video/") && media.size > 5 * 1024 * 1024
-      ) ||
-        activeTool === "except")
-    ) {
-      openPremiumModal();
-      return;
-    }
-
+    
+  
     let mediaFile, mediaFileName, mediaFileType;
-
+  
     if (mediaView.startsWith("data:image")) {
-      // 이미지인 경우
-      const response = await fetch(mediaView);
+      const response = await fetch(mediaView, { mode: 'cors' });
       const blob = await response.blob();
       mediaFile = new File([blob], "mediaView.png", { type: "image/png" });
       mediaFileName = `mediaView-${Date.now()}.png`;
       mediaFileType = "image/png";
-    } else if (
-      mediaView.startsWith("data:video") ||
-      mediaView.startsWith("blob:")
-    ) {
-      const response = await fetch(mediaView);
+    } else if (mediaView.startsWith("data:video") || mediaView.startsWith("blob:")) {
+      const response = await fetch(mediaView, { mode: 'cors' });
       const blob = await response.blob();
       mediaFile = new File([blob], "mediaView.mp4", { type: "video/mp4" });
       mediaFileName = `mediaView-${Date.now()}.mp4`;
       mediaFileType = "video/mp4";
     }
-
+  
     await uploadToS3(mediaFile, mediaFileName);
-
+  
     const mb_email = sessionStorage.getItem("mb_email");
-
+  
     const originalPhoto = {
       file_name: mediaFileName,
       file_rename: mediaFileName,
       file_type: mediaFileType,
       file_size: mediaFile.size,
       created_at: new Date().toISOString(),
-      mb_email: mb_email ? mb_email : null, // Replace with actual user email
+      mb_email: mb_email ? mb_email : null,
     };
-
+  
     console.log("원본 파일 정보", originalPhoto);
-
+  
     let areaFileInfoArray = [];
-
+  
     if (selectedAreas.length > 0) {
       for (let i = 0; i < selectedAreas.length; i++) {
         const area = selectedAreas[i];
@@ -385,24 +375,22 @@ const Editor = () => {
         canvas.height = area.height;
         const ctx = canvas.getContext("2d");
         ctx.putImageData(area.imageData, 0, 0);
-
+  
         await new Promise((resolve) => {
           canvas.toBlob(async (blob) => {
-            const file = new File([blob], `area-${Date.now()}.png`, {
-              type: "image/png",
-            });
+            const file = new File([blob], `area-${Date.now()}.png`, { type: "image/png" });
             const fileName = `area-${Date.now()}.png`;
             await uploadToS3(file, fileName);
-
+  
             const areaFileInfo = {
               file_name: fileName,
               file_rename: fileName,
               file_type: file.type,
               file_size: file.size,
               created_at: new Date().toISOString(),
-              mb_email: mb_email ? mb_email : null, // Replace with actual user email
+              mb_email: mb_email ? mb_email : null,
             };
-
+  
             console.log("사용자 선택영역 파일 정보", areaFileInfo);
             areaFileInfoArray.push(areaFileInfo);
             resolve();
@@ -412,23 +400,23 @@ const Editor = () => {
     } else {
       console.log("Active area is not set");
     }
-
+  
     const editorData = new FormData();
     for (const key in originalPhoto) {
       editorData.append(`original_${key}`, originalPhoto[key]);
     }
-
+  
     areaFileInfoArray.forEach((areaFileInfo, index) => {
       for (const key in areaFileInfo) {
         editorData.append(`area_${index}_${key}`, areaFileInfo[key]);
       }
     });
-
+  
     for (const key in buttonStates) {
       editorData.append(key, buttonStates[key]);
     }
-    editorData.append("intensityAuto", intensityAuto); // 추가된 부분
-
+    editorData.append("intensityAuto", intensityAuto);
+  
     axios
       .post("http://localhost:8083/FileApi/uploadFileInfo", editorData, {
         headers: {
@@ -453,7 +441,7 @@ const Editor = () => {
         console.error("API 요청 실패:", err);
       });
   };
-
+  
   function applyMosaic(x, y, width, height, intensity) {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
@@ -634,7 +622,7 @@ const Editor = () => {
         setMedias((prevMedias) => {
           return prevMedias.map((media) => {
             if (media.data === mediaView) {
-              return { ...media, data: s3Url };
+              return { ...media, data: s3Url, type : mediaFileType };
             }
             return media;
           });
