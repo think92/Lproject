@@ -34,7 +34,7 @@ const Customer = () => {
   useEffect(() => {
     boardList();
     // console.log("length : ", inquiri);
-  }, []);
+  }, [searchTerm, selectType]);
   const boardList = () => {
     axios
       .post("http://localhost:8083/AdmApi/adminInquiry", {})
@@ -73,6 +73,7 @@ const Customer = () => {
   };
 
   console.log("모달1 : ", modalIsOpen);
+  
   // 모달 열기
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
@@ -83,7 +84,7 @@ const Customer = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedInquiry(null);
-  }
+  };
 
   // 작성하기 버튼 클릭 시 실행될 함수
   const handleWriteButtonClick = () => {
@@ -101,7 +102,11 @@ const Customer = () => {
   const filterAndSortInquiries = (data) => {
     let filtered = data;
 
-    if (selectType && searchTerm) {
+    if (searchTerm.trim() === "대기중") {
+      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "N");
+    } else if (searchTerm.trim() === "답변완료") {
+      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "Y");
+    } else if (selectType && searchTerm) {
       filtered = filtered.filter((inquiry) =>
         inquiry[selectType]
           ?.toString()
@@ -180,6 +185,26 @@ const Customer = () => {
     console.log(message);
   };
 
+  // 항목 카테고리
+  const getCategoryName = (category) => {
+    switch (category) {
+      case "T":
+        return "전체";
+      case "I":
+        return "모자이크";
+      case "S":
+        return "서비스";
+      case "P":
+        return "프리미엄";
+      case "G":
+        return "기타";
+      case "R":
+        return "신고";
+      default:
+        return "알 수 없음";
+    }
+  };
+
   return (
     <div>
       <MainBar />
@@ -197,10 +222,11 @@ const Customer = () => {
                 >
                   <option value="">- 항목 -</option>
                   <option>전체</option>
+                  <option value="qstn_item">항목</option>
                   <option value="qstn_title">문의제목</option>
-                  <option value="qstn_content">문의내용</option>
                   <option value="mb_email">아이디</option>
-                  <option value="questioned_at">문의일시</option>
+                  <option value="questioned_at">작성일시</option>
+                  <option value="qstn_answer">답변</option>
                 </select>
               </div>
               <input
@@ -218,6 +244,7 @@ const Customer = () => {
               <thead>
                 <tr>
                   <th className="customernum">번호</th>
+                  <th className="customeritem">항목</th>
                   <th className="customerdivison">문의제목</th>
                   <th className="customerwriter">작성자</th>
                   <th className="customerdate">작성일시</th>
@@ -228,7 +255,9 @@ const Customer = () => {
                 {currentItems.map((inquiry, index) => (
                   <tr key={inquiry.num}>
                     <td className="customernums">
-                    {indexOfFirstItem + index + 1}</td>
+                      {indexOfFirstItem + index + 1}
+                    </td>
+                    <td>{getCategoryName(inquiry.qstn_category)}</td>
                     <td
                       className="customerdivisons"
                       onClick={() => openModal(inquiry)}
