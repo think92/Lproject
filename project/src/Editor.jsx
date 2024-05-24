@@ -36,6 +36,7 @@ const Editor = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [deleteModalIsOpen, setDeleteModalIsOpen] = useState(false);
   const [loginModalIsOpen, setLoginModalIsOpen] = useState(false);
+  const [premiumModalIsOpen, setPremiumModalIsOpen] = useState(false);
 
   const openModal = () => setModalIsOpen(true);
   const closeModal = () => setModalIsOpen(false);
@@ -44,6 +45,8 @@ const Editor = () => {
   const openLoginModal = () => setLoginModalIsOpen(true);
   const closeLoginModal = () => setLoginModalIsOpen(false);
   const navigate = useNavigate();
+  const openPremiumModal = () => setPremiumModalIsOpen(true);
+  const closePremiumModal = () => setPremiumModalIsOpen(false);
 
   const [buttonStates, setButtonStates] = useState({
     face: false,
@@ -113,15 +116,16 @@ const Editor = () => {
 
   const handleButtonClick = () => {
     // 로그인 여부 확인
-    if (
-      null === sessionStorage.getItem("mb_email") &&
-      (medias.length > 1 ||
-        medias.some((media) => media.type.startsWith("video/")))
-    ) {
-      openLoginModal();
-    } else {
-      fileInputRef.current.click();
+    if (null === sessionStorage.getItem("mb_email")) {
+      if (
+        medias.length >= 1 ||
+        medias.some((media) => media.type.startsWith("video/"))
+      ) {
+        openLoginModal();
+        return;
+      }
     }
+    fileInputRef.current.click();
   };
 
   const aiHandleButtonClick = (buttonType) => {
@@ -141,6 +145,15 @@ const Editor = () => {
       (files.length > 1 || files.some((file) => file.type.startsWith("video/")))
     ) {
       openLoginModal();
+      return;
+    }
+    if (
+      sessionStorage.getItem("mb_role") === "M" &&
+      files.some(
+        (file) => file.type.startsWith("video/") && file.size > 5 * 1024 * 1024
+      )
+    ) {
+      openPremiumModal();
       return;
     }
 
@@ -279,6 +292,19 @@ const Editor = () => {
 
   const handleSubmit = async () => {
     if (!mediaView) return;
+
+    // 프리미엄 회원 확인
+    if (
+      sessionStorage.getItem("mb_role") === "M" &&
+      (medias.some(
+        (media) =>
+          media.type.startsWith("video/") && media.size > 5 * 1024 * 1024
+      ) ||
+        activeTool === "except")
+    ) {
+      openPremiumModal();
+      return;
+    }
 
     let mediaFile, mediaFileName, mediaFileType;
 
@@ -857,6 +883,36 @@ const Editor = () => {
               확인
             </button>
             <button className="btn cancel" onClick={closeLoginModal}>
+              취소
+            </button>
+          </div>
+        </div>
+      </ReactModal>
+
+      <ReactModal
+        isOpen={premiumModalIsOpen}
+        onRequestClose={closePremiumModal}
+        contentLabel="Premium Required"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="modal-content">
+          <h2>프리미엄 회원 기능</h2>
+          <p>
+            동영상 파일 크기가 5MB 이상, 모자이크 제외 기능은 프리미엄 회원만
+            가능합니다.
+          </p>
+          <div className="modal-buttons">
+            <button
+              className="btn confirm"
+              onClick={() => {
+                closePremiumModal();
+                navigate("/Premium");
+              }}
+            >
+              확인
+            </button>
+            <button className="btn cancel" onClick={closePremiumModal}>
               취소
             </button>
           </div>
