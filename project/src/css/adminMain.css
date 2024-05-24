@@ -273,6 +273,7 @@ th {
 
 .clickable {
   cursor: pointer;
+  text-align: left;
 }
 
 .weekSelection {

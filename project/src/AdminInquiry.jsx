@@ -172,9 +172,9 @@ const AdminInquiry = () => {
               <select className="select" name="select">
                 <option value="">- 문의 종류 -</option>
                 <option value="">전체</option>
-                <option value="">모자이크 관련</option>
-                <option value="">서비스 이용</option>
-                <option value="">프리미엄 결제</option>
+                <option value="">모자이크</option>
+                <option value="">서비스</option>
+                <option value="">프리미엄</option>
                 <option value="">기타</option>
                 <option value="">신고</option>
               </select>
@@ -184,12 +184,13 @@ const AdminInquiry = () => {
                 value={selectType}
                 onChange={handleSelectTypeChange}
               >
-                <option value="">- 항목 -</option>
+                <option value="opt">- 항목 -</option>
+                <option value="">전체</option>
                 <option value="mb_email">아이디</option>
                 <option value="qstn_title">문의제목</option>
-                <option value="questioned_at">문의일시</option>
-                <option value="qstn_open">답변유무</option>
-                <option value="answerDate">답변일시</option>
+                <option value="questioned_at">작성일시</option>
+                <option value="qstn_open">답변</option>
+                {/* <option value="answerDate">답변일시</option> */}
               </select>
               <input
                 type="text"
@@ -212,7 +213,7 @@ const AdminInquiry = () => {
                   <th>아이디</th>
                   <th>문의일시</th>
                   <th>답변유무</th>
-                  <th>답변일시</th>
+                  {/* <th>답변일시</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -235,7 +236,7 @@ const AdminInquiry = () => {
                     >
                       {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                     </td>
-                    <td>{formatDate(inquiry.answered_at)}</td>
+                    {/* <td>{formatDate(inquiry.answered_at)}</td> */}
                   </tr>
                 ))}
               </tbody>

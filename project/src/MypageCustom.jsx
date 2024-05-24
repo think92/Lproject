@@ -10,6 +10,9 @@ const MypageCustom = () => {
   // 데이터베이스 정보 불러오기
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
 
+  const [list, setList] = useState(null); // 삭제할 리스트
+
+
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
@@ -245,9 +248,9 @@ const MypageCustom = () => {
               <select name="choice" className="CustomChoiceBox">
                 <option className="opt">- 문의 종류 -</option>
                 <option>전체</option>
-                <option>모자이크 관련</option>
-                <option>서비스 이용</option>
-                <option>프리미엄 결제</option>
+                <option>모자이크</option>
+                <option>서비스</option>
+                <option>프리미엄</option>
                 <option>기타</option>
                 <option>신고</option>
               </select>
