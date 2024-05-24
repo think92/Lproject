@@ -606,13 +606,13 @@ const Editor = () => {
 
     const editorData = new FormData();
     for (const key in originalPhoto) {
-      editorData.append(`original_${key}`, originalPhoto[key]);
+      editorData.append(`${key}`, originalPhoto[key]);
     }
 
     axios
-      .post("http://localhost:8083/FileApi/uploadFileInfo", editorData, {
+      .post("http://localhost:8083/FileApi/mosaicUploadFileInfo", editorData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
