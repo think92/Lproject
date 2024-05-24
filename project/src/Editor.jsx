@@ -76,6 +76,7 @@ const Editor = () => {
     try {
       const data = await s3.upload(params).promise();
       console.log("Upload Success", data.Location);
+      return data.Location;
     } catch (err) {
       console.log("Upload Error", err);
     }
@@ -112,7 +113,9 @@ const Editor = () => {
 
   useEffect(() => {
     if (!mediaView) return;
-    if (mediaView.startsWith("data:image")) {
+    console.log("Updated mediaView:", mediaView);
+    if (mediaView.startsWith("data:image") || mediaView.startsWith("https")) {
+      // 수정된 부분
       const image = new Image();
       image.src = mediaView;
       image.onload = () => {
@@ -415,13 +418,23 @@ const Editor = () => {
     editorData.append("intensityAuto", intensityAuto); // 추가된 부분
 
     axios
-      .post("http://localhost:8083/AdmApi/uploadFileInfo", editorData, {
+      .post("http://localhost:8083/FileApi/uploadFileInfo", editorData, {
         headers: {
-          "Content-Type": "multipart/form-data",
+          "Content-Type": "application/json",
         },
       })
       .then((res) => {
         console.log(res.data);
+        const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
+        setMediaView(s3Url);
+        setMedias((prevMedias) => {
+          return prevMedias.map((media) => {
+            if (media.data === mediaView) {
+              return { ...media, data: s3Url };
+            }
+          });
+        });
+        console.log("S3 URL:", s3Url);
       })
       .catch((err) => {
         console.error("API 요청 실패:", err);
