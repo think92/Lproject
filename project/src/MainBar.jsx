@@ -16,6 +16,7 @@ const MainBar = () => {
 
   function LogOut(params) {
     sessionStorage.clear(); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
+    window.location.reload(); // 페이지를 리로드하여 상태를 업데이트
   }
 
   const [content, setContent] = useState("");
