@@ -438,6 +438,7 @@ const Editor = () => {
       .then((res) => {
         console.log(res.data);
         const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
+        setMediaView(s3Url);
         setMedias((prevMedias) => {
           return prevMedias.map((media) => {
             if (media.data === mediaView) {
@@ -446,7 +447,6 @@ const Editor = () => {
             return media;
           });
         });
-        setMediaView(s3Url);
         console.log("S3 URL:", s3Url);
       })
       .catch((err) => {
