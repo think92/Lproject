@@ -112,12 +112,12 @@ const Editor = () => {
   }, [medias]);
 
   useEffect(() => {
-    if (!mediaView) return;
     console.log("Updated mediaView:", mediaView);
+    if (!mediaView) return;
     if (mediaView.startsWith("data:image") || mediaView.startsWith("https")) {
       // 수정된 부분
       const image = new Image();
-      image.crossOrigin = "anonymous"; // 추가된 부분
+      image.crossOrigin = "anonymous"; // CORS 문제 해결을 위한 설정
       image.src = mediaView;
       image.onload = () => {
         imageRef.current = image;
@@ -134,6 +134,13 @@ const Editor = () => {
           ctx.strokeRect(area.x, area.y, area.width, area.height);
         });
       };
+    } else if (
+      mediaView.startsWith("data:video") ||
+      mediaView.startsWith("blob:") ||
+      mediaView.endsWith(".mp4")
+    ) {
+      // 비디오 처리 로직 추가
+      console.log("Video URL updated:", mediaView);
     }
   }, [mediaView, updatedAreas]);
 
@@ -214,7 +221,11 @@ const Editor = () => {
     event.stopPropagation();
     setMediaView(null); // Reset mediaView
     setTimeout(() => {
-      setMediaView(media.data); // Ensure correct data is used
+      if (media.type.startsWith("image")) {
+        setMediaView(media.data); // 이미지의 경우
+      } else if (media.type.startsWith("video")) {
+        setMediaView(media.data); // 비디오의 경우
+      }
       setUpdatedAreas([]);
     }, 0);
   };
@@ -427,14 +438,15 @@ const Editor = () => {
       .then((res) => {
         console.log(res.data);
         const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
-        setMediaView(s3Url);
         setMedias((prevMedias) => {
           return prevMedias.map((media) => {
             if (media.data === mediaView) {
-              return { ...media, data: s3Url };
+              return { ...media, data: s3Url, type: mediaFileType };
             }
+            return media;
           });
         });
+        setMediaView(s3Url);
         console.log("S3 URL:", s3Url);
       })
       .catch((err) => {
@@ -825,7 +837,8 @@ const Editor = () => {
           {mediaView ? (
             <>
               {mediaView.startsWith("data:video") ||
-              mediaView.startsWith("blob:") ? (
+              mediaView.startsWith("blob:") ||
+              mediaView.endsWith(".mp4") ? (
                 <video controls className="videoEdit">
                   <source src={mediaView} type="video/mp4" />
                 </video>
