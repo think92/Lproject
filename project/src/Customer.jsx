@@ -19,6 +19,7 @@ const Customer = () => {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectType, setSelectType] = useState("");
+  const [selectCategory, setSelectCategory] = useState(""); // 검색 분류 대
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
   const [moadlWriteIsOpen, setModalWriteIsOpen] = useState(false); // 작성 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
@@ -30,11 +31,11 @@ const Customer = () => {
   const [currentGroup, setCurrentGroup] = useState(1); // 현재 페이지 그룹 상태
   const itemsPerPage = 10; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
-  
+
   useEffect(() => {
     boardList();
     // console.log("length : ", inquiri);
-  }, [searchTerm, selectType]);
+  }, []);
   const boardList = () => {
     axios
       .post("http://localhost:8083/AdmApi/adminInquiry", {})
@@ -73,7 +74,7 @@ const Customer = () => {
   };
 
   console.log("모달1 : ", modalIsOpen);
-  
+
   // 모달 열기
   const openModal = (inquiry) => {
     setSelectedInquiry(inquiry);
@@ -92,7 +93,6 @@ const Customer = () => {
     if (sessionStorage.getItem("mb_email") === null) {
       alert("로그인이 필요합니다.");
       navigate("/Login");
-      handleClick("로그인이 필요합니다.");
     } else {
       setModalWriteIsOpen(true);
     }
@@ -100,18 +100,23 @@ const Customer = () => {
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = (data) => {
+    console.log("검색 필터 소 : ", searchTerm);
+    console.log("검색 필터 중 : ", selectType);
+    console.log("검색 필터 대 : ", selectCategory);
     let filtered = data;
 
-    if (searchTerm.trim() === "대기중") {
-      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "N");
-    } else if (searchTerm.trim() === "답변완료") {
-      filtered = filtered.filter((inquiry) => inquiry.qstn_answer === "Y");
-    } else if (selectType && searchTerm) {
+    if (selectType && searchTerm) {
       filtered = filtered.filter((inquiry) =>
         inquiry[selectType]
           ?.toString()
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectCategory) {
+      filtered = filtered.filter(
+        (inquiry) => inquiry.qstn_category === selectCategory
       );
     }
 
@@ -130,18 +135,31 @@ const Customer = () => {
     setInquiries(filtered);
   };
 
+  const handleSelectCategoryChange = (event) => {
+    setSelectCategory(event.target.value);
+    console.log("검색 대 분류 : ", event.target.value);
+  };
+
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
+    console.log("검색 중 분류 : ", event.target.value);
   };
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
+    console.log("검색 소 분류 : ", event.target.value);
   };
 
+  // [검색] 기능
   const handleSearch = () => {
-    if (searchTerm.trim() === "") {
-      //검색어가 비어있는 경우 모든 문의 내역을 보여줌
-      boardList();
+    boardList();
+    if (
+      searchTerm.trim() === "" &&
+      selectType === "" &&
+      selectCategory === ""
+    ) {
+      // 검색어가 비어있는 경우 모든 문의 내역을 보여줌
+      // qntnsList();
     } else {
       filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
     }
@@ -180,16 +198,10 @@ const Customer = () => {
   // 다음 페이지 번호 계산
   const nextGroupStartPage = endPage + 1;
 
-  // 작성하기 버튼 클릭 핸들러
-  const handleClick = (message) => {
-    console.log(message);
-  };
 
   // 항목 카테고리
   const getCategoryName = (category) => {
     switch (category) {
-      case "T":
-        return "전체";
       case "I":
         return "모자이크";
       case "S":
@@ -215,16 +227,27 @@ const Customer = () => {
               <h1 className="customerinquirys">문의내역</h1>
               <div>
                 <select
+                  className="customerselectboxes"
                   name="choice"
+                  value={selectCategory}
+                  onChange={handleSelectCategoryChange}
+                >
+                  <option value="">- 문의 종류 -</option>
+                  <option value="I">모자이크</option>
+                  <option value="S">서비스</option>
+                  <option value="P">프리미엄</option>
+                  <option value="G">기타</option>
+                  <option value="R">신고</option>
+                </select>
+                <select
                   className="customerselectbox"
+                  name="choice"
                   value={selectType}
                   onChange={handleSelectTypeChange}
                 >
                   <option value="">- 항목 -</option>
-                  <option>전체</option>
-                  <option value="qstn_item">문의종류</option>
-                  <option value="qstn_title">문의제목</option>
                   <option value="mb_email">아이디</option>
+                  <option value="qstn_title">문의제목</option>
                   <option value="questioned_at">작성일시</option>
                   <option value="qstn_answer">답변</option>
                 </select>
@@ -328,17 +351,7 @@ const Customer = () => {
                   id="bt"
                   className="customerwrites"
                   onClick={handleWriteButtonClick} // 수정된 함수 사용
-                  // onClick={() => {
-                  //   Modal === false
-                  //     ? handleWriteButtonClick(true)
-                  //     : handleWriteButtonClick(false);
-                  // }}
                 >
-                  {/* <ModalWrite
-                  isOpen={modalIsOpen}
-                  
-                  inquiry={selectedInquiry}
-                /> */}
                   작성하기
                 </button>
               </div>

@@ -138,7 +138,27 @@ th {
 tr:hover {
   background-color: #f5f5f5;
 }
-
+.Inquiryselect{
+  width: 80px;
+}
+.Inquirynum{
+  width: 80px;
+}
+.Inquirytype{
+  width: 110px;
+}
+.Inquirytitle{
+  width: 500px;
+}
+.Inquiryid{
+  width: 300px;
+}
+.Inquirydate{
+  width: 300px;
+}
+.Inquiryanswer{
+  width: 110px;
+}
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }

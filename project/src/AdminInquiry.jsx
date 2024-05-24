@@ -215,11 +215,9 @@ const AdminInquiry = () => {
     checkedItemHandler(value, isChecked);
   };
 
-   // 항목 카테고리
-   const getCategoryName = (category) => {
+  // 항목 카테고리
+  const getCategoryName = (category) => {
     switch (category) {
-      case "T":
-        return "전체";
       case "I":
         return "모자이크";
       case "S":
@@ -258,7 +256,9 @@ const AdminInquiry = () => {
           </div>
           <hr />
           <div className="buttonss">
-            <button className="delete" onClick={handleDelete}>삭제</button>
+            <button className="delete" onClick={handleDelete}>
+              삭제
+            </button>
             <div className="seletes">
               <select
                 className="select"
@@ -267,9 +267,9 @@ const AdminInquiry = () => {
                 onChange={handleSelectCategoryChange}
               >
                 <option value="">- 문의 종류 -</option>
-                <option value="I">모자이크 관련</option>
-                <option value="S">서비스 이용</option>
-                <option value="P">프리미엄 결제</option>
+                <option value="I">모자이크</option>
+                <option value="S">서비스</option>
+                <option value="P">프리미엄</option>
                 <option value="G">기타</option>
                 <option value="R">신고</option>
               </select>
@@ -302,13 +302,13 @@ const AdminInquiry = () => {
             <table>
               <thead>
                 <tr>
-                  <th>선택</th>
-                  <th>번호</th>
-                  <th>문의종류</th>
-                  <th>문의제목</th>
-                  <th>아이디</th>
-                  <th>문의일시</th>
-                  <th>답변유무</th>
+                  <th className="Inquiryselect">선택</th>
+                  <th className="Inquirynum">번호</th>
+                  <th className="Inquirytype">문의종류</th>
+                  <th className="Inquirytitle">문의제목</th>
+                  <th className="Inquiryid">아이디</th>
+                  <th className="Inquirydate">문의일시</th>
+                  <th className="Inquiryanswer">답변유무</th>
                   {/* <th>답변일시</th> */}
                 </tr>
               </thead>
@@ -316,10 +316,13 @@ const AdminInquiry = () => {
                 {currentItems.map((inquiry, index) => (
                   <tr key={indexOfFirstItem + index}>
                     <td>
-                      <input type="checkbox" 
-                      onChange={(e) =>
-                        handleCheckboxChange(e, inquiry.qstn_idx)
-                      }/>
+                      <input
+                        type="checkbox"
+                        onChange={(e) =>
+                          handleCheckboxChange(e, inquiry.qstn_idx)
+                        }
+                        
+                      />
                     </td>
                     <td>{indexOfFirstItem + index + 1}</td>
                     <td>{getCategoryName(inquiry.qstn_category)}</td>
