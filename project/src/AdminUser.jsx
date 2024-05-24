@@ -157,7 +157,11 @@ const AdminUser = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleString();
+    if (dateString != null) {
+      return date.toLocaleString();
+    } else {
+      return "없음";
+    }
   };
 
   return (
@@ -238,7 +242,7 @@ const AdminUser = () => {
                       )}
                     </td>
                     <td>{formatDate(user.joinedAt)}</td>
-                    <td>{user.payed_at}</td>
+                    <td>{formatDate(user.payedAt)}</td>
                     <td>
                       {editingUserId === user.mb_email ? (
                         <button onClick={() => handleSaveClick(user)}>

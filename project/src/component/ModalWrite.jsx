@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../css/modalwrite.css";
 import axios from "axios";
+import Customer from "../Customer";
 
 const ModalWrite = ({ isOpen, onClose, onWriteComplete }) => {
   const [title, setTitle] = useState("");
@@ -29,7 +30,6 @@ const ModalWrite = ({ isOpen, onClose, onWriteComplete }) => {
       .then((res) => {
         console.log(res.data);
         if (res.data === "Success") {
-          alert("문의작성이 저장되었습니다.");
         } else {
           alert(
             "문의작성이 실패하였습니다. 새로고침 이후 재시도 부탁드립니다."
