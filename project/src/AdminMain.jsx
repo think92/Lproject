@@ -16,6 +16,7 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const AdminMain = () => {
   const [board, setBoard] = useState([]);
+  const [users, setUsers] = useState(); // 데이터를 저장할 상태
   const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
   const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
   const [isLoading, setIsLoading] = useState(true); // 로딩 상태
@@ -87,6 +88,8 @@ const AdminMain = () => {
       .post("http://localhost:8083/AdmApi/adminMain", {})
       .then((res) => {
         const data = res.data.aMemberList || [];
+        setUsers(data.length);
+        console.log(data.length);
 
         if (Array.isArray(data)) {
           const month = selectedDate.getMonth() + 1;
@@ -228,6 +231,26 @@ const AdminMain = () => {
 
   const weeklyDataForSelectedWeek = getWeeklyDataForSelectedWeek();
 
+  // 항목 카테고리
+  const getCategoryName = (category) => {
+    switch (category) {
+      case "T":
+        return "전체";
+      case "I":
+        return "모자이크";
+      case "S":
+        return "서비스";
+      case "P":
+        return "프리미엄";
+      case "G":
+        return "기타";
+      case "R":
+        return "신고";
+      default:
+        return "알 수 없음";
+    }
+  };
+
   return (
     <div className="admin">
       <AdminMinBar />
@@ -236,18 +259,35 @@ const AdminMain = () => {
           <div className="inqure">
             <div className="inqureHead">
               <h1>문의사항</h1>
-              <Link to={"/AdminInquiry"}>+더 보기</Link>
+              <Link to={"/AdminInquiry"} className="Addeye">
+                +더 보기
+              </Link>
             </div>
             <hr />
+            <div className="summaryDetail">
+              <div className="detailBorder">
+                <p className="newTitle">문의 등록</p>
+                <p className="newCount">
+                  <span className="newConutI">{todayCount}</span>건
+                </p>
+              </div>
+              <div className="detailBorder">
+                <p className="addC">문의 대기</p>
+                <p className="addCount">
+                  <span className="newConutIes">{waitingCount}</span>건
+                </p>
+              </div>
+            </div>
             <div className="detail">
               <table>
                 <thead>
                   <tr>
-                    <th style={{ width: "10%" }}>번호</th>
-                    <th style={{ width: "40%" }}>구분</th>
-                    <th style={{ width: "15%" }}>문의자 명</th>
-                    <th style={{ width: "20%" }}>작성일시</th>
-                    <th style={{ width: "15%" }}>답변</th>
+                    <th style={{ width: "5%" }}>번호</th>
+                    <th style={{ width: "10%" }}>항목</th>
+                    <th style={{ width: "25%" }}>문의제목</th>
+                    <th style={{ width: "10%" }}>문의자 명</th>
+                    <th style={{ width: "15%" }}>작성일시</th>
+                    <th style={{ width: "10%" }}>답변</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -260,40 +300,39 @@ const AdminMain = () => {
                     .map((qstns, index) => (
                       <tr key={qstns.qstn_title + index}>
                         <td>{index + 1}</td>
-                        <td>{qstns.qstn_title}</td>
+                        <td>{getCategoryName(qstns.qstn_category)}</td>
+                        <td className="adminTitle">{qstns.qstn_title}</td>
                         <td>{qstns.mb_email}</td>
                         <td>{formatDate(qstns.questioned_at)}</td>
-                        <td>
-                          {qstns.qstn_open === "N" ? "대기 중" : "답변 완료"}
+                        <td
+                          className={
+                            qstns.qstn_answer === "N" ? "redText" : "blackText"
+                          }
+                        >
+                          {qstns.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                         </td>
                       </tr>
                     ))}
                 </tbody>
               </table>
-              <div className="summaryDetail">
-                <div className="detailBorder">
-                  <p className="newTitle">문의 등록</p>
-                  <p className="newCount">
-                    <span className="newConutI">{todayCount}</span>건
-                  </p>
-                </div>
-                <div className="detailBorder">
-                  <p className="addC">문의 대기</p>
-                  <p className="addCount">
-                    <span className="newConutI">{waitingCount}</span>건
-                  </p>
-                </div>
-              </div>
             </div>
           </div>
           <div className="membership">
             <div className="inqureHead">
               <h1>회원관리</h1>
-              <Link to={"/AdminUser"}>
-                <p>+더 보기</p>
+              <Link to={"/AdminUser"} className="Addeye">
+                +더 보기
               </Link>
             </div>
             <hr />
+            <div className="totalUsers">
+              <div className="totalBorder">
+                <p className="totalUserTitle">전체 회원</p>
+                <p className="totalCount">
+                  <span className="totalConutI">{users}</span>명
+                </p>
+              </div>
+            </div>
             <div className="detail">
               <table>
                 <thead>
@@ -302,7 +341,11 @@ const AdminMain = () => {
                     <th style={{ width: "15%" }}>아이디</th>
                     <th style={{ width: "20%" }}>등급</th>
                     <th style={{ width: "25%" }}>가입일시</th>
-                    <th style={{ width: "25%" }}>프리미엄 결재 일시</th>
+                    <th style={{ width: "25%" }}>
+                      프리미엄
+                      <br />
+                      결재 일시
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -323,7 +366,6 @@ const AdminMain = () => {
         <div className="subscriber">
           <div className="inqureHead">
             <h1>가입자 현황</h1>
-            <p>+더 보기</p>
           </div>
           <hr />
           <div className="subscriberDetail">
