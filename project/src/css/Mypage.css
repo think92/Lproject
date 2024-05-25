@@ -39,16 +39,16 @@ body {
   border-bottom-left-radius: 10px;
   border-bottom-right-radius: 10px;
 }
-.ToolListBody{
+.ToolListBody {
   display: flex;
 }
 /* 마이페이지 네비바 */
-.MypageNavbar{
+.MypageNavbar {
   display: flex;
   font-size: 20px;
   margin: 10px 0 0 1010px;
 }
-.EditorBoxBody{
+.EditorBoxBody {
   color: #000;
   background-color: #e4fab5;
   border: solid 1px #000;
@@ -58,7 +58,7 @@ body {
   margin: 0 5px 0 5px;
   padding: 10px 20px 10px 20px;
 }
-.PremiumBoxBody{
+.PremiumBoxBody {
   color: #000;
   background-color: #e4fab5;
   border: solid 1px #000;
@@ -68,7 +68,7 @@ body {
   margin: 0 5px 0 5px;
   padding: 10px 20px 10px 20px;
 }
-.CustomerBoxBody{
+.CustomerBoxBody {
   color: #000;
   background-color: #e4fab5;
   border: solid 1px #000;
@@ -147,20 +147,28 @@ body {
   margin: 0 0 0 0;
 }
 .MosaicImgs {
+  position: absolute;
   width: 275px;
   height: 170px;
   background-color: #979797;
   padding: 2px 0;
-  margin: 15px 0 10px 20px;
+  /* margin: 15px 0 15px 20px; */
+  z-index: 4;
 }
-.ImgCheck {
-  width: 24px;
-  height: 24px;
-  background-color: #fff;
-  border-radius: 3px;
-  border-style: solid;
-  border-color: #282828;
-  margin: 10px 0 0 12px;
+.ImgCheckBox {
+  display: flex;
+  position: relative;
+  width: 275px;
+  height: 170px;
+  float: left;
+  margin: 10px 11px 5px 11px;
+}
+#ImgCheck {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: 15px 0 0 15px;
+  z-index: 5;
 }
 .MosaicDate2 {
   display: flex;
