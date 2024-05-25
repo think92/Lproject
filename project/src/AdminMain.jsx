@@ -283,11 +283,11 @@ const AdminMain = () => {
                 <thead>
                   <tr>
                     <th style={{ width: "5%" }}>번호</th>
-                    <th style={{ width: "10%" }}>항목</th>
-                    <th style={{ width: "25%" }}>문의제목</th>
+                    <th style={{ width: "8%" }}>항목</th>
+                    <th style={{ width: "35%" }}>문의제목</th>
                     <th style={{ width: "10%" }}>문의자 명</th>
-                    <th style={{ width: "15%" }}>작성일시</th>
-                    <th style={{ width: "10%" }}>답변</th>
+                    <th style={{ width: "12%" }}>작성일시</th>
+                    <th style={{ width: "8%" }}>답변</th>
                   </tr>
                 </thead>
                 <tbody>

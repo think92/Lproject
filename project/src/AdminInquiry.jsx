@@ -175,7 +175,6 @@ const AdminInquiry = () => {
 
     console.log("삭제하려는 삭제번호들 : ", checkedList);
     if (true) {
-      // alert("정말로 삭제를 진행하시겠습니까?");
       axios
         .post("http://localhost:8083/AdmApi/adminQsntsDelete", formData, {
           headers: {
@@ -188,7 +187,7 @@ const AdminInquiry = () => {
             console.log("삭제여부 : ");
             alert("삭제가 완료되었습니다.");
             qntnsList(); // 삭제 후 문의사항 목록 다시 불러오기
-            setCheckedList([]);
+            setCheckedList();
           } else {
             alert("삭제 실패");
           }
