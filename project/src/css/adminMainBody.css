@@ -38,6 +38,7 @@ body {
 
 .adminIntroduce {
   width: 295px;
+  height: 795px;
   background-color: #292c31;
   display: flex;
   flex-direction: column;
