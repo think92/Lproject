@@ -403,11 +403,15 @@ const Editor = () => {
     editorData.append("intensityAuto", intensityAuto);
 
     axios
-      .post("http://localhost:8083/FileApi/uploadFileInfo", editorData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        `http://${process.env.REACT_APP_IP}:8083/FileApi/uploadFileInfo`,
+        editorData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         console.log(res.data);
         const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
@@ -645,7 +649,7 @@ const Editor = () => {
 
       axios
         .post(
-          "http://localhost:8083/FileApi/mosaicUploadFileInfo",
+          `http://${process.env.REACT_APP_IP}:8083/FileApi/mosaicUploadFileInfo`,
           editorData,
           {
             headers: {
