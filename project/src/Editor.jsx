@@ -313,6 +313,18 @@ const Editor = () => {
 
   const handleSubmit = async () => {
     if (!mediaView) return;
+    // 프리미엄 회원 확인
+    if (
+      sessionStorage.getItem("mb_role") === "M" &&
+      (medias.some(
+        (media) =>
+          media.type.startsWith("video/") && media.size > 5 * 1024 * 1024
+      ) ||
+        activeTool === "except")
+    ) {
+      openPremiumModal();
+      return;
+    }
 
     let mediaFile, mediaFileName, mediaFileType;
 
