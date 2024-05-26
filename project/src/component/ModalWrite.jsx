@@ -1,15 +1,13 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "../css/modalwrite.css";
 import axios from "axios";
+import Customer from "../Customer";
 
-const ModalWrite = ({ isOpen, onClose }) => {
+const ModalWrite = ({ isOpen, onClose, onWriteComplete }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [category, setCategory] = useState("");
-  const [isPrivate, setIsPrivate] = useState("");
-  const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
-  const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
-  const [customselect, setCustomSelect] = useState(null); // 작성하기 상태
+  const [isPrivate, setIsPrivate] = useState("N");
 
   if (!isOpen) return null;
 
@@ -36,7 +34,6 @@ const ModalWrite = ({ isOpen, onClose }) => {
       .then((res) => {
         console.log(res.data);
         if (res.data === "Success") {
-          alert("문의작성이 저장되었습니다.");
         } else {
           alert(
             "문의작성이 실패하였습니다. 새로고침 이후 재시도 부탁드립니다."
@@ -70,7 +67,6 @@ const ModalWrite = ({ isOpen, onClose }) => {
                 <input
                   type="radio"
                   name="privacy"
-                  value={isPrivate}
                   onChange={() => setIsPrivate("Y")}
                   className="checkBox"
                 />
@@ -78,8 +74,7 @@ const ModalWrite = ({ isOpen, onClose }) => {
                 <input
                   type="radio"
                   name="privacy"
-                  checked="cheched"
-                  value={isPrivate}
+                  checked={isPrivate === "N"}
                   onChange={() => setIsPrivate("N")}
                   className="checkBox"
                 />
@@ -96,7 +91,6 @@ const ModalWrite = ({ isOpen, onClose }) => {
                   <option className="ModalWrite-opt">
                     항목을 선택해주세요.
                   </option>
-                  <option value="T">전체</option>
                   <option value="I">모자이크 관련</option>
                   <option value="S">서비스 이용</option>
                   <option value="P">프리미엄 결제</option>

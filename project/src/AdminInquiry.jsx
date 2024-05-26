@@ -5,8 +5,10 @@ import Modal from "./component/Modal"; // 모달 컴포넌트 임포트
 import axios from "axios";
 
 const AdminInquiry = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectType, setSelectType] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // 검색 분류 소
+  const [selectType, setSelectType] = useState(""); // 검색 분류 중
+  const [selectCategory, setSelectCategory] = useState(""); // 검색 분류 대
+
   const [inquiries, setInquiries] = useState([]); // 데이터를 저장할 상태
   const [modalIsOpen, setModalIsOpen] = useState(false); // 모달 상태
   const [selectedInquiry, setSelectedInquiry] = useState(null); // 선택된 문의 상태
@@ -49,6 +51,9 @@ const AdminInquiry = () => {
 
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortInquiries = (data) => {
+    console.log("검색 필터 소 : ", searchTerm);
+    console.log("검색 필터 중 : ", selectType);
+    console.log("검색 필터 대 : ", selectCategory);
     let filtered = data;
 
     if (selectType && searchTerm) {
@@ -57,6 +62,12 @@ const AdminInquiry = () => {
           ?.toString()
           .toLowerCase()
           .includes(searchTerm.toLowerCase())
+      );
+    }
+
+    if (selectCategory) {
+      filtered = filtered.filter(
+        (inquiry) => inquiry.qstn_category === selectCategory
       );
     }
 
@@ -74,18 +85,31 @@ const AdminInquiry = () => {
     setInquiries(filtered);
   };
 
+  const handleSelectCategoryChange = (event) => {
+    setSelectCategory(event.target.value);
+    console.log("검색 대 분류 : ", event.target.value);
+  };
+
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
+    console.log("검색 중 분류 : ", event.target.value);
   };
 
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
+    console.log("검색 소 분류 : ", event.target.value);
   };
 
+  // [검색] 기능
   const handleSearch = () => {
-    if (searchTerm.trim() === "") {
+    qntnsList();
+    if (
+      searchTerm.trim() === "" &&
+      selectType === "" &&
+      selectCategory === ""
+    ) {
       // 검색어가 비어있는 경우 모든 문의 내역을 보여줌
-      qntnsList();
+      // qntnsList();
     } else {
       filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
     }
@@ -144,6 +168,70 @@ const AdminInquiry = () => {
   // 다음 페이지 번호 계산
   const nextGroupStartPage = endPage + 1;
 
+  // 선택된 항목 삭제
+  const handleDelete = (e) => {
+    const formData = new FormData();
+    formData.append("qstns_idx", checkedList);
+
+    console.log("삭제하려는 삭제번호들 : ", checkedList);
+    if (true) {
+      axios
+        .post("http://localhost:8083/AdmApi/adminQsntsDelete", formData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data) {
+            console.log("삭제여부 : ");
+            alert("삭제가 완료되었습니다.");
+            qntnsList(); // 삭제 후 문의사항 목록 다시 불러오기
+            setCheckedList();
+          } else {
+            alert("삭제 실패");
+          }
+        })
+        .catch((err) => {
+          console.error("API 요청 실패:", err);
+        });
+    }
+  };
+
+  // 체크박스 클릭시 삭제 기능
+  const [checkedList, setCheckedList] = useState([]);
+
+  const checkedItemHandler = (value, isChecked) => {
+    if (isChecked) {
+      setCheckedList((prev) => [...prev, value]);
+    } else {
+      setCheckedList(checkedList.filter((item) => item !== value));
+    }
+  };
+
+  const handleCheckboxChange = (e, value) => {
+    const isChecked = e.target.checked;
+    checkedItemHandler(value, isChecked);
+  };
+
+  // 항목 카테고리
+  const getCategoryName = (category) => {
+    switch (category) {
+      case "I":
+        return "모자이크";
+      case "S":
+        return "서비스";
+      case "P":
+        return "프리미엄";
+      case "G":
+        return "기타";
+      case "R":
+        return "신고";
+      default:
+        return "알 수 없음";
+    }
+  };
+
   return (
     <div className="admin">
       <AdminMinBar />
@@ -167,17 +255,24 @@ const AdminInquiry = () => {
           </div>
           <hr />
           <div className="buttonss">
-            <button className="delete">삭제</button>
+            <button className="delete" onClick={handleDelete}>
+              삭제
+            </button>
             <div className="seletes">
-              <select className="select" name="select">
+              <select
+                className="select"
+                name="select"
+                value={selectCategory}
+                onChange={handleSelectCategoryChange}
+              >
                 <option value="">- 문의 종류 -</option>
-                <option value="">전체</option>
-                <option value="">모자이크 관련</option>
-                <option value="">서비스 이용</option>
-                <option value="">프리미엄 결제</option>
-                <option value="">기타</option>
-                <option value="">신고</option>
+                <option value="I">모자이크</option>
+                <option value="S">서비스</option>
+                <option value="P">프리미엄</option>
+                <option value="G">기타</option>
+                <option value="R">신고</option>
               </select>
+
               <select
                 className="select"
                 name="select"
@@ -187,9 +282,9 @@ const AdminInquiry = () => {
                 <option value="">- 항목 -</option>
                 <option value="mb_email">아이디</option>
                 <option value="qstn_title">문의제목</option>
-                <option value="questioned_at">문의일시</option>
-                <option value="qstn_open">답변유무</option>
-                <option value="answerDate">답변일시</option>
+                <option value="questioned_at">작성일시</option>
+                <option value="qstn_answer">답변</option>
+                {/* <option value="answerDate">답변일시</option> */}
               </select>
               <input
                 type="text"
@@ -206,22 +301,29 @@ const AdminInquiry = () => {
             <table>
               <thead>
                 <tr>
-                  <th>선택</th>
-                  <th>번호</th>
-                  <th>문의제목</th>
-                  <th>아이디</th>
-                  <th>문의일시</th>
-                  <th>답변유무</th>
-                  <th>답변일시</th>
+                  <th className="Inquiryselect">선택</th>
+                  <th className="Inquirynum">번호</th>
+                  <th className="Inquirytype">문의종류</th>
+                  <th className="Inquirytitle">문의제목</th>
+                  <th className="Inquiryid">아이디</th>
+                  <th className="Inquirydate">문의일시</th>
+                  <th className="Inquiryanswer">답변유무</th>
+                  {/* <th>답변일시</th> */}
                 </tr>
               </thead>
               <tbody>
                 {currentItems.map((inquiry, index) => (
                   <tr key={indexOfFirstItem + index}>
                     <td>
-                      <input type="checkbox" />
+                      <input
+                        type="checkbox"
+                        onChange={(e) =>
+                          handleCheckboxChange(e, inquiry.qstn_idx)
+                        }
+                      />
                     </td>
                     <td>{indexOfFirstItem + index + 1}</td>
+                    <td>{getCategoryName(inquiry.qstn_category)}</td>
                     <td
                       className="clickable"
                       onClick={() => openModal(inquiry)}
@@ -235,7 +337,6 @@ const AdminInquiry = () => {
                     >
                       {inquiry.qstn_answer === "N" ? "대기 중" : "답변 완료"}
                     </td>
-                    <td>{formatDate(inquiry.answered_at)}</td>
                   </tr>
                 ))}
               </tbody>

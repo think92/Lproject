@@ -33,6 +33,16 @@ body {
   margin: 20px 0 0 2px;
 }
 /* 제목 리스트 버튼 */
+.customerselectboxes{
+  width: 150px;
+  height: 40px;
+  font-family: "Pretendard-Regular";
+  font-size: 18px;
+  text-indent: 15px;
+  color: #000;
+  border-radius: 5px;
+  margin: 20px 0 20px 680px;
+}
 .customerselectbox{
   width: 140px;
   height: 40px;
@@ -41,7 +51,7 @@ body {
   text-indent: 25px;
   color: #000;
   border-radius: 5px;
-  margin: 20px 0 20px 680px;
+  margin: 20px 0 20px 8px;
 }
 /* 검색 버튼 */
 .searchinput {
@@ -57,7 +67,7 @@ body {
   background-color: transparent;
   border: none;
 }
-.customernum, .customerdivison, .customerwriter, .customerdate, .customeranswer {
+.customernum, .customeritem, .customerdivison, .customerwriter, .customerdate, .customeranswer {
   background-color: #4ce577;
   border-bottom: 1px solid #292c31;
   border-left: 1px solid #575757;
@@ -87,17 +97,20 @@ td {
 .customernum {
   width: 80px;
 }
+.customeritem{
+  width: 100px;
+}
 .customerdivison {
   width: 680px;
 }
 .customerwriter {
-  width: 150px;
+  width: 120px;
 }
 .customerdate {
-  width: 240px;
+  width: 220px;
 }
 .customeranswer {
-  width: 120px;
+  width: 110px;
 }
 /* 문의 제목 */
 .customernums {
