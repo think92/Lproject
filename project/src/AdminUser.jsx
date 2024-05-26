@@ -63,11 +63,15 @@ const AdminUser = () => {
     meFormDate.append("mb_email", editingUserId);
 
     axios
-      .post("http://localhost:8083/AdmApi/memberRoleUpdate", meFormDate, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        `http://${process.env.REACT_APP_IP}:8083/AdmApi/memberRoleUpdate`,
+        meFormDate,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         // res.data가 유효한지 확인
         console.log(res.data);
@@ -87,7 +91,7 @@ const AdminUser = () => {
 
   const adminUser = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminUser")
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminUser`)
       .then((res) => {
         // res.data가 유효한지 확인
         console.log(res);

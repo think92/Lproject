@@ -24,7 +24,7 @@ const AdminInquiry = () => {
 
   const qntnsList = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminInquiry")
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminInquiry`)
       .then((res) => {
         const data = Array.isArray(res.data.aQstnsList)
           ? res.data.aQstnsList
@@ -83,10 +83,10 @@ const AdminInquiry = () => {
   };
 
   const handleSearch = () => {
-    if (searchTerm.trim() === ""){
+    if (searchTerm.trim() === "") {
       // 검색어가 비어있는 경우 모든 문의 내역을 보여줌
       qntnsList();
-    }else {
+    } else {
       filterAndSortInquiries(inquiries); // 검색 실행 시 필터 및 정렬 실행
     }
   };
@@ -264,7 +264,6 @@ const AdminInquiry = () => {
             inquiry={selectedInquiry}
             isAdmin={true} // 관리자 페이지에서는 관리자 모드를 true로 설정
           />
-        
         </div>
       </div>
     </div>

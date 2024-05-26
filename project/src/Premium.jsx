@@ -29,11 +29,15 @@ const Premium = () => {
       fromData.append("mb_email", sessionStorage.getItem("mb_email")); // 이메일 정보 보내기
       // 로그인 되어 있는 경우 결제 페이지 실행
       axios
-        .post("http://localhost:8083/api/kakaoPay", fromData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .post(
+          `http://${process.env.REACT_APP_IP}:8083/api/kakaoPay`,
+          fromData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((res) => {
           const redirectUrl = res.data; // 서버 응답의 URL 사용
           console.log("카카오페이 응답 URL:", redirectUrl);

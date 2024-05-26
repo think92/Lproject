@@ -383,11 +383,15 @@ const Editor = () => {
     editorData.append("intensityAuto", intensityAuto); // 추가된 부분
 
     axios
-      .post("http://localhost:8083/AdmApi/uploadFileInfo", editorData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
+      .post(
+        `http://${process.env.REACT_APP_IP}:8083/AdmApi/uploadFileInfo`,
+        editorData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
       .then((res) => {
         console.log(res.data);
       })

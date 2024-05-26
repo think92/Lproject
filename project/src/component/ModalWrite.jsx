@@ -24,11 +24,15 @@ const ModalWrite = ({ isOpen, onClose }) => {
     formData.append("mb_email", sessionStorage.getItem("mb_email"));
 
     axios
-      .post("http://localhost:8083/QstApi/qstnsInsert", formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        `http://${process.env.REACT_APP_IP}:8083/QstApi/qstnsInsert`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         console.log(res.data);
         if (res.data === "Success") {

@@ -37,7 +37,7 @@ const Customer = () => {
   }, []);
   const boardList = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminInquiry", {})
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminInquiry`, {})
       .then((res) => {
         const data = Array.isArray(res.data.aQstnsList)
           ? res.data.aQstnsList
@@ -83,7 +83,7 @@ const Customer = () => {
   const closeModal = () => {
     setModalIsOpen(false);
     setSelectedInquiry(null);
-  }
+  };
 
   // 작성하기 버튼 클릭 시 실행될 함수
   const handleWriteButtonClick = () => {
@@ -228,7 +228,8 @@ const Customer = () => {
                 {currentItems.map((inquiry, index) => (
                   <tr key={inquiry.num}>
                     <td className="customernums">
-                    {indexOfFirstItem + index + 1}</td>
+                      {indexOfFirstItem + index + 1}
+                    </td>
                     <td
                       className="customerdivisons"
                       onClick={() => openModal(inquiry)}

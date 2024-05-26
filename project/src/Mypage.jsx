@@ -10,7 +10,7 @@ const Mypage = () => {
 
   useEffect(() => {
     axios
-      .post("http://localhost:8083/MemApi/Mypage", formData, {
+      .post(`http://${process.env.REACT_APP_IP}:8083/MemApi/Mypage`, formData, {
         headers: {
           "Content-Type": "application/json",
         },
