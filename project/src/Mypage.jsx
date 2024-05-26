@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./css/Mypage.css";
 import MypageBar from "./MypageBar";
 import axios from "axios";
@@ -8,7 +9,7 @@ const Mypage = () => {
   // const [today, setToday] = useState(new Date()); // 오늘 날자
   const [memberImage, setMemberImage] = useState([]); // 회원의 모든 작업내역
   const [selectedDate, setSelectedDate] = useState(); // 선택한 날짜 (예시)
-  const [medias, setMedias] = useState([]); // 세션 미디어 관련
+  const nav = useNavigate();
 
   const formData = new FormData();
   formData.append("mb_email", sessionStorage.getItem("mb_email"));
@@ -31,7 +32,6 @@ const Mypage = () => {
           "정렬 : ",
           res.data.sort((a, b) => new Date(b.date) - new Date(a.date))
         );
-        console.log("■■■■■ medias : ", sessionStorage.getItem("medias"));
       })
       .catch((err) => {
         console.error("Error data:", err);
@@ -51,9 +51,9 @@ const Mypage = () => {
   const [checkedList, setCheckedList] = useState([]);
 
   const checkedItemHandler = (value, isChecked) => {
-    console.log("작동2");
     if (isChecked) {
       setCheckedList((prev) => [...prev, value]);
+      console.log(checkedList);
     } else {
       setCheckedList(checkedList.filter((item) => item !== value));
     }
@@ -61,7 +61,6 @@ const Mypage = () => {
 
   // 체크박스 클릭시 미디어 정보 넣기 1
   const handleCheckboxChange = (e, value) => {
-    console.log("작동1");
     const isChecked = e.target.checked;
     checkedItemHandler(value, isChecked);
   };
@@ -70,7 +69,8 @@ const Mypage = () => {
   const mediasUpdate = () => {
     const mb_email = sessionStorage.getItem("mb_email");
     if (mb_email) {
-      sessionStorage.setItem("medias", JSON.stringify(checkedList));
+      sessionStorage.setItem("myPageUpdate", JSON.stringify(checkedList));
+      nav("/Editor");
     }
   };
 
@@ -129,10 +129,7 @@ const Mypage = () => {
                             type="checkbox"
                             id="ImgCheck"
                             onChange={(e) =>
-                              handleCheckboxChange(
-                                e,
-                                `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${image.file_name}`
-                              )
+                              handleCheckboxChange(e, image.file_name)
                             }
                           />
                         </div>

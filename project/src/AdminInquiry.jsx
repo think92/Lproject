@@ -176,11 +176,15 @@ const AdminInquiry = () => {
     console.log("삭제하려는 삭제번호들 : ", checkedList);
     if (true) {
       axios
-        .post("http://localhost:8083/AdmApi/adminQsntsDelete", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .post(
+          `http://${process.env.REACT_APP_LOCALHOST}:8083/AdmApi/adminQsntsDelete`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((res) => {
           console.log(res.data);
           if (res.data) {
@@ -320,7 +324,6 @@ const AdminInquiry = () => {
                         onChange={(e) =>
                           handleCheckboxChange(e, inquiry.qstn_idx)
                         }
-                        
                       />
                     </td>
                     <td>{indexOfFirstItem + index + 1}</td>
