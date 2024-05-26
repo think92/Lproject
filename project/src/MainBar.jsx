@@ -34,7 +34,7 @@ const MainBar = () => {
           </div>
           <div className="menu">
             <Link to={"/Editor"}>모자이크 처리</Link>
-            <Link to={"/Premium"}>프리미엄 가입</Link>
+            <Link to={"/Premium"}>프리미엄</Link>
             <Link to={"/Customer"}>고객센터</Link>
 
             {/* 회원정보가 없으면 헤더에 로그인 */}

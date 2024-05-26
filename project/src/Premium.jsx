@@ -109,7 +109,7 @@ const Premium = () => {
           </div>
 
           <span className="premiumbox2">
-            <h1 className="premiumservice">프리미엄 서비스</h1>
+            <h1 className="premiumservice">프리미엄 서비스 구독</h1>
           </span>
         </div>
       </section>
