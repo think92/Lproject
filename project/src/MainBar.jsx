@@ -3,6 +3,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faGear } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
 import { LoginUserContext } from "./context/LoginUserContent";
+import localforage from "localforage";
+
 
 const MainBar = () => {
   // 로그인한 회원 정보 저장하는 변수(아이디, 등급)
@@ -14,10 +16,16 @@ const MainBar = () => {
     rel="stylesheet"
   />;
 
-  function LogOut(params) {
+  const LogOut = async () => {
+    try {
+      await localforage.clear(); // LocalForage에 저장된 모든 데이터 삭제
+      console.log("LocalForage 데이터가 성공적으로 삭제되었습니다.");
+    } catch (err) {
+      console.error("LocalForage 데이터를 삭제하는 중 오류가 발생했습니다:", err);
+    }
     sessionStorage.clear(); // 로그인(id) 로그아웃(false) 상태로 설정할것..!
     window.location.reload(); // 페이지를 리로드하여 상태를 업데이트
-  }
+  };
 
   const [content, setContent] = useState("");
 
