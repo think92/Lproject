@@ -2,12 +2,8 @@ import React, { useState, useEffect } from "react";
 import AdminMinBar from "./AdminMainBar";
 import "./css/adminMain.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faCalendarDays,
-  faCalendarWeek,
-  faFaceGrinWide,
-} from "@fortawesome/free-solid-svg-icons";
-import MonthlySubscribersChart from "./component/MonthlySubscribersChart "; // 그래프 컴포넌트 임포트
+import { faCalendarDays, faCalendarWeek, faFaceGrinWide } from "@fortawesome/free-solid-svg-icons";
+import MonthlySubscribersChart from "./component/MonthlySubscribersChart ";
 import { RegularSignupChart, PremiumSignupChart } from "./component/WeekChart";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -16,18 +12,18 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const AdminMain = () => {
   const [board, setBoard] = useState([]);
-  const [users, setUsers] = useState(); // 데이터를 저장할 상태
-  const [todayCount, setTodayCount] = useState(0); // 오늘 등록된 문의 수
-  const [waitingCount, setWaitingCount] = useState(0); // 대기 중인 문의 수
-  const [isLoading, setIsLoading] = useState(true); // 로딩 상태
+  const [users, setUsers] = useState();
+  const [todayCount, setTodayCount] = useState(0);
+  const [waitingCount, setWaitingCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [recentUsers, setRecentUsers] = useState([]);
-  const [selectedDate, setSelectedDate] = useState(new Date()); // 달력 선택을 위한 상태
-  const [selectedWeek, setSelectedWeek] = useState(1); // 선택된 주차
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedWeek, setSelectedWeek] = useState(1);
   const [monthlyData, setMonthlyData] = useState({
     labels: [],
     regular: [],
     premium: [],
-  }); // MonthlySubscribersChart 데이터를 저장할 상태
+  });
   const [weeklyData, setWeeklyData] = useState({
     regular: [],
     premium: [],
@@ -35,8 +31,8 @@ const AdminMain = () => {
 
   useEffect(() => {
     boardList();
-    fetchUsersData(); // 최근 가입한 회원 데이터 가져오기
-    fetchPremiumUsersData(); // 프리미엄 가입자 데이터 가져오기
+    fetchUsersData();
+    fetchPremiumUsersData();
   }, [selectedDate, selectedWeek]);
 
   const handleDateChange = (date) => {
@@ -54,23 +50,21 @@ const AdminMain = () => {
         const data = res.data.aQstnsList || [];
         setBoard(data);
 
-        // 오늘 날짜와 비교
         const today = new Date().toISOString().split("T")[0];
         const todayInquiries = data.filter(
           (inquiry) => inquiry.questioned_at.split("T")[0] === today
         ).length;
         setTodayCount(todayInquiries);
 
-        // 대기 중인 문의 수 계산
         const waitingInquiries = data.filter(
           (inquiry) => inquiry.qstn_answer === "N"
         ).length;
         setWaitingCount(waitingInquiries);
-        setIsLoading(false); // 데이터 로드 완료
+        setIsLoading(false);
       })
       .catch((err) => {
         console.error("Error fetching data:", err);
-        setIsLoading(false); // 데이터 로드 완료
+        setIsLoading(false);
       });
   };
 
@@ -89,7 +83,6 @@ const AdminMain = () => {
       .then((res) => {
         const data = res.data.aMemberList || [];
         setUsers(data.length);
-        console.log(data.length);
 
         if (Array.isArray(data)) {
           const month = selectedDate.getMonth() + 1;
@@ -109,7 +102,7 @@ const AdminMain = () => {
             ) {
               const day = userDate.getDate() - 1;
               dailyCounts[day]++;
-              recentUsersList.push(user); // 최근 사용자 추가
+              recentUsersList.push(user);
               const week = getWeekNumber(userDate);
               if (week >= 1 && week <= 5) {
                 const dayOfWeek = userDate.getDay();
@@ -118,12 +111,11 @@ const AdminMain = () => {
             }
           });
 
-          // 최근 가입한 순서대로 정렬
           recentUsersList = recentUsersList.sort(
             (a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)
           );
 
-          setRecentUsers(recentUsersList.slice(0, 5)); // 최근 사용자 5명 설정
+          setRecentUsers(recentUsersList.slice(0, 5));
 
           const labels = [];
           const regularCounts = [];
@@ -157,7 +149,6 @@ const AdminMain = () => {
       .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminMain`, {})
       .then((res) => {
         const payData = res.data.aPayMemberList || [];
-        console.log(payData);
 
         if (Array.isArray(payData)) {
           const month = selectedDate.getMonth() + 1;
@@ -231,7 +222,6 @@ const AdminMain = () => {
 
   const weeklyDataForSelectedWeek = getWeeklyDataForSelectedWeek();
 
-  // 항목 카테고리
   const getCategoryName = (category) => {
     switch (category) {
       case "T":
@@ -341,11 +331,6 @@ const AdminMain = () => {
                     <th style={{ width: "15%" }}>아이디</th>
                     <th style={{ width: "20%" }}>등급</th>
                     <th style={{ width: "25%" }}>가입일시</th>
-                    {/* <th style={{ width: "25%" }}>
-                      프리미엄
-                      <br />
-                      결재 일시
-                    </th> */}
                   </tr>
                 </thead>
                 <tbody>
@@ -355,7 +340,6 @@ const AdminMain = () => {
                       <td>{user.mb_email}</td>
                       <td>{user.mb_role}</td>
                       <td>{formatDate(user.joinedAt)}</td>
-                      {/* <td>{user.paymentDate || "N/A"}</td> */}
                     </tr>
                   ))}
                 </tbody>
@@ -369,7 +353,7 @@ const AdminMain = () => {
           </div>
           <hr />
           <div className="subscriberDetail">
-            <div className="newSubscriber">
+            <div className="newSubscriber" style={{ flex: 1.6, marginRight: '10px', boxSizing: 'border-box' }}>
               <div className="newSubscriberTitle">
                 <DatePicker
                   selected={selectedDate}
@@ -379,15 +363,10 @@ const AdminMain = () => {
                   customInput={<FontAwesomeIcon icon={faCalendarDays} />}
                 />
                 <h1>
-                  {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월
-                  신규 가입자
+                  {selectedDate.getFullYear()}년 {selectedDate.getMonth() + 1}월 신규 가입자
                 </h1>
                 <div className="weekSelection">
-                  <select
-                    id="week"
-                    value={selectedWeek}
-                    onChange={handleWeekChange}
-                  >
+                  <select id="week" value={selectedWeek} onChange={handleWeekChange}>
                     <option value={1}>1주차</option>
                     <option value={2}>2주차</option>
                     <option value={3}>3주차</option>
@@ -396,19 +375,19 @@ const AdminMain = () => {
                   </select>
                 </div>
               </div>
-              <div className="chart">
+              <div className="chart" style={{ width: '1050px', height: '340px' }}>
                 <MonthlySubscribersChart monthlyData={monthlyData} />
               </div>
             </div>
 
-            <div className="weekchars">
-              <div className="newSubscriberShort">
+            <div className="weekchars" style={{ flex: 1, marginLeft: '10px', boxSizing: 'border-box' }}>
+              <div className="newSubscriberShort" style={{ flex: '1 1 100%', boxSizing: 'border-box' }}>
                 <div className="newSubscriberShortTitle">
                   <FontAwesomeIcon icon={faCalendarWeek} />
                   <h1>신규 가입({selectedWeek}주차)</h1>
                 </div>
                 <div className="chartTotal">
-                  <div className="weekChart">
+                  <div className="weekChart" style={{ width: '100%', height: '200px' }}>
                     <RegularSignupChart
                       data={{
                         labels: ["일", "월", "화", "수", "목", "금", "토"],
@@ -427,11 +406,7 @@ const AdminMain = () => {
                       <span className="con">
                         일주일{" "}
                         <span className="conDe">
-                          {weeklyDataForSelectedWeek.regular.reduce(
-                            (a, b) => a + b,
-                            0
-                          )}
-                          명
+                          {weeklyDataForSelectedWeek.regular.reduce((a, b) => a + b, 0)}명
                         </span>
                       </span>{" "}
                     </div>
@@ -442,21 +417,20 @@ const AdminMain = () => {
                         <span className="conDe">
                           {monthlyData.regular
                             ? monthlyData.regular.reduce((a, b) => a + b, 0)
-                            : 0}
-                          명
+                            : 0}명
                         </span>
                       </span>{" "}
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="newSubscriberVeryShort">
+              <div className="newSubscriberVeryShort" style={{ flex: '1 1 100%', boxSizing: 'border-box' }}>
                 <div className="newSubscriberVeryShortTitle">
                   <FontAwesomeIcon icon={faCalendarWeek} />
                   <h1>프리미엄 가입({selectedWeek}주차)</h1>
                 </div>
                 <div className="chartTotal">
-                  <div className="weekChart">
+                  <div className="weekChart" style={{ width: '100%', height: '200px' }}>
                     <PremiumSignupChart
                       data={{
                         labels: ["일", "월", "화", "수", "목", "금", "토"],
@@ -475,11 +449,7 @@ const AdminMain = () => {
                       <span className="con">
                         일주일{" "}
                         <span className="conDe">
-                          {weeklyDataForSelectedWeek.premium.reduce(
-                            (a, b) => a + b,
-                            0
-                          )}
-                          명
+                          {weeklyDataForSelectedWeek.premium.reduce((a, b) => a + b, 0)}명
                         </span>
                       </span>{" "}
                     </div>
@@ -490,8 +460,7 @@ const AdminMain = () => {
                         <span className="conDe">
                           {monthlyData.premium
                             ? monthlyData.premium.reduce((a, b) => a + b, 0)
-                            : 0}
-                          명
+                            : 0}명
                         </span>
                       </span>{" "}
                     </div>

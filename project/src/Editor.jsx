@@ -95,9 +95,16 @@ const Editor = () => {
                         return media;
                     }
                 });
-                setMedias((prevMedias) => [...prevMedias, ...formattedMedias]);
-                if (!mediaView && formattedMedias.length > 0) {
-                    setMediaView(formattedMedias[0]?.data || null);
+
+                // 중복 추가 방지
+                const uniqueMedias = formattedMedias.filter(
+                    (newMedia) => !storedMedias.some((storedMedia) => storedMedia.data === newMedia.data)
+                );
+
+                setMedias((prevMedias) => [...prevMedias, ...uniqueMedias]);
+
+                if (!mediaView && uniqueMedias.length > 0) {
+                    setMediaView(uniqueMedias[0]?.data || null);
                 }
             } else {
                 console.error("No images passed in state.");
@@ -106,8 +113,8 @@ const Editor = () => {
             console.error("Error loading medias or mediaView from localforage:", err);
         }
     };
-        loadLocalforageData();
-    }, [location.state]);
+    loadLocalforageData();
+}, [location.state]);
 
 
   // 미디어 뷰가 변경될 때 처리
@@ -161,42 +168,7 @@ const Editor = () => {
     });
   }, [medias, mediaView]);
 
-  // 컴포넌트 로드 시 LocalForage에서 데이터 불러오기
-  useEffect(() => {
-    localforage.getItem("medias").then((storedMedias) => {
-      if (storedMedias) {
-        setMedias(storedMedias);
-      }
-    }).catch((err) => {
-      console.error("Error loading medias from localforage:", err);
-    });
-
-    localforage.getItem("mediaView").then((storedMediaView) => {
-      if (storedMediaView) {
-        setMediaView(storedMediaView);
-      }
-    }).catch((err) => {
-      console.error("Error loading mediaView from localforage:", err);
-    });
-
-    if (location.state?.medias && location.state.medias.length > 0) {
-      const formattedMedias = location.state.medias.map((media) => {
-        if (typeof media === 'string') {
-          return {
-            type: "image/png",
-            data: `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${media}`
-          };
-        } else {
-          return media;
-        }
-      });
-      setMedias(formattedMedias);
-      setMediaView(formattedMedias[0]?.data || null);
-    } else {
-      console.error("No images passed in state.");
-    }
-  }, [location.state]);
-
+  
   // 로그아웃 핸들러
   const handleLogout = () => {
     sessionStorage.removeItem("mb_email");
