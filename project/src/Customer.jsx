@@ -77,7 +77,10 @@ const Customer = () => {
 
   // 모달 열기
   const openModal = (inquiry) => {
-    if (sessionStorage.getItem("mb_email") === inquiry.mb_email) {
+    if (
+      sessionStorage.getItem("mb_email") === inquiry.mb_email ||
+      inquiry.qstn_open === "Y"
+    ) {
       setSelectedInquiry(inquiry);
       setModalIsOpen(true);
     } else {
