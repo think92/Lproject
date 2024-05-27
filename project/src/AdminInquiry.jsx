@@ -177,7 +177,7 @@ const AdminInquiry = () => {
     if (true) {
       axios
         .post(
-          `http://${process.env.REACT_APP_IP}:8083/AdmApi/adminQsntsDelete`,
+          `http://${process.env.REACT_APP_LOCALHOST}:8083/AdmApi/adminQsntsDelete`,
           formData,
           {
             headers: {

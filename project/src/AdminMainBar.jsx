@@ -78,9 +78,7 @@ const AdminMain = () => {
             <p className="adminuseres">회원관리</p>
           </NavLink>
 
-          <NavLink
-            className="adminupdate"
-          >
+          <NavLink className="adminupdate">
             <FontAwesomeIcon
               icon={faCircle}
               className="facirclewhite"
@@ -88,12 +86,14 @@ const AdminMain = () => {
                 changeBtn();
               }}
             />
-            <p className="adminupdates"
-            onClick={() => handleClick("페이지 준비중입니다.")}>기능 업데이트</p>
+            <p
+              className="adminupdates"
+              onClick={() => handleClick("페이지 준비중입니다.")}
+            >
+              기능 업데이트
+            </p>
           </NavLink>
-          <NavLink
-            className="adminupdate"
-          >
+          <NavLink className="adminupdate">
             <FontAwesomeIcon
               icon={faCircle}
               className="facirclewhite"
@@ -101,12 +101,14 @@ const AdminMain = () => {
                 changeBtn();
               }}
             />
-            <p className="adminupdates"
-            onClick={() => handleClick("페이지 준비중입니다.")}>알림 서비스</p>
+            <p
+              className="adminupdates"
+              onClick={() => handleClick("페이지 준비중입니다.")}
+            >
+              알림 서비스
+            </p>
           </NavLink>
-          <NavLink
-            className="adminupdate"
-          >
+          <NavLink className="adminupdate">
             <FontAwesomeIcon
               icon={faCircle}
               className="facirclewhite"
@@ -114,8 +116,12 @@ const AdminMain = () => {
                 changeBtn();
               }}
             />
-            <p className="adminupdates"
-            onClick={() => handleClick("페이지 준비중입니다.")}>관리자 권한 설정</p>
+            <p
+              className="adminupdates"
+              onClick={() => handleClick("페이지 준비중입니다.")}
+            >
+              관리자 권한 설정
+            </p>
           </NavLink>
         </div>
       </div>

@@ -77,8 +77,12 @@ const Customer = () => {
 
   // 모달 열기
   const openModal = (inquiry) => {
-    setSelectedInquiry(inquiry);
-    setModalIsOpen(true);
+    if (sessionStorage.getItem("mb_email") === inquiry.mb_email) {
+      setSelectedInquiry(inquiry);
+      setModalIsOpen(true);
+    } else {
+      alert("비공개된 문의사항입니다.");
+    }
   };
 
   // 모달 닫기

@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import MainBar from "./MainBar";
 import "./css/Join.css";
 import { Link, useNavigate } from "react-router-dom";
@@ -24,10 +24,19 @@ const Join = () => {
         })
         .then((res) => {
           console.log(res);
-          nav("/");
+          if (res.data === "Success") {
+            nav("/");
+            // 추후 제거..
+            // } else if (res.data === "Error") {
+            //   alert(
+            //     "에러가 발생하였습니다. 재시도 이후 문제 발생시 문의사항에 작성하여주세요."
+            //   );
+          } else {
+            alert("이미 존재하는 이메일입니다. 다시 입력하여 주세요.");
+          }
         });
     } else {
-      alert("비밀번호가 일치하지 않습니다.");
+      alert("입력 값이 잘못되었습니다.");
     }
   }
 
