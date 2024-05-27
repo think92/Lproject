@@ -68,42 +68,48 @@ const Editor = () => {
   // 컴포넌트 마운트 시 LocalForage에서 데이터 불러오기
   useEffect(() => {
     const loadLocalforageData = async () => {
-      try {
-        const storedMedias = await localforage.getItem("medias");
-        if (storedMedias) {
-          setMedias(storedMedias);
-        }
-
-        const storedMediaView = await localforage.getItem("mediaView");
-        if (storedMediaView) {
-          setMediaView(storedMediaView);
-        }
-
-        if (location.state?.medias && location.state.medias.length > 0) {
-          const formattedMedias = location.state.medias.map((media) => {
-            if (typeof media === 'string') {
-              return {
-                type: "image/png",
-                data: `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${media}`
-              };
-            } else {
-              return media;
+        try {
+            const storedMedias = await localforage.getItem("medias");
+            if (storedMedias) {
+                setMedias(storedMedias);
             }
-          });
-          setMedias((prevMedias) => [...prevMedias, ...formattedMedias]);
-          if (!mediaView && formattedMedias.length > 0) {
-            setMediaView(formattedMedias[0]?.data || null);
-          }
-        } else {
-          console.error("No images passed in state.");
+
+            const storedMediaView = await localforage.getItem("mediaView");
+            if (storedMediaView) {
+                setMediaView(storedMediaView);
+            }
+
+            if (location.state?.medias && location.state.medias.length > 0) {
+                const formattedMedias = location.state.medias.map((media) => {
+                    if (typeof media === 'string') {
+                        const extension = media.split('.').pop().toLowerCase();
+                        let type = 'image/png';
+                        if (extension === 'mp4') {
+                            type = 'video/mp4';
+                        }
+                        return {
+                            type: type,
+                            data: `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${media}`
+                        };
+                    } else {
+                        return media;
+                    }
+                });
+                setMedias((prevMedias) => [...prevMedias, ...formattedMedias]);
+                if (!mediaView && formattedMedias.length > 0) {
+                    setMediaView(formattedMedias[0]?.data || null);
+                }
+            } else {
+                console.error("No images passed in state.");
+            }
+        } catch (err) {
+            console.error("Error loading medias or mediaView from localforage:", err);
         }
-      } catch (err) {
-        console.error("Error loading medias or mediaView from localforage:", err);
-      }
     };
 
     loadLocalforageData();
-  }, [location.state]);
+}, [location.state]);
+
 
   // 미디어 뷰가 변경될 때 처리
   useEffect(() => {
@@ -1079,7 +1085,8 @@ const Editor = () => {
           {mediaView && (
             <div className="media-preview">
               {mediaView.startsWith("data:video") ||
-              mediaView.startsWith("blob:") ? (
+              mediaView.startsWith("blob:") ||
+              mediaView.endsWith(".mp4") ? (
                 <video controls className="video-preview">
                   <source src={mediaView} type="video/mp4" />
                 </video>
@@ -1141,26 +1148,37 @@ const Editor = () => {
       </ReactModal>
 
       <ReactModal
-        isOpen={loginModalIsOpen}
-        onRequestClose={closeLoginModal}
-        contentLabel="Login Required"
+        isOpen={deleteModalIsOpen}
+        onRequestClose={closeDeleteModal}
+        contentLabel="Delete Confirmation"
         className="Modal"
         overlayClassName="Overlay"
       >
         <div className="modal-content">
-          <h2>로그인 하시겠습니까?</h2>
-          <p>사진 두 장 이상 또는 동영상을 업로드하려면 로그인이 필요합니다.</p>
+          <h2>삭제 확인</h2>
+          <p>정말 삭제하시겠습니까?</p>
+          {mediaView && (
+            <div className="media-preview">
+              {mediaView.startsWith("data:video") ||
+              mediaView.startsWith("blob:") ||
+              mediaView.endsWith(".mp4") ? (
+                <video controls className="video-preview">
+                  <source src={mediaView} type="video/mp4" />
+                </video>
+              ) : (
+                <img
+                  src={mediaView}
+                  alt="mediaView"
+                  className="image-preview"
+                />
+              )}
+            </div>
+          )}
           <div className="modal-buttons">
-            <button
-              className="btn confirm"
-              onClick={() => {
-                closeLoginModal();
-                navigate("/Login");
-              }}
-            >
+            <button className="btn confirm" onClick={handleDelete}>
               확인
             </button>
-            <button className="btn cancel" onClick={closeLoginModal}>
+            <button className="btn cancel" onClick={closeDeleteModal}>
               취소
             </button>
           </div>
