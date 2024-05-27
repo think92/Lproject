@@ -106,9 +106,8 @@ const Editor = () => {
             console.error("Error loading medias or mediaView from localforage:", err);
         }
     };
-
-    loadLocalforageData();
-}, [location.state]);
+        loadLocalforageData();
+    }, [location.state]);
 
 
   // 미디어 뷰가 변경될 때 처리
@@ -149,7 +148,7 @@ const Editor = () => {
         };
       }
     }
-  }, [mediaView, updatedAreas]);
+  }, [mediaView]);
   
 
   // 데이터가 변경될 때 LocalForage에 저장
@@ -697,12 +696,12 @@ const Editor = () => {
       console.error("mediaView is not defined");
       return;
     }
-
+  
     let mediaFile, mediaFileName, mediaFileType;
-
+  
     try {
       console.log("mediaView:", mediaView);
-
+  
       if (
         mediaView.startsWith("data:image") ||
         mediaView.endsWith(".png") ||
@@ -710,26 +709,26 @@ const Editor = () => {
         mediaView.endsWith(".jpeg")
       ) {
         console.log("Processing image data...");
-
+  
         const response = await fetch(mediaView);
         if (!response.ok) {
           throw new Error("Failed to fetch image data");
         }
         const blob = await response.blob();
         console.log("Blob created from mediaView URL:", blob);
-
+  
         if (!blob) {
           throw new Error("Failed to create Blob from mediaView URL");
         }
-
+  
         mediaFile = new File([blob], "final-mediaView.png", {
           type: "image/png",
         });
         mediaFileName = `final-mediaView-${Date.now()}.png`;
         mediaFileType = "image/png";
-
+  
         console.log("Image file created:", mediaFile);
-
+  
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = mediaFileName;
@@ -740,26 +739,26 @@ const Editor = () => {
         mediaView.endsWith(".mp4")
       ) {
         console.log("Processing video data...");
-
+  
         const response = await fetch(mediaView);
         if (!response.ok) {
           throw new Error("Failed to fetch video data");
         }
         const blob = await response.blob();
         console.log("Blob created from mediaView URL:", blob);
-
+  
         if (!blob) {
           throw new Error("Failed to create Blob from mediaView URL");
         }
-
+  
         mediaFile = new File([blob], "final-mediaView.mp4", {
           type: "video/mp4",
         });
         mediaFileName = `final-mediaView-${Date.now()}.mp4`;
         mediaFileType = "video/mp4";
-
+  
         console.log("Video file created:", mediaFile);
-
+  
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = mediaFileName;
@@ -767,17 +766,17 @@ const Editor = () => {
       } else {
         console.error("Unsupported media type:", mediaView);
       }
-
+  
       if (!mediaFile) {
         console.error("Media file is not defined after processing");
         return;
       }
-
+  
       const s3Url = await uploadToS3(mediaFile, mediaFileName);
       console.log("S3 URL:", s3Url);
-
+  
       const mb_email = sessionStorage.getItem("mb_email");
-
+  
       const originalPhoto = {
         file_name: mediaFileName,
         file_rename: mediaFileName,
@@ -786,22 +785,23 @@ const Editor = () => {
         created_at: new Date().toISOString(),
         mb_email: mb_email ? mb_email : null,
       };
-
+  
       console.log("원본 파일 정보", originalPhoto);
-      closeModal();
-
+  
       const editorData = new FormData();
       for (const key in originalPhoto) {
         editorData.append(`${key}`, originalPhoto[key]);
       }
-
+  
+      console.log("FormData to send:", Object.fromEntries(editorData.entries()));
+  
       axios
         .post(
           `http://${process.env.REACT_APP_LOCALHOST}:8083/FileApi/mosaicUploadFileInfo`,
-          editorData,
+          originalPhoto, // FormData 대신 JSON 데이터 전송
           {
             headers: {
-              "Content-Type": "multipart/form-data",
+              "Content-Type": "application/json",
             },
           }
         )
@@ -817,6 +817,15 @@ const Editor = () => {
             });
           });
           console.log("File saved locally and uploaded to S3:", s3Url);
+
+          // LocalForage에 데이터 저장
+          localforage.setItem("medias", medias).catch((err) => {
+            console.error("Error saving medias to localforage:", err);
+          });
+          localforage.setItem("mediaView", s3Url).catch((err) => {
+            console.error("Error saving mediaView to localforage:", err);
+          });
+          
           closeModal();
         })
         .catch((err) => {
@@ -827,6 +836,7 @@ const Editor = () => {
     }
   };
 
+  
   // S3 업로드 함수
   const uploadToS3 = async (file, key) => {
     const params = {
@@ -835,7 +845,7 @@ const Editor = () => {
       Body: file,
       ContentType: file.type,
     };
-
+  
     try {
       const data = await s3.upload(params).promise();
       console.log("Upload Success", data.Location);
@@ -845,6 +855,8 @@ const Editor = () => {
       throw err;
     }
   };
+  
+  
 
   // 미디어 삭제 핸들러
   const handleDelete = async () => {
