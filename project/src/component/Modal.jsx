@@ -16,11 +16,15 @@ const Modal = ({ isOpen, onClose, inquiry, isAdmin }) => {
       formData.append("qstn_idx", inquiry.qstn_idx); // 문의사항의 고유 번호
 
       axios
-        .post(`http://localhost:8083/AdmApi/adminAnswer`, formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .post(
+          `http://${process.env.REACT_APP_IP}:8083/AdmApi/adminAnswer`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((res) => {
           console.log("응답 데이터:", res.data);
           if (res.data && res.data.length > 0) {
@@ -52,11 +56,15 @@ const Modal = ({ isOpen, onClose, inquiry, isAdmin }) => {
     ansFormData.append("admin_id", "admin"); // 문의 답변한 관리자(추후 변경하도록)
 
     axios
-      .post(`http://localhost:8083/AdmApi/adminToAnswer`, ansFormData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        `http://${process.env.REACT_APP_IP}:8083/AdmApi/adminToAnswer`,
+        ansFormData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         console.log(res.data);
         alert("답변이 저장되었습니다.");
@@ -79,8 +87,12 @@ const Modal = ({ isOpen, onClose, inquiry, isAdmin }) => {
   const canViewContent =
     !isPrivate ||
     (isPrivate && sessionStorage.getItem("mb_email") === inquiry.mb_email) ||
-    (sessionStorage.getItem("mb_role") === "A0");
-  const canViewAnswer = isAdmin || (!isPrivate && isAnswered) || (sessionStorage.getItem("mb_role") === "A0") || (isAnswered && sessionStorage.getItem("mb_email") === inquiry.mb_email);
+    sessionStorage.getItem("mb_role") === "A0";
+  const canViewAnswer =
+    isAdmin ||
+    (!isPrivate && isAnswered) ||
+    sessionStorage.getItem("mb_role") === "A0" ||
+    (isAnswered && sessionStorage.getItem("mb_email") === inquiry.mb_email);
 
   return (
     <div className="modal">

@@ -17,7 +17,7 @@ const Join = () => {
 
     if (inputPw.current.value === inputPwCheck.current.value) {
       axios
-        .post("http://localhost:8083/MemApi/join", formData, {
+        .post(`http://${process.env.REACT_APP_IP}:8083/MemApi/join`, formData, {
           headers: {
             "Content-Type": "application/json",
           },

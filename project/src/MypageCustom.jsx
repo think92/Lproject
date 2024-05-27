@@ -31,7 +31,7 @@ const MypageCustom = () => {
 
   const boardList = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminInquiry", {})
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminInquiry`, {})
       .then((res) => {
         const data = Array.isArray(res.data.aQstnsList)
           ? res.data.aQstnsList
@@ -167,11 +167,15 @@ const MypageCustom = () => {
     if (true) {
       // alert("정말로 삭제를 진행하시겠습니까?");
       axios
-        .post("http://localhost:8083/AdmApi/adminQsntsDelete", formData, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
+        .post(
+          `http://${process.env.REACT_APP_IP}:8083/AdmApi/adminQsntsDelete`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((res) => {
           console.log(res.data);
           if (res.data) {

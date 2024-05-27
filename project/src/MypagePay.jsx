@@ -13,11 +13,15 @@ const MypagePay = () => {
   useEffect(() => {
     // 회원 결제 내역 조회
     axios
-      .post("http://localhost:8083/MemApi/MypagePay", formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
+      .post(
+        `http://${process.env.REACT_APP_IP}:8083/MemApi/MypagePay`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
       .then((res) => {
         const data = res.data || [];
         setPayData(data.payment);

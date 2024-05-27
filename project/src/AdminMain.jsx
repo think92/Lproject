@@ -49,7 +49,7 @@ const AdminMain = () => {
 
   const boardList = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminMain", {})
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminMain`, {})
       .then((res) => {
         const data = res.data.aQstnsList || [];
         setBoard(data);
@@ -85,7 +85,7 @@ const AdminMain = () => {
 
   const fetchUsersData = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminMain", {})
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminMain`, {})
       .then((res) => {
         const data = res.data.aMemberList || [];
         setUsers(data.length);
@@ -154,7 +154,7 @@ const AdminMain = () => {
 
   const fetchPremiumUsersData = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminMain", {})
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminMain`, {})
       .then((res) => {
         const payData = res.data.aPayMemberList || [];
         console.log(payData);

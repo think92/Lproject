@@ -26,7 +26,7 @@ const AdminInquiry = () => {
 
   const qntnsList = () => {
     axios
-      .post("http://localhost:8083/AdmApi/adminInquiry")
+      .post(`http://${process.env.REACT_APP_IP}:8083/AdmApi/adminInquiry`)
       .then((res) => {
         const data = Array.isArray(res.data.aQstnsList)
           ? res.data.aQstnsList

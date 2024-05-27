@@ -22,7 +22,7 @@ const Login = () => {
     formData.append("mb_email", mb_email.current.value); // 아이디 값
     formData.append("mb_pw", mb_pw.current.value); //비밀번호 값
     axios
-      .post(`http://localhost:8083/MemApi/login`, formData, {
+      .post(`http://${process.env.REACT_APP_IP}:8083/MemApi/login`, formData, {
         headers: {
           "Content-Type": "application/json",
         },

@@ -70,7 +70,7 @@ const Mypage = () => {
     const mb_email = sessionStorage.getItem("mb_email");
     if (mb_email) {
       sessionStorage.setItem("myPageUpdate", JSON.stringify(checkedList));
-      nav("/Editor");
+      nav("/Editor", { state: { medias: checkedList } });
     }
   };
 
