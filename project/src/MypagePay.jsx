@@ -11,6 +11,7 @@ const MypagePay = () => {
   const [payData, setPayData] = useState([]);
 
   useEffect(() => {
+    // 회원 결제 내역 조회
     axios
       .post("http://localhost:8083/MemApi/MypagePay", formData, {
         headers: {
@@ -19,8 +20,10 @@ const MypagePay = () => {
       })
       .then((res) => {
         const data = res.data || [];
-        setPayData(data);
+        setPayData(data.payment);
+        sessionStorage.setItem("mb_role", data.member.mb_role); // 결재내역 조회를 통해 회원등급 세션에 적용
         console.log(data);
+        console.log("회원의 등급 : ", sessionStorage.getItem("mb_role"));
       });
   }, []);
 
@@ -41,17 +44,23 @@ const MypagePay = () => {
       <MypageBar />
       <section className="mypagePay">
         <div className="PayBody">
-        <div className="ToolListBody">
+          <div className="ToolListBody">
             <p className="PayList">결재내역</p>
             <div className="MypageNavbar">
               <div>
-              <Link to={"/Editor"} className="EditorBoxBody">모자이크 처리</Link>
+                <Link to={"/Editor"} className="EditorBoxBody">
+                  모자이크 처리
+                </Link>
               </div>
               <div>
-              <Link to={"/Premium"} className="PremiumBoxBody">프리미엄 가입</Link>
+                <Link to={"/Premium"} className="PremiumBoxBody">
+                  프리미엄 가입
+                </Link>
               </div>
               <div>
-              <Link to={"/Customer"} className="CustomerBoxBody">고객센터</Link>
+                <Link to={"/Customer"} className="CustomerBoxBody">
+                  고객센터
+                </Link>
               </div>
             </div>
           </div>

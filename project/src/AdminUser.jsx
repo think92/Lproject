@@ -18,6 +18,34 @@ const AdminUser = () => {
   const itemsPerPage = 8; // 페이지당 항목 수
   const pagesPerGroup = 5; // 그룹당 페이지 수
 
+  useEffect(() => {
+    adminUser(); // 회원 정보 리스트
+  }, [searchTerm]);
+
+  const adminUser = () => {
+    axios
+      .post("http://localhost:8083/AdmApi/adminUser")
+      .then((res) => {
+        // res.data가 유효한지 확인
+        console.log(res);
+        const data = Array.isArray(res.data) ? res.data : [];
+        if (Array.isArray(data)) {
+          // 가입일시로 정렬(최신 가입 순)
+          const sortedData = data.sort(
+            (a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)
+          );
+          setUsers(sortedData);
+        } else {
+          console.error("API 응답 데이터가 배열이 아닙니다:", data);
+          setUsers([]); // 기본값으로 빈 배열 설정
+        }
+      })
+      .catch((err) => {
+        console.error("API 요청 실패:", err);
+        setUsers([]); // 오류 발생 시 빈 배열 설정
+      });
+  };
+
   // 데이터를 필터링하고 정렬하는 함수
   const filterAndSortUsers = (data) => {
     console.log("검색 필터 소 : ", searchTerm);
@@ -47,32 +75,41 @@ const AdminUser = () => {
     setUsers(filtered);
   };
 
-  useEffect(() => {
-    adminUser(); // 회원 정보 리스트
-  }, []);
-
+  // 검색 중 분류 (콤보박스)
   const handleSelectTypeChange = (event) => {
     setSelectType(event.target.value);
     console.log("검색 중 분류 : ", event.target.value);
   };
 
+  // 검색 소 분류 (input 입력창)
   const handleInputChange = (event) => {
     setSearchTerm(event.target.value);
     console.log("검색 소 분류 : ", event.target.value);
   };
 
+  // [검색] 기능
   const handleSearch = () => {
-    filterAndSortUsers(); // 검색 실행 시 필터 및 정렬 실행
+    if (searchTerm.trim() === "" && selectType === "") {
+      // 검색어와 검색 분류가 모두 비어있는 경우, 전체 회원 정보를 다시 불러옴
+      adminUser();
+    } else {
+      // 검색어나 검색 분류가 존재하는 경우, 이미 불러온 회원 정보에서 필터링 및 정렬을 수행
+      filterAndSortUsers(users);
+    }
   };
+
+  // 회원 등급변경 전송(이메일, 등급)을 하기위한 데이터 세팅
   const handleEditClick = (user) => {
     setEditingUserId(user.mb_email);
     setUpdatedGrade(user.mb_role);
   };
 
+  // 등급 변경을 위해 클릭한 값으로 설정 (관리자, 일반, 프리미엄)
   const handleGradeChange = (event) => {
     setUpdatedGrade(event.target.value);
   };
 
+  // 회원 등급변경 완료 클릭시 회원DB데이터 수정
   const handleSaveClick = (user) => {
     console.log("등급 변경!", user);
     const meFormDate = new FormData();
@@ -102,39 +139,18 @@ const AdminUser = () => {
     setEditingUserId(null);
   };
 
-  const adminUser = () => {
-    axios
-      .post("http://localhost:8083/AdmApi/adminUser")
-      .then((res) => {
-        // res.data가 유효한지 확인
-        console.log(res);
-        const data = res.data;
-        if (Array.isArray(data)) {
-          // 가입일시로 정렬(최신 가입 순)
-          const sortedData = data.sort(
-            (a, b) => new Date(b.joinedAt) - new Date(a.joinedAt)
-          );
-          setUsers(sortedData);
-        } else {
-          console.error("API 응답 데이터가 배열이 아닙니다:", data);
-          setUsers([]); // 기본값으로 빈 배열 설정
-        }
-      })
-      .catch((err) => {
-        console.error("API 요청 실패:", err);
-        setUsers([]); // 오류 발생 시 빈 배열 설정
-      });
-  };
-
+  // 페이징 번호 표기
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
+  // 페이징 다음 > 버튼
   const handleNextGroup = () => {
     setCurrentGroup(currentGroup + 1);
     setCurrentPage((currentGroup - 1) * pagesPerGroup + 1);
   };
 
+  // 페이징 다음 < 버튼
   const handlePrevGroup = () => {
     setCurrentGroup(currentGroup - 1);
     setCurrentPage((currentGroup - 2) * pagesPerGroup + 1);
@@ -155,6 +171,7 @@ const AdminUser = () => {
     pageNumbers.push(i);
   }
 
+  // 날자형식 변환
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     if (dateString != null) {
