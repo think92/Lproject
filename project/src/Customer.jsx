@@ -116,7 +116,7 @@ const Customer = () => {
       filtered = filtered.filter((inquiry) =>
         inquiry[selectType]
           ?.toString()
-          .toLowerCase()A
+          .toLowerCase()
           .includes(searchTerm.toLowerCase())
       );
     }
