@@ -98,8 +98,8 @@ const Editor = () => {
     
           // 중복 추가 방지
           const uniqueMedias = formattedMedias.filter(
-            (newMedia) => !storedMedias.some((storedMedia) => storedMedia.data === newMedia.data)
-          );
+            (newMedia) => !storedMedias || !storedMedias.some((storedMedia) => storedMedia.data === newMedia.data)
+);
     
           setMedias((prevMedias) => [...prevMedias, ...uniqueMedias]);
     
@@ -132,12 +132,12 @@ const Editor = () => {
           canvas.width = image.width;
           canvas.height = image.height;
           ctx.drawImage(image, 0, 0, image.width, image.height);
-          updatedAreas.forEach((area) => {
-            ctx.setLineDash([5, 3]);
-            ctx.strokeStyle = "#000";
-            ctx.lineWidth = 1;
-            ctx.strokeRect(area.x, area.y, area.width, area.height);
-          });
+          // updatedAreas.forEach((area) => {
+          //   ctx.setLineDash([5, 3]);
+          //   ctx.strokeStyle = "#000";
+          //   ctx.lineWidth = 1;
+          //   ctx.strokeRect(area.x, area.y, area.width, area.height);
+          // });
         };
       } else if (mediaView.startsWith("data:video") || mediaView.endsWith(".mp4")) {
         const videoElement = document.createElement("video");
@@ -307,6 +307,10 @@ const handleButtonClick = () => {
     event.stopPropagation();
     setMedias((prevMedias) => {
       const filteredMedias = prevMedias.filter((_, idx) => idx !== index);
+       // 로컬 스토리지 업데이트
+      localforage.setItem("medias", filteredMedias).catch((err) => {
+        console.error("Error saving medias to localforage:", err);
+      });
       if (index === 0 && filteredMedias.length > 0) {
         setMediaView(filteredMedias[0].data);
       } else if (filteredMedias.length === 0) {
@@ -848,39 +852,36 @@ const handleButtonClick = () => {
 
   // 미디어 삭제 핸들러
   const handleDelete = async () => {
-    if (!mediaView) return;
+  if (!mediaView) return;
 
-    setMedias((prevMedias) => {
-      const filteredMedias = prevMedias.filter(
-        (media) => media.data !== mediaView
-      );
-      if (filteredMedias.length > 0) {
-        setMediaView(filteredMedias[0].data);
-      } else {
-        setMediaView(null);
-      }
-      return filteredMedias;
+  setMedias((prevMedias) => {
+    const filteredMedias = prevMedias.filter(
+      (media) => media.data !== mediaView
+    );
+
+    // 로컬 스토리지 업데이트
+    localforage.setItem("medias", filteredMedias).catch((err) => {
+      console.error("Error saving medias to localforage:", err);
     });
 
-    try {
-      const storedMedias = await localforage.getItem("medias");
-      if (storedMedias) {
-        const filteredMedias = storedMedias.filter(
-          (media) => media.data !== mediaView
-        );
-        await localforage.setItem("medias", filteredMedias);
-        if (filteredMedias.length === 0) {
-          await localforage.removeItem("mediaView");
-        } else if (filteredMedias[0].data !== mediaView) {
-          await localforage.setItem("mediaView", filteredMedias[0].data);
-        }
-      }
-    } catch (err) {
-      console.error("Error removing media from localforage:", err);
+    if (filteredMedias.length > 0) {
+      setMediaView(filteredMedias[0].data);
+      localforage.setItem("mediaView", filteredMedias[0].data).catch((err) => {
+        console.error("Error saving mediaView to localforage:", err);
+      });
+    } else {
+      setMediaView(null);
+      localforage.removeItem("mediaView").catch((err) => {
+        console.error("Error removing mediaView from localforage:", err);
+      });
     }
 
-    closeDeleteModal();
-  };
+    return filteredMedias;
+  });
+
+  closeDeleteModal();
+};
+
 
   useEffect(() => {
     if (!sessionStorage.getItem("mb_email")) {

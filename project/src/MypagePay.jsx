@@ -14,7 +14,7 @@ const MypagePay = () => {
     // 회원 결제 내역 조회
     axios
       .post(
-        `http://${process.env.REACT_APP_IP}:8083/MemApi/MypagePay`,
+        `http://${process.env.REACT_APP_LOCALHOST}:8083/MemApi/MypagePay`,
         formData,
         {
           headers: {
