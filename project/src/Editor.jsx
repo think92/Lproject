@@ -68,50 +68,50 @@ const Editor = () => {
   // 컴포넌트 마운트 시 LocalForage에서 데이터 불러오기
   useEffect(() => {
     const loadLocalforageData = async () => {
-        try {
-            const storedMedias = await localforage.getItem("medias");
-            if (storedMedias) {
-                setMedias(storedMedias);
-            }
-
-            const storedMediaView = await localforage.getItem("mediaView");
-            if (storedMediaView) {
-                setMediaView(storedMediaView);
-            }
-
-            if (location.state?.medias && location.state.medias.length > 0) {
-                const formattedMedias = location.state.medias.map((media) => {
-                    if (typeof media === 'string') {
-                        const extension = media.split('.').pop().toLowerCase();
-                        let type = 'image/png';
-                        if (extension === 'mp4') {
-                            type = 'video/mp4';
-                        }
-                        return {
-                            type: type,
-                            data: `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${media}`
-                        };
-                    } else {
-                        return media;
-                    }
-                });
-
-                // 중복 추가 방지
-                const uniqueMedias = formattedMedias.filter(
-                    (newMedia) => !storedMedias.some((storedMedia) => storedMedia.data === newMedia.data)
-                );
-
-                setMedias((prevMedias) => [...prevMedias, ...uniqueMedias]);
-
-                if (!mediaView && uniqueMedias.length > 0) {
-                    setMediaView(uniqueMedias[0]?.data || null);
-                }
-            } else {
-                console.error("No images passed in state.");
-            }
-        } catch (err) {
-            console.error("Error loading medias or mediaView from localforage:", err);
+      try {
+        const storedMedias = await localforage.getItem("medias");
+        if (storedMedias) {
+          setMedias(storedMedias);
         }
+    
+        const storedMediaView = await localforage.getItem("mediaView");
+        if (storedMediaView) {
+          setMediaView(storedMediaView);
+        }
+    
+        if (location.state?.medias && location.state.medias.length > 0) {
+          const formattedMedias = location.state.medias.map((media) => {
+            if (typeof media === 'string') {
+              const extension = media.split('.').pop().toLowerCase();
+              let type = 'image/png';
+              if (extension === 'mp4') {
+                type = 'video/mp4';
+              }
+              return {
+                type: type,
+                data: `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${media}`
+              };
+            } else {
+              return media;
+            }
+          });
+    
+          // 중복 추가 방지
+          const uniqueMedias = formattedMedias.filter(
+            (newMedia) => !storedMedias.some((storedMedia) => storedMedia.data === newMedia.data)
+          );
+    
+          setMedias((prevMedias) => [...prevMedias, ...uniqueMedias]);
+    
+          if (!mediaView && uniqueMedias.length > 0) {
+            setMediaView(uniqueMedias[0]?.data || null);
+          }
+        } else {
+          console.error("No images passed in state.");
+        }
+      } catch (err) {
+        console.error("Error loading medias or mediaView from localforage:", err);
+      }
     };
     loadLocalforageData();
 }, [location.state]);
@@ -199,15 +199,31 @@ const Editor = () => {
   }, []);
 
   // 파일 업로드 버튼 클릭 핸들러
-  const handleButtonClick = () => {
-    if (null === sessionStorage.getItem("mb_email")) {
-      if (medias.length >= 1 || medias.some((media) => media.type.startsWith("video/"))) {
-        openLoginModal();
-        return;
-      }
+const handleButtonClick = () => {
+  const email = sessionStorage.getItem("mb_email");
+  console.log(email);
+
+  if (email === null) {
+    // 이메일이 없는 경우
+    if (medias.length >= 1) {
+      console.log(medias.length);
+      // 업로드된 파일이 이미 하나 있는 경우 로그인 모달을 열기
+      openLoginModal();
+      return;
+    } else {
+      // 사진 또는 동영상 한 장만 업로드 허용
+      fileInputRef.current.setAttribute('multiple', false);
     }
-    fileInputRef.current.click();
-  };
+  } else {
+    // 이메일이 있는 경우 여러 장 업로드 허용
+    fileInputRef.current.setAttribute('multiple', true);
+  }
+
+  // 파일 입력 요소를 클릭하여 파일 선택 창을 염
+  fileInputRef.current.click();
+  console.log("Attempting to open file dialog");  // 파일 선택 창 열기 시도 로그
+};
+  
 
   // AI 모자이크 버튼 클릭 핸들러
   const aiHandleButtonClick = (buttonType) => {
@@ -1193,6 +1209,32 @@ const Editor = () => {
               확인
             </button>
             <button className="btn cancel" onClick={closePremiumModal}>
+              취소
+            </button>
+          </div>
+        </div>
+      </ReactModal>
+      <ReactModal
+        isOpen={loginModalIsOpen}
+        onRequestClose={closeLoginModal}
+        contentLabel="Login Required"
+        className="Modal"
+        overlayClassName="Overlay"
+      >
+        <div className="modal-content">
+          <h2>로그인 하시겠습니까?</h2>
+          <p>사진 두 장 이상 또는 동영상을 업로드하려면 로그인이 필요합니다.</p>
+          <div className="modal-buttons">
+            <button
+              className="btn confirm"
+              onClick={() => {
+                closeLoginModal();
+                navigate("/Login");
+              }}
+            >
+              확인
+            </button>
+            <button className="btn cancel" onClick={closeLoginModal}>
               취소
             </button>
           </div>
