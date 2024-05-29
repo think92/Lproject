@@ -25,7 +25,7 @@ const Join = () => {
         .then((res) => {
           console.log(res);
           if (res.data === "Success") {
-            nav("/");
+            nav("/Login");
             // 추후 제거..
             // } else if (res.data === "Error") {
             //   alert(

@@ -93,7 +93,7 @@ const Login = () => {
                 className="loginpassword"
               />
               {/* <Link to={"/"} className="loginbtn" onClick={tryLogin}> */}
-              <button to={"/"} className="loginbtn" onClick={tryLogin}>
+              <button to={"/Editor"} className="loginbtn" onClick={tryLogin}>
                 로그인
               </button>
 
