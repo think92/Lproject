@@ -60,8 +60,6 @@ const Editor = () => {
     }
   }, [isLoading]);
 
-
-
   const [buttonStates, setButtonStates] = useState({
     face: false,
     carNumber: false,
@@ -86,36 +84,40 @@ const Editor = () => {
         if (storedMedias) {
           setMedias(storedMedias);
         }
-    
+
         const storedMediaView = await localforage.getItem("mediaView");
         if (storedMediaView) {
           setMediaView(storedMediaView);
         }
-    
+
         if (location.state?.medias && location.state.medias.length > 0) {
           const formattedMedias = location.state.medias.map((media) => {
-            if (typeof media === 'string') {
-              const extension = media.split('.').pop().toLowerCase();
-              let type = 'image/png';
-              if (extension === 'mp4') {
-                type = 'video/mp4';
+            if (typeof media === "string") {
+              const extension = media.split(".").pop().toLowerCase();
+              let type = "image/png";
+              if (extension === "mp4") {
+                type = "video/mp4";
               }
               return {
                 type: type,
-                data: `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${media}`
+                data: `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${media}`,
               };
             } else {
               return media;
             }
           });
-    
+
           // 중복 추가 방지
           const uniqueMedias = formattedMedias.filter(
-            (newMedia) => !storedMedias || !storedMedias.some((storedMedia) => storedMedia.data === newMedia.data)
-);
-    
+            (newMedia) =>
+              !storedMedias ||
+              !storedMedias.some(
+                (storedMedia) => storedMedia.data === newMedia.data
+              )
+          );
+
           setMedias((prevMedias) => [...prevMedias, ...uniqueMedias]);
-    
+
           if (!mediaView && uniqueMedias.length > 0) {
             setMediaView(uniqueMedias[0]?.data || null);
           }
@@ -123,12 +125,14 @@ const Editor = () => {
           console.error("No images passed in state.");
         }
       } catch (err) {
-        console.error("Error loading medias or mediaView from localforage:", err);
+        console.error(
+          "Error loading medias or mediaView from localforage:",
+          err
+        );
       }
     };
     loadLocalforageData();
-}, [location.state]);
-
+  }, [location.state]);
 
   // 미디어 뷰가 변경될 때 처리
   useEffect(() => {
@@ -152,7 +156,10 @@ const Editor = () => {
           //   ctx.strokeRect(area.x, area.y, area.width, area.height);
           // });
         };
-      } else if (mediaView.startsWith("data:video") || mediaView.endsWith(".mp4")) {
+      } else if (
+        mediaView.startsWith("data:video") ||
+        mediaView.endsWith(".mp4")
+      ) {
         const videoElement = document.createElement("video");
         videoElement.src = mediaView;
         videoElement.onloadeddata = () => {
@@ -162,14 +169,19 @@ const Editor = () => {
           const ctx = canvas.getContext("2d");
           canvas.width = videoElement.videoWidth;
           canvas.height = videoElement.videoHeight;
-          ctx.drawImage(videoElement, 0, 0, videoElement.videoWidth, videoElement.videoHeight);
+          ctx.drawImage(
+            videoElement,
+            0,
+            0,
+            videoElement.videoWidth,
+            videoElement.videoHeight
+          );
           setMediaView(videoElement.src);
           console.log("Video URL updated:", videoElement.src);
         };
       }
     }
   }, [mediaView]);
-  
 
   // 데이터가 변경될 때 LocalForage에 저장
   useEffect(() => {
@@ -181,23 +193,28 @@ const Editor = () => {
     });
   }, [medias, mediaView]);
 
-  
   // 로그아웃 핸들러
   const handleLogout = () => {
     sessionStorage.removeItem("mb_email");
-    localforage.removeItem("medias").then(() => {
-      console.log("medias removed from localforage");
-      setMedias([]);
-    }).catch((err) => {
-      console.error("Error removing medias from localforage:", err);
-    });
+    localforage
+      .removeItem("medias")
+      .then(() => {
+        console.log("medias removed from localforage");
+        setMedias([]);
+      })
+      .catch((err) => {
+        console.error("Error removing medias from localforage:", err);
+      });
 
-    localforage.removeItem("mediaView").then(() => {
-      console.log("mediaView removed from localforage");
-      setMediaView(null);
-    }).catch((err) => {
-      console.error("Error removing mediaView from localforage:", err);
-    });
+    localforage
+      .removeItem("mediaView")
+      .then(() => {
+        console.log("mediaView removed from localforage");
+        setMediaView(null);
+      })
+      .catch((err) => {
+        console.error("Error removing mediaView from localforage:", err);
+      });
 
     navigate("/");
   };
@@ -212,31 +229,30 @@ const Editor = () => {
   }, []);
 
   // 파일 업로드 버튼 클릭 핸들러
-const handleButtonClick = () => {
-  const email = sessionStorage.getItem("mb_email");
-  console.log(email);
+  const handleButtonClick = () => {
+    const email = sessionStorage.getItem("mb_email");
+    console.log(email);
 
-  if (email === null) {
-    // 이메일이 없는 경우
-    if (medias.length >= 1) {
-      console.log(medias.length);
-      // 업로드된 파일이 이미 하나 있는 경우 로그인 모달을 열기
-      openLoginModal();
-      return;
+    if (email === null) {
+      // 이메일이 없는 경우
+      if (medias.length >= 1) {
+        console.log(medias.length);
+        // 업로드된 파일이 이미 하나 있는 경우 로그인 모달을 열기
+        openLoginModal();
+        return;
+      } else {
+        // 사진 또는 동영상 한 장만 업로드 허용
+        fileInputRef.current.setAttribute("multiple", false);
+      }
     } else {
-      // 사진 또는 동영상 한 장만 업로드 허용
-      fileInputRef.current.setAttribute('multiple', false);
+      // 이메일이 있는 경우 여러 장 업로드 허용
+      fileInputRef.current.setAttribute("multiple", true);
     }
-  } else {
-    // 이메일이 있는 경우 여러 장 업로드 허용
-    fileInputRef.current.setAttribute('multiple', true);
-  }
 
-  // 파일 입력 요소를 클릭하여 파일 선택 창을 염
-  fileInputRef.current.click();
-  console.log("Attempting to open file dialog");  // 파일 선택 창 열기 시도 로그
-};
-  
+    // 파일 입력 요소를 클릭하여 파일 선택 창을 염
+    fileInputRef.current.click();
+    console.log("Attempting to open file dialog"); // 파일 선택 창 열기 시도 로그
+  };
 
   // AI 모자이크 버튼 클릭 핸들러
   const aiHandleButtonClick = (buttonType) => {
@@ -309,7 +325,10 @@ const handleButtonClick = () => {
 
   // 미디어 선택 핸들러
   const selectMedia = (event, media) => {
-    if (media && (media.type.startsWith("image") || media.type.startsWith("video"))) {
+    if (
+      media &&
+      (media.type.startsWith("image") || media.type.startsWith("video"))
+    ) {
       setMediaView(media.data);
       setUpdatedAreas([]);
     }
@@ -320,7 +339,7 @@ const handleButtonClick = () => {
     event.stopPropagation();
     setMedias((prevMedias) => {
       const filteredMedias = prevMedias.filter((_, idx) => idx !== index);
-       // 로컬 스토리지 업데이트
+      // 로컬 스토리지 업데이트
       localforage.setItem("medias", filteredMedias).catch((err) => {
         console.error("Error saving medias to localforage:", err);
       });
@@ -419,183 +438,180 @@ const handleButtonClick = () => {
 
   // 제출 버튼 클릭 핸들러
   // 제출 버튼 클릭 핸들러
-const handleSubmit = async () => {
-  if (!mediaView) return;
+  const handleSubmit = async () => {
+    if (!mediaView) return;
 
-  // 로딩 시작
-  setIsLoading(true);
+    // 로딩 시작
+    setIsLoading(true);
 
-  // 프리미엄 회원 확인
-  if (
-    sessionStorage.getItem("mb_role") === "M" &&
-    (medias.some(
-      (media) =>
-        media.type.startsWith("video/") && media.size > 5 * 1024 * 1024
-    ) ||
-      activeTool === "except")
-  ) {
-    openPremiumModal();
-    setIsLoading(false);  // 로딩 중지
-    return;
-  }
-
-  let mediaFile, mediaFileName, mediaFileType;
-
-  // 이미지 처리
-  if (mediaView.startsWith("data:image")) {
-    const response = await fetch(mediaView, { mode: "cors" });
-    const blob = await response.blob();
-    mediaFile = new File([blob], "mediaView.png", { type: "image/png" });
-    mediaFileName = `mediaView-${Date.now()}.png`;
-    mediaFileType = "image/png";
-  } 
-  // 동영상 처리
-  else if (
-    mediaView.startsWith("data:video") ||
-    mediaView.startsWith("blob:")
-  ) {
-    const response = await fetch(mediaView, { mode: "cors" });
-    const blob = await response.blob();
-    mediaFile = new File([blob], "mediaView.mp4", { type: "video/mp4" });
-    mediaFileName = `mediaView-${Date.now()}.mp4`;
-    mediaFileType = "video/mp4";
-  }
-
-  // S3에 업로드
-  await uploadToS3(mediaFile, mediaFileName);
-
-  const mb_email = sessionStorage.getItem("mb_email");
-
-  // 원본 파일 정보 생성
-  const originalPhoto = {
-    file_name: mediaFileName,
-    file_rename: mediaFileName,
-    file_type: mediaFileType,
-    file_size: mediaFile.size,
-    created_at: new Date().toISOString(),
-    mb_email: mb_email ? mb_email : null,
-  };
-
-  console.log("원본 파일 정보", originalPhoto);
-
-  let areaFileInfoArray = [];
-
-  // 선택 영역 처리
-  if (selectedAreas.length > 0) {
-    for (let i = 0; i < selectedAreas.length; i++) {
-      const area = selectedAreas[i];
-      const canvas = document.createElement("canvas");
-      canvas.width = area.width;
-      canvas.height = area.height;
-      const ctx = canvas.getContext("2d");
-      ctx.putImageData(area.imageData, 0, 0);
-
-      // Blob 생성 및 S3에 업로드
-      await new Promise((resolve) => {
-        canvas.toBlob(async (blob) => {
-          const file = new File([blob], `area-${Date.now()}.png`, {
-            type: "image/png",
-          });
-          const fileName = `area-${Date.now()}.png`;
-          await uploadToS3(file, fileName);
-
-          const areaFileInfo = {
-            file_name: fileName,
-            file_rename: fileName,
-            file_type: file.type,
-            file_size: file.size,
-            created_at: new Date().toISOString(),
-            mb_email: mb_email ? mb_email : null,
-          };
-
-          console.log("사용자 선택영역 파일 정보", areaFileInfo);
-          areaFileInfoArray.push(areaFileInfo);
-          resolve();
-        }, "image/png");
-      });
+    // 프리미엄 회원 확인
+    if (
+      sessionStorage.getItem("mb_role") === "M" &&
+      (medias.some(
+        (media) =>
+          media.type.startsWith("video/") && media.size > 5 * 1024 * 1024
+      ) ||
+        activeTool === "except")
+    ) {
+      openPremiumModal();
+      setIsLoading(false); // 로딩 중지
+      return;
     }
-  } else {
-    console.log("Active area is not set");
-  }
 
-  const editorData = new FormData();
-  
-  // 원본 파일 정보를 FormData에 추가
-  for (const key in originalPhoto) {
-    editorData.append(`original_${key}`, originalPhoto[key]);
-  }
+    let mediaFile, mediaFileName, mediaFileType;
 
-  // 선택 영역 파일 정보를 FormData에 추가
-  areaFileInfoArray.forEach((areaFileInfo, index) => {
-    for (const key in areaFileInfo) {
-      editorData.append(`area_${index}_${key}`, areaFileInfo[key]);
+    // 이미지 처리
+    if (mediaView.startsWith("data:image")) {
+      const response = await fetch(mediaView, { mode: "cors" });
+      const blob = await response.blob();
+      mediaFile = new File([blob], "mediaView.png", { type: "image/png" });
+      mediaFileName = `mediaView-${Date.now()}.png`;
+      mediaFileType = "image/png";
     }
-  });
+    // 동영상 처리
+    else if (
+      mediaView.startsWith("data:video") ||
+      mediaView.startsWith("blob:")
+    ) {
+      const response = await fetch(mediaView, { mode: "cors" });
+      const blob = await response.blob();
+      mediaFile = new File([blob], "mediaView.mp4", { type: "video/mp4" });
+      mediaFileName = `mediaView-${Date.now()}.mp4`;
+      mediaFileType = "video/mp4";
+    }
 
-  // 버튼 상태와 농도 값을 FormData에 추가
-  for (const key in buttonStates) {
-    editorData.append(key, buttonStates[key]);
-  }
-  editorData.append("intensityAuto", intensityAuto);
+    // S3에 업로드
+    await uploadToS3(mediaFile, mediaFileName);
 
-  // API 호출
-  axios
-    .post(
-      `http://${process.env.REACT_APP_LOCALHOST}:8083/FileApi/uploadFileInfo`,
-      editorData,
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
+    const mb_email = sessionStorage.getItem("mb_email");
+
+    // 원본 파일 정보 생성
+    const originalPhoto = {
+      file_name: mediaFileName,
+      file_rename: mediaFileName,
+      file_type: mediaFileType,
+      file_size: mediaFile.size,
+      created_at: new Date().toISOString(),
+      mb_email: mb_email ? mb_email : null,
+    };
+
+    console.log("원본 파일 정보", originalPhoto);
+
+    let areaFileInfoArray = [];
+
+    // 선택 영역 처리
+    if (selectedAreas.length > 0) {
+      for (let i = 0; i < selectedAreas.length; i++) {
+        const area = selectedAreas[i];
+        const canvas = document.createElement("canvas");
+        canvas.width = area.width;
+        canvas.height = area.height;
+        const ctx = canvas.getContext("2d");
+        ctx.putImageData(area.imageData, 0, 0);
+
+        // Blob 생성 및 S3에 업로드
+        await new Promise((resolve) => {
+          canvas.toBlob(async (blob) => {
+            const file = new File([blob], `area-${Date.now()}.png`, {
+              type: "image/png",
+            });
+            const fileName = `area-${Date.now()}.png`;
+            await uploadToS3(file, fileName);
+
+            const areaFileInfo = {
+              file_name: fileName,
+              file_rename: fileName,
+              file_type: file.type,
+              file_size: file.size,
+              created_at: new Date().toISOString(),
+              mb_email: mb_email ? mb_email : null,
+            };
+
+            console.log("사용자 선택영역 파일 정보", areaFileInfo);
+            areaFileInfoArray.push(areaFileInfo);
+            resolve();
+          }, "image/png");
+        });
       }
-    )
-    .then((res) => {
-      console.log(res.data);
-      
-      // S3 URL 생성
-      const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
-      
-      // mediaView와 medias 업데이트
-      setMediaView(s3Url);
-      setMedias((prevMedias) => {
-        const updatedMedias = prevMedias.map((media) => {
-          if (media.data === mediaView) {
-            return { ...media, data: s3Url, type: mediaFileType };
-          }
-          return media;
-        });
-        // LocalForage에 데이터 저장
-        localforage.setItem("medias", updatedMedias).catch((err) => {
-          console.error("Error saving medias to localforage:", err);
-        });
-        localforage.setItem("mediaView", s3Url).catch((err) => {
-          console.error("Error saving mediaView to localforage:", err);
-        });
-        return updatedMedias;
-      });
-      console.log("S3 URL:", s3Url);
-      // 추가: 동영상인 경우 URL이 변경되도록 처리
-    if (mediaFileType === "video/mp4") {
-      fetch(s3Url, { mode: "cors" })
-        .then((response) => response.blob())
-        .then((blob) => {
-          const videoURL = URL.createObjectURL(blob);
-          setMediaView(videoURL);
-          console.log("Video URL updated:", videoURL);
-        })
-        .catch((error) => console.error("Error fetching video:", error));
+    } else {
+      console.log("Active area is not set");
     }
 
-  })
-  .catch((err) => {
-    console.error("API 요청 실패:", err);
-  })
-  .finally(() => {
-    setIsLoading(false); // 로딩 종료
-  });
-};
+    const editorData = new FormData();
 
-  
+    // 원본 파일 정보를 FormData에 추가
+    for (const key in originalPhoto) {
+      editorData.append(`original_${key}`, originalPhoto[key]);
+    }
+
+    // 선택 영역 파일 정보를 FormData에 추가
+    areaFileInfoArray.forEach((areaFileInfo, index) => {
+      for (const key in areaFileInfo) {
+        editorData.append(`area_${index}_${key}`, areaFileInfo[key]);
+      }
+    });
+
+    // 버튼 상태와 농도 값을 FormData에 추가
+    for (const key in buttonStates) {
+      editorData.append(key, buttonStates[key]);
+    }
+    editorData.append("intensityAuto", intensityAuto);
+
+    // API 호출
+    axios
+      .post(
+        `http://${process.env.REACT_APP_IP}:8083/FileApi/uploadFileInfo`,
+        editorData,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+
+        // S3 URL 생성
+        const s3Url = `https://${process.env.REACT_APP_AWS_BUCKET}.s3.${process.env.REACT_APP_REGION}.amazonaws.com/${res.data.file_name}`;
+
+        // mediaView와 medias 업데이트
+        setMediaView(s3Url);
+        setMedias((prevMedias) => {
+          const updatedMedias = prevMedias.map((media) => {
+            if (media.data === mediaView) {
+              return { ...media, data: s3Url, type: mediaFileType };
+            }
+            return media;
+          });
+          // LocalForage에 데이터 저장
+          localforage.setItem("medias", updatedMedias).catch((err) => {
+            console.error("Error saving medias to localforage:", err);
+          });
+          localforage.setItem("mediaView", s3Url).catch((err) => {
+            console.error("Error saving mediaView to localforage:", err);
+          });
+          return updatedMedias;
+        });
+        console.log("S3 URL:", s3Url);
+        // 추가: 동영상인 경우 URL이 변경되도록 처리
+        if (mediaFileType === "video/mp4") {
+          fetch(s3Url, { mode: "cors" })
+            .then((response) => response.blob())
+            .then((blob) => {
+              const videoURL = URL.createObjectURL(blob);
+              setMediaView(videoURL);
+              console.log("Video URL updated:", videoURL);
+            })
+            .catch((error) => console.error("Error fetching video:", error));
+        }
+      })
+      .catch((err) => {
+        console.error("API 요청 실패:", err);
+      })
+      .finally(() => {
+        setIsLoading(false); // 로딩 종료
+      });
+  };
 
   // 모자이크 처리 함수
   function applyMosaic(x, y, width, height, intensity) {
@@ -711,12 +727,12 @@ const handleSubmit = async () => {
       console.error("mediaView is not defined");
       return;
     }
-  
+
     let mediaFile, mediaFileName, mediaFileType;
-  
+
     try {
       console.log("mediaView:", mediaView);
-  
+
       if (
         mediaView.startsWith("data:image") ||
         mediaView.endsWith(".png") ||
@@ -724,26 +740,26 @@ const handleSubmit = async () => {
         mediaView.endsWith(".jpeg")
       ) {
         console.log("Processing image data...");
-  
+
         const response = await fetch(mediaView);
         if (!response.ok) {
           throw new Error("Failed to fetch image data");
         }
         const blob = await response.blob();
         console.log("Blob created from mediaView URL:", blob);
-  
+
         if (!blob) {
           throw new Error("Failed to create Blob from mediaView URL");
         }
-  
+
         mediaFile = new File([blob], "final-mediaView.png", {
           type: "image/png",
         });
         mediaFileName = `final-mediaView-${Date.now()}.png`;
         mediaFileType = "image/png";
-  
+
         console.log("Image file created:", mediaFile);
-  
+
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = mediaFileName;
@@ -754,26 +770,26 @@ const handleSubmit = async () => {
         mediaView.endsWith(".mp4")
       ) {
         console.log("Processing video data...");
-  
+
         const response = await fetch(mediaView);
         if (!response.ok) {
           throw new Error("Failed to fetch video data");
         }
         const blob = await response.blob();
         console.log("Blob created from mediaView URL:", blob);
-  
+
         if (!blob) {
           throw new Error("Failed to create Blob from mediaView URL");
         }
-  
+
         mediaFile = new File([blob], "final-mediaView.mp4", {
           type: "video/mp4",
         });
         mediaFileName = `final-mediaView-${Date.now()}.mp4`;
         mediaFileType = "video/mp4";
-  
+
         console.log("Video file created:", mediaFile);
-  
+
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = mediaFileName;
@@ -781,17 +797,17 @@ const handleSubmit = async () => {
       } else {
         console.error("Unsupported media type:", mediaView);
       }
-  
+
       if (!mediaFile) {
         console.error("Media file is not defined after processing");
         return;
       }
-  
+
       const s3Url = await uploadToS3(mediaFile, mediaFileName);
       console.log("S3 URL:", s3Url);
-  
+
       const mb_email = sessionStorage.getItem("mb_email");
-  
+
       const originalPhoto = {
         file_name: mediaFileName,
         file_rename: mediaFileName,
@@ -800,19 +816,22 @@ const handleSubmit = async () => {
         created_at: new Date().toISOString(),
         mb_email: mb_email ? mb_email : null,
       };
-  
+
       console.log("원본 파일 정보", originalPhoto);
-  
+
       const editorData = new FormData();
       for (const key in originalPhoto) {
         editorData.append(`${key}`, originalPhoto[key]);
       }
-  
-      console.log("FormData to send:", Object.fromEntries(editorData.entries()));
-  
+
+      console.log(
+        "FormData to send:",
+        Object.fromEntries(editorData.entries())
+      );
+
       axios
         .post(
-          `http://${process.env.REACT_APP_LOCALHOST}:8083/FileApi/mosaicUploadFileInfo`,
+          `http://${process.env.REACT_APP_IP}:8083/FileApi/mosaicUploadFileInfo`,
           originalPhoto, // FormData 대신 JSON 데이터 전송
           {
             headers: {
@@ -840,7 +859,7 @@ const handleSubmit = async () => {
           localforage.setItem("mediaView", s3Url).catch((err) => {
             console.error("Error saving mediaView to localforage:", err);
           });
-          
+
           closeModal();
         })
         .catch((err) => {
@@ -851,7 +870,6 @@ const handleSubmit = async () => {
     }
   };
 
-  
   // S3 업로드 함수
   const uploadToS3 = async (file, key) => {
     const params = {
@@ -860,7 +878,7 @@ const handleSubmit = async () => {
       Body: file,
       ContentType: file.type,
     };
-  
+
     try {
       const data = await s3.upload(params).promise();
       console.log("Upload Success", data.Location);
@@ -870,41 +888,40 @@ const handleSubmit = async () => {
       throw err;
     }
   };
-  
-  
 
   // 미디어 삭제 핸들러
   const handleDelete = async () => {
-  if (!mediaView) return;
+    if (!mediaView) return;
 
-  setMedias((prevMedias) => {
-    const filteredMedias = prevMedias.filter(
-      (media) => media.data !== mediaView
-    );
+    setMedias((prevMedias) => {
+      const filteredMedias = prevMedias.filter(
+        (media) => media.data !== mediaView
+      );
 
-    // 로컬 스토리지 업데이트
-    localforage.setItem("medias", filteredMedias).catch((err) => {
-      console.error("Error saving medias to localforage:", err);
+      // 로컬 스토리지 업데이트
+      localforage.setItem("medias", filteredMedias).catch((err) => {
+        console.error("Error saving medias to localforage:", err);
+      });
+
+      if (filteredMedias.length > 0) {
+        setMediaView(filteredMedias[0].data);
+        localforage
+          .setItem("mediaView", filteredMedias[0].data)
+          .catch((err) => {
+            console.error("Error saving mediaView to localforage:", err);
+          });
+      } else {
+        setMediaView(null);
+        localforage.removeItem("mediaView").catch((err) => {
+          console.error("Error removing mediaView from localforage:", err);
+        });
+      }
+
+      return filteredMedias;
     });
 
-    if (filteredMedias.length > 0) {
-      setMediaView(filteredMedias[0].data);
-      localforage.setItem("mediaView", filteredMedias[0].data).catch((err) => {
-        console.error("Error saving mediaView to localforage:", err);
-      });
-    } else {
-      setMediaView(null);
-      localforage.removeItem("mediaView").catch((err) => {
-        console.error("Error removing mediaView from localforage:", err);
-      });
-    }
-
-    return filteredMedias;
-  });
-
-  closeDeleteModal();
-};
-
+    closeDeleteModal();
+  };
 
   useEffect(() => {
     if (!sessionStorage.getItem("mb_email")) {
@@ -1275,7 +1292,6 @@ const handleSubmit = async () => {
           <div className="spinner"></div>
         </div>
       </ReactModal>
-
     </div>
   );
 };
